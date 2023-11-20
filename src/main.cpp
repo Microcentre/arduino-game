@@ -1,9 +1,14 @@
+#include "Joystick.h"
 #include "display.h"
 
-int main()
-{
-    while (1){
-        
-    }
-    return 0;
+int main(void) {
+
+	Joystick joystick = Joystick();
+
+	// endless loop
+	while(1) {
+		joystick.show_info();
+	}
+	return(0);
 }
+
