@@ -1,9 +1,9 @@
-#include <avr/io.h>
+#include "display.h"
 
 int main()
 {
-    while(1) {
-
+    while (1){
+        
     }
     return 0;
 }
