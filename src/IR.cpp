@@ -19,7 +19,7 @@ IR::IR()
 
     TCCR1B |= (1 << WGM12);  // CTC mode
     TIMSK1 |= (1 << OCIE1A); // interrupt on comp A
-    OCR1A = 211;
+    OCR1A = 211; // 16000000/56000 = 421/2 = 211
 
     EIMSK |= (1 << INT0);
     EICRA |= (1 << ISC00);
