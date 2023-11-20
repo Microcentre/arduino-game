@@ -74,20 +74,52 @@ bool Joystick::show_memory(void)
     return (true);
 }
 
+bool Joystick::store_state(void)
+{
+    if (!Nunchuk.getState(NUNCHUK_ADDRESS))
+        return (false);
+    // Serial.println("------State data--------------------------");
+    // Serial.print("Joy X: ");
+    // Serial.print(Nunchuk.state.joy_x_axis);
+    // Serial.print("\t\tAccel X: ");
+    // Serial.print(Nunchuk.state.accel_x_axis, HEX);
+    // Serial.print("\t\tButton C: ");
+    // Serial.println(Nunchuk.state.c_button, HEX);
+
+    // Serial.print("Joy Y: ");
+    // Serial.print(Nunchuk.state.joy_y_axis);
+    // Serial.print("\t\tAccel Y: ");
+    // Serial.print(Nunchuk.state.accel_y_axis, HEX);
+    // Serial.print("\t\tButton Z: ");
+    // Serial.println(Nunchuk.state.z_button, HEX);
+
+    // Serial.print("\t\t\tAccel Z: ");
+    // Serial.println(Nunchuk.state.accel_z_axis, HEX);
+
+    return (true);
+}
+
+uint8_t Joystick::getX(){
+    return Nunchuk.state.joy_x_axis;
+}
+uint8_t Joystick::getY(){
+    return Nunchuk.state.joy_y_axis;
+}
+
 bool Joystick::show_state(void)
 {
     if (!Nunchuk.getState(NUNCHUK_ADDRESS))
         return (false);
     Serial.println("------State data--------------------------");
     Serial.print("Joy X: ");
-    Serial.print(Nunchuk.state.joy_x_axis, HEX);
+    Serial.print(Nunchuk.state.joy_x_axis);
     Serial.print("\t\tAccel X: ");
     Serial.print(Nunchuk.state.accel_x_axis, HEX);
     Serial.print("\t\tButton C: ");
     Serial.println(Nunchuk.state.c_button, HEX);
 
     Serial.print("Joy Y: ");
-    Serial.print(Nunchuk.state.joy_y_axis, HEX);
+    Serial.print(Nunchuk.state.joy_y_axis);
     Serial.print("\t\tAccel Y: ");
     Serial.print(Nunchuk.state.accel_y_axis, HEX);
     Serial.print("\t\tButton Z: ");
