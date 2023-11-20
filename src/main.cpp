@@ -1,9 +1,12 @@
-#include <avr/io.h>
+#include "Joystick.h"
 
-int main()
-{
-    while(1) {
+int main(void) {
 
-    }
-    return 0;
+	Joystick joystick = Joystick();
+
+	// endless loop
+	while(1) {
+		joystick.show_info();
+	}
+	return(0);
 }
