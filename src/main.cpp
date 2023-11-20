@@ -1,7 +1,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <IR.h>
-#include <HardwareSerial.h>
 
 int main()
 {
