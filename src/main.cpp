@@ -18,13 +18,20 @@ int main(void) {
 	while(1) {
 		if(joystick.store_state()){
 
-            player.calculate_position(joystick.get_x(),joystick.get_y());
+            Serial.println("---");
+            Serial.println(joystick.get_x());
+            Serial.println(joystick.get_y());
+            Serial.println("---");
 
-            display.draw_circle(player.get_player_x(), player.get_player_y());
+            player.calculate_position(joystick.get_x(),joystick.get_y());
+            
+            display.draw_circle(player.get_player_x(), player.get_player_y(),PLAYER_RADIUS);            
 
             _delay_ms(20);
 
-            display.clear_circle(player.get_player_x(), player.get_player_y());
+            if(!joystick.get_z()){
+                display.clear_circle(player.get_player_x(), player.get_player_y(),PLAYER_RADIUS);
+            }        
         }
 	}
 	return(0);

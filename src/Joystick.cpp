@@ -106,6 +106,14 @@ uint8_t Joystick::get_y(){
     return Nunchuk.state.joy_y_axis;
 }
 
+bool Joystick::get_c(){
+    return Nunchuk.state.c_button;
+}
+
+bool Joystick::get_z(){
+    return Nunchuk.state.z_button;
+}
+
 bool Joystick::show_state(void)
 {
     if (!Nunchuk.getState(NUNCHUK_ADDRESS))

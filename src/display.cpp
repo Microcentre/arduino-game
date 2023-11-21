@@ -3,6 +3,8 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 
+
+
 // For the Adafruit shield, these are the default.
 #define TFT_DC 9
 #define TFT_CS 10
@@ -26,31 +28,23 @@ Display::Display()
     
 }
 
-unsigned long Display::draw_circle(uint8_t x, uint8_t y){
+unsigned long Display::draw_circle(uint16_t x, uint8_t y, uint8_t circle_radius){
     // start time of function is stored
     unsigned long start = micros();
 
-    uint8_t width = 100;
-    uint8_t height = 100;
-    uint8_t radius = 5;
-
     // center of display in position 1: x = 170, y = 120
-    tft.fillCircle(x, y, radius, ILI9341_WHITE);
+    tft.fillCircle(x, y, circle_radius, ILI9341_WHITE);
 
    // return how long the function took to complete
     return micros() - start;
 }
 
-unsigned long Display::clear_circle(uint8_t x, uint8_t y){
+unsigned long Display::clear_circle(uint16_t x, uint8_t y, uint8_t circle_radius){
     // start time of function is stored
     unsigned long start = micros();
 
-    uint8_t width = 100;
-    uint8_t height = 100;
-    uint8_t radius = 5;
-
     // center of display in position 1: x = 170, y = 120
-    tft.fillCircle(x, y, radius, ILI9341_BLACK);
+    tft.fillCircle(x, y, circle_radius, ILI9341_BLACK);
 
    // return how long the function took to complete
     return micros() - start;
