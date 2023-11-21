@@ -4,10 +4,9 @@
 #include "HardwareSerial.h"
 #include "util/delay.h"
 
+const uint8_t SCREEN_DELAY_MS = 20;
+
 int main(void) {
-
-    Serial.begin(9600);
-
 	Joystick joystick = Joystick();
 
     Display display = Display();
@@ -18,17 +17,13 @@ int main(void) {
 	while(1) {
 		if(joystick.store_state()){
 
-            Serial.println("---");
-            Serial.println(joystick.get_x());
-            Serial.println(joystick.get_y());
-            Serial.println("---");
-
             player.calculate_position(joystick.get_x(),joystick.get_y());
             
             display.draw_circle(player.get_player_x(), player.get_player_y(),PLAYER_RADIUS);            
 
-            _delay_ms(20);
+            _delay_ms(SCREEN_DELAY_MS);
 
+            //if z is not pressed, remove dot, else draw line by not removing dot.
             if(!joystick.get_z()){
                 display.clear_circle(player.get_player_x(), player.get_player_y(),PLAYER_RADIUS);
             }        

@@ -3,9 +3,9 @@
 
 #include "stdint.h"
 
-const int PLAYER_RADIUS = 5;
-const int BOUNDARY_HEIGHT = 318;
-const int BOUNDARY_WIDTH = 238;
+const uint8_t PLAYER_RADIUS = 5;
+const uint16_t BOUNDARY_HEIGHT = 318;
+const uint8_t BOUNDARY_WIDTH = 238;
 
 class Player
 {
