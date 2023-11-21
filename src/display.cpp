@@ -1,4 +1,4 @@
-#include "display.h"
+#include "Display.h"
 #include "SPI.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
@@ -26,7 +26,7 @@ Display::Display()
     
 }
 
-unsigned long Display::DrawCircle(uint8_t x, uint8_t y){
+unsigned long Display::draw_circle(uint8_t x, uint8_t y){
     // start time of function is stored
     unsigned long start = micros();
 
@@ -41,7 +41,7 @@ unsigned long Display::DrawCircle(uint8_t x, uint8_t y){
     return micros() - start;
 }
 
-unsigned long Display::ClearCircle(uint8_t x, uint8_t y){
+unsigned long Display::clear_circle(uint8_t x, uint8_t y){
     // start time of function is stored
     unsigned long start = micros();
 

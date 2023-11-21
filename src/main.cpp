@@ -1,5 +1,6 @@
 #include "Joystick.h"
-#include "display.h"
+#include "Display.h"
+#include "Player.h"
 #include "HardwareSerial.h"
 #include "util/delay.h"
 
@@ -11,14 +12,19 @@ int main(void) {
 
     Display display = Display();
 
+    Player player = Player();
+
 	// endless loop
 	while(1) {
 		if(joystick.store_state()){
-            uint8_t x = joystick.getX();
-            uint8_t y = joystick.getY();
-            display.DrawCircle(x,y);
-            _delay_ms(50);
-            display.ClearCircle(x,y);
+
+            player.calculate_position(joystick.get_x(),joystick.get_y());
+
+            display.draw_circle(player.get_player_x(), player.get_player_y());
+
+            _delay_ms(20);
+
+            display.clear_circle(player.get_player_x(), player.get_player_y());
         }
 	}
 	return(0);

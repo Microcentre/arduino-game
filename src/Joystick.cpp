@@ -99,10 +99,10 @@ bool Joystick::store_state(void)
     return (true);
 }
 
-uint8_t Joystick::getX(){
+uint8_t Joystick::get_x(){
     return Nunchuk.state.joy_x_axis;
 }
-uint8_t Joystick::getY(){
+uint8_t Joystick::get_y(){
     return Nunchuk.state.joy_y_axis;
 }
 
