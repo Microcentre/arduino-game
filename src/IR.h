@@ -2,7 +2,7 @@
 
 const uint16_t CARRIER_FREQUENCY = 38000;
 
-const uint8_t  BLINK_DURATION =   211;
+const uint8_t  BLINK_DURATION =   211; // 16000000/56000 = 421/2 = 211
 const uint16_t PULSE_DURATION =  9000; //  562.5µs 
 const uint16_t  ZERO_DURATION  =  9000; //  562.5µs
 const uint16_t  ONE_DURATION   = 27000; // 1.6875ms
