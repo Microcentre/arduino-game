@@ -24,6 +24,7 @@ void Player::calculate_position(uint8_t joystick_x, uint8_t joystick_y)
     }
     if (player_y - calc_y > PLAYER_RADIUS && player_y - calc_y <= BOUNDARY_WIDTH - PLAYER_RADIUS)
     {
+        //-= is used to invert y axis
         player_y -= calc_y;
     }
 }
