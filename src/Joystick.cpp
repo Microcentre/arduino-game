@@ -26,6 +26,7 @@ Joystick::Joystick()
     }
 }
 
+//store current state of nunchuck in Nunchuck object
 bool Joystick::store_state(void)
 {
     if (!Nunchuk.getState(NUNCHUK_ADDRESS))
