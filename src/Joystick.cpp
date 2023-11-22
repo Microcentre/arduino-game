@@ -36,22 +36,22 @@ bool Joystick::store_state(void)
     return (true);
 }
 
-uint8_t Joystick::get_x()
+uint8_t Joystick::get_x_axis()
 {
     return Nunchuk.state.joy_x_axis;
 }
 
-uint8_t Joystick::get_y()
+uint8_t Joystick::get_y_axis()
 {
     return Nunchuk.state.joy_y_axis;
 }
 
-bool Joystick::get_c()
+bool Joystick::is_c_pressed()
 {
     return Nunchuk.state.c_button;
 }
 
-bool Joystick::get_z()
+bool Joystick::is_z_pressed()
 {
     return Nunchuk.state.z_button;
 }

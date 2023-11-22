@@ -3,8 +3,8 @@
 Player::Player()
 {
     // start at center position on display
-    player_x = 170;
-    player_y = 120;
+    pos_x = 170;
+    pos_y = 120;
 }
 
 void Player::calculate_position(uint8_t joystick_x, uint8_t joystick_y)
@@ -18,23 +18,23 @@ void Player::calculate_position(uint8_t joystick_x, uint8_t joystick_y)
     calc_y /= 25;
 
     // move player and check for collision on display boundaries
-    if (player_x + calc_x > PLAYER_RADIUS && player_x + calc_x <= BOUNDARY_HEIGHT - PLAYER_RADIUS)
+    if (pos_x + calc_x > PLAYER_RADIUS && pos_x + calc_x <= BOUNDARY_HEIGHT - PLAYER_RADIUS)
     {
-        player_x += calc_x;
+        pos_x += calc_x;
     }
-    if (player_y - calc_y > PLAYER_RADIUS && player_y - calc_y <= BOUNDARY_WIDTH - PLAYER_RADIUS)
+    if (pos_y - calc_y > PLAYER_RADIUS && pos_y - calc_y <= BOUNDARY_WIDTH - PLAYER_RADIUS)
     {
         //-= is used to invert y axis
-        player_y -= calc_y;
+        pos_y -= calc_y;
     }
 }
 
-uint16_t Player::get_player_x()
+uint16_t Player::get_pos_x()
 {
-    return player_x;
+    return pos_x;
 }
 
-uint8_t Player::get_player_y()
+uint8_t Player::get_pos_y()
 {
-    return player_y;
+    return pos_y;
 }

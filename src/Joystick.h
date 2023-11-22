@@ -8,10 +8,10 @@ class Joystick
     public:
         Joystick();
         bool store_state(void);
-        uint8_t get_x(void);
-        uint8_t get_y(void);
-        bool get_c(void);
-        bool get_z(void);
+        uint8_t get_x_axis(void);
+        uint8_t get_y_axis(void);
+        bool is_c_pressed(void);
+        bool is_z_pressed(void);
 };
 
 #endif
