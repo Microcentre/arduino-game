@@ -34,17 +34,17 @@ void IR::clear_flag(uint8_t flag)
 
 void IR::send_data(uint8_t data)
 {
+    const uint8_t DATA_SIZE = sizeof(data) * 8;
     uint8_t set_bits = 0;
     uint8_t parity_bit = 0;
     uint16_t to_send = 0;
 
-    TIMSK1 |= (1 << OCIE1A);
 
     // send start bit, data, (parity bit), stop bit
     to_send |= START_BIT;
-    to_send <<= (sizeof(data) * 8);
+    to_send <<= DATA_SIZE;
     to_send |= data;
-    for (uint8_t i = 0; i < sizeof(data) * 8; i++)
+    for (uint8_t i = 0; i < DATA_SIZE; i++)
     {
         if (data & (1 << i))
         {
@@ -57,19 +57,55 @@ void IR::send_data(uint8_t data)
     to_send |= parity_bit;
     to_send <<= 1;
     to_send |= STOP_BIT;
-    for (uint8_t i = 0; i < 10; i++)
+    for (int8_t i = MESSAGE_SIZE - 1; i >= 0; i--)
     {
         send_bit((to_send >> i) & 0x01);
         while (~(get_flags() | ~IR_FLAG_READY_TO_SEND))
         {
         }
     }
-    TIMSK1 &= ~(1 << OCIE1A);
 }
 
 void IR::read_data()
 {
-    //
+    if (!(get_flags() & IR_FLAG_START_READING))
+    {
+        return;
+    }
+    for (int i = 0; i < MESSAGE_SIZE; i++)
+    {
+        while (!(get_flags() & IR_FLAG_BIT_READY))
+        {
+        }
+        read_bit();
+    }
+    interpret_data();
+    clear_flag(IR_FLAG_START_READING);
+}
+
+void IR::interpret_data()
+{
+    uint8_t set_bits = 0;
+    uint8_t parity_bit = input_buffer & PARITY_MASK;
+    uint8_t data = (input_buffer & DATA_MASK) >> 2; // remove start, stop and parity
+    const uint8_t DATA_SIZE = sizeof(data) * 8;
+
+    for (uint8_t i = 0; i < DATA_SIZE; i++)
+    {
+        if (data & (1 << i))
+        {
+            set_bits++;
+        }
+    }
+    // are stop bit and start bit set?
+    if (input_buffer & 0x01 && input_buffer >> (MESSAGE_SIZE - 1) && set_bits % 2 && parity_bit)
+    {
+        // valid data
+        Serial.println(data);
+    } else {
+        // invalid data
+        Serial.println("garbage");
+    }
 }
 
 void IR::start_blinking()
@@ -125,22 +161,23 @@ void IR::send_bit(uint8_t bit)
     start_blinking();
     OCR1A = PULSE_DURATION;
     start_signal_timer();
-
+    TIMSK1 |= (1 << OCIE1A);
     do
     {
         PORTD ^= (1 << PD7);
     } while (get_flags() & IR_FLAG_SENDING_PULSES);
-
+    TIMSK1 &= ~(1 << OCIE1A);
     if (bit)
         OCR1A = ONE_DURATION;
     else
         OCR1A = ZERO_DURATION;
     stop_blinking();
-
+    TIMSK1 |= (1 << OCIE1A);
     while (!(get_flags() & IR_FLAG_SENDING_PULSES))
     {
         PORTD ^= (1 << PD7);
     }
+    TIMSK1 &= ~(1 << OCIE1A);
     stop_signal_timer();
     set_flag(IR_FLAG_READY_TO_SEND);
 }

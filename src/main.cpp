@@ -4,7 +4,7 @@
 #include <HardwareSerial.h>
 
 IR infrared;
-IR* p_infrared;
+IR *p_infrared;
 
 ISR(TIMER0_COMPA_vect)
 {
@@ -26,14 +26,18 @@ ISR(TIMER1_COMPA_vect)
 
 ISR(INT0_vect)
 {
-    if (PIND & (1 << PIND2))
-    {
-        infrared.start_signal_timer();
-    }
-    else
-    {
-        infrared.read_bit();
-    }
+    // if (!(p_infrared->get_flags() & IR_FLAG_START_READING))
+    // {
+    //     p_infrared->set_flag(IR_FLAG_START_READING);
+    // }
+    // if (!(PIND & (1 << PIND2)))
+    // {
+    //     p_infrared->set_flag(IR_FLAG_BIT_READY);
+    // }
+    // else
+    // {
+    //     p_infrared->start_signal_timer();
+    // }
 }
 
 int main()
@@ -44,6 +48,7 @@ int main()
     Serial.begin(9600);
     while (1)
     {
+        // infrared.read_data();
         infrared.send_data(0b10101010);
     }
     return 0;

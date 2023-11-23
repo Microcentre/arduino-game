@@ -2,6 +2,10 @@
 
 const uint16_t CARRIER_FREQUENCY = 38000;
 
+const uint8_t MESSAGE_SIZE = 11;
+const uint8_t PARITY_MASK = 0x02;
+const uint8_t DATA_MASK = 0b01111111100;
+
 const uint8_t  BLINK_DURATION =   211; // 16000000/56000 = 421/2 = 211
 const uint16_t PULSE_DURATION =  9000; //  562.5µs 
 const uint16_t  ZERO_DURATION  =  9000; //  562.5µs
@@ -11,6 +15,7 @@ enum IRFlags {
     IR_FLAG_READY_TO_SEND = 0x01,
     IR_FLAG_SENDING_PULSES = 0x02,
     IR_FLAG_BIT_READY = 0x10,
+    IR_FLAG_START_READING = 0x20,
 };
 
 const uint8_t START_BIT = 1;
@@ -30,6 +35,7 @@ class IR
     
         void read_data();
         void send_data(uint8_t);
+        void interpret_data();
         
         uint8_t get_flags();
         void set_flag(uint8_t);
