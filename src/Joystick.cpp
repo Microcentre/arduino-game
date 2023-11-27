@@ -1,6 +1,5 @@
 #include <avr/io.h>
 #include <util/delay.h>
-#include <avr/interrupt.h>
 #include <Wire.h>
 #include <HardwareSerial.h>
 #include <Nunchuk.h>
@@ -13,9 +12,6 @@
 
 Joystick::Joystick()
 {
-    // enable global interrupts
-    sei();
-
     // join I2C bus as master
     Wire.begin();
 
@@ -26,14 +22,11 @@ Joystick::Joystick()
     }
 }
 
-//store current state of nunchuck in Nunchuck object
-bool Joystick::store_state(void)
+bool Joystick::store_state()
 {
     if (!Nunchuk.getState(NUNCHUK_ADDRESS))
-    {
-        return (false);
-    }
-    return (true);
+        return false;
+    return true;
 }
 
 uint8_t Joystick::get_x_axis()

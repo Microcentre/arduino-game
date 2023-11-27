@@ -3,18 +3,20 @@
 #include "Player.h"
 #include "HardwareSerial.h"
 #include "util/delay.h"
+#include <avr/interrupt.h>
 
 const uint8_t SCREEN_DELAY_MS = 20;
 
 int main(void)
 {
     Joystick joystick = Joystick();
-
     Display display = Display();
-
     Player player = Player();
 
-    //used for storing and comparing previous player position (reduces display flicker)
+    // enable global interrupts
+    sei();
+
+    // used for storing and comparing previous player position (reduces display flicker)
     uint16_t prev_player_pos_x = 0;
     uint8_t prev_player_pos_y = 0;
 
