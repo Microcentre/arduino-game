@@ -13,7 +13,7 @@ IR::IR()
     TIMSK0 |= (1 << OCIE0A); // interrupt on comp A
     OCR0A = BLINK_DURATION;
     
-    OCR1B = PULSE_DURATION + ONE_DURATION;
+    OCR1A = PULSE_DURATION + ONE_DURATION;
     TCCR1B |= (1 << WGM12); // CTC
     TIMSK1 |= (1 << OCIE1A) | (1 << OCIE1B); // interrupt on comp A and B
     OCR1B = PULSE_DURATION;
@@ -89,55 +89,6 @@ void IR::inc_received_bits()
     received_bits++;
 }
 
-void IR::read_bit()
-{
-    stop_signal_timer();
-    uint16_t duration = TCNT1;
-    if (duration == ZERO_DURATION)
-    {
-        // signal was zero, write to buffer
-        input_buffer <<= 1;
-    }
-    else if (duration == ONE_DURATION)
-    {
-        // signal was one, write to buffer
-        input_buffer <<= 1;
-        input_buffer |= 1;
-    }
-    else
-    {
-        // signal was junk, disregard
-    }
-}
-
-void IR::send_bit(uint8_t bit)
-{
-    set_flag(IR_FLAG_SENDING_PULSES);
-    clear_flag(IR_FLAG_READY_TO_SEND);
-    start_blinking();
-    OCR1A = PULSE_DURATION;
-    start_signal_timer();
-    TIMSK1 |= (1 << OCIE1A);
-    do
-    {
-        PORTD ^= (1 << PD7);
-    } while (get_flags() & IR_FLAG_SENDING_PULSES);
-    TIMSK1 &= ~(1 << OCIE1A);
-    if (bit)
-        OCR1A = ONE_DURATION;
-    else
-        OCR1A = ZERO_DURATION;
-    stop_blinking();
-    TIMSK1 |= (1 << OCIE1A);
-    while (!(get_flags() & IR_FLAG_SENDING_PULSES))
-    {
-        PORTD ^= (1 << PD7);
-    }
-    TIMSK1 &= ~(1 << OCIE1A);
-    stop_signal_timer();
-    set_flag(IR_FLAG_READY_TO_SEND);
-}
-
 void IR::read_data()
 {
     if (!(get_flags() & IR_FLAG_START_READING))
@@ -176,7 +127,8 @@ void IR::send_data(uint8_t data)
                                // so the full data including parity bit should always be even
 
     // set stop bit, parity bit, data bits and start bit
-    // in that order, because they're sent in reverse
+    // in that order, because they're sent LSB-first
+
     to_send |= STOP_BIT;
     to_send <<= 1;
     to_send |= parity_bit;
@@ -184,20 +136,10 @@ void IR::send_data(uint8_t data)
     to_send |= data;
     to_send <<= 1;
     to_send |= START_BIT;
-
     output_buffer = to_send;
+    start_blinking();
     start_signal_timer();
-    // start_blinking();  
     set_flag(IR_FLAG_READY_TO_SEND);
-    // now set up the timer to actually start sending data
-
-    // for (int8_t i = MESSAGE_SIZE - 1; i >= 0; i--)
-    // {
-    //     send_bit((to_send >> i) & 0x01);
-    //     while (~(get_flags() | ~IR_FLAG_READY_TO_SEND))
-    //     {
-    //     }
-    // }
 }
 
 void IR::interpret_data()

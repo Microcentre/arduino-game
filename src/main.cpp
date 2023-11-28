@@ -1,5 +1,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include <IR.h>
 #include <HardwareSerial.h>
 
@@ -15,6 +16,8 @@ ISR(TIMER1_COMPB_vect)
 {
     if (p_infrared->get_flags() & IR_FLAG_READY_TO_SEND)
     {
+        // start bit is 1, so the output buffer will
+        // only be 0 if there is nothing left to send
         if (p_infrared->get_output_buffer() == 0)
         {
             p_infrared->clear_flag(IR_FLAG_READY_TO_SEND);
@@ -94,8 +97,10 @@ void setup()
 int main()
 {
     setup();
+    _delay_ms(20);
     while (1)
     {
+        _delay_ms(20);
         p_infrared->send_data(0b11101110);
         // infrared.read_data();
     }
