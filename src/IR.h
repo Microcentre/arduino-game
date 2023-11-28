@@ -15,12 +15,12 @@ const uint16_t ONE_DURATION = 27000; // 1.6875ms
 
 enum IRFlags {
     // sending
-    IR_FLAG_READY_TO_SEND = 0x01,
-    IR_FLAG_SENDING_PULSES = 0x02,
+    IR_FLAG_READY_TO_SEND    = 0b00000001,
+    IR_FLAG_SENDING_PULSES   = 0b00000010,
     // receiving
-    IR_FLAG_BIT_READY = 0x10,
-    IR_FLAG_START_READING = 0x20,
-    IR_FLAG_MESSAGE_RECEIVED = 0x40,
+    IR_FLAG_BIT_READY        = 0b00010000,
+    IR_FLAG_START_READING    = 0b00100000,
+    IR_FLAG_MESSAGE_RECEIVED = 0b01000000,
 };
 
 
@@ -57,12 +57,15 @@ class IR
         uint8_t get_flags();
         void set_flag(uint8_t);
         void clear_flag(uint8_t);
+
+        uint8_t* get_received_data();
+        void set_received_data(uint8_t, uint8_t);
         
     private:
         uint16_t input_buffer;
         uint16_t output_buffer;
         uint16_t timer_start;
         uint8_t received_bits;
-        uint8_t flags;
-        uint8_t data[];
+        volatile uint8_t flags;
+        uint8_t received_data[];
 };

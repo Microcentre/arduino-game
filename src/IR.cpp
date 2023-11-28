@@ -5,6 +5,10 @@
 IR::IR()
 {
     flags = 0;
+    input_buffer = 0;
+    timer_start = 0;
+    received_bits = 0;
+
     DDRD |= (1 << DD6); // set pin D6 (LED) as output
     DDRD |= (1 << DD7);
     DDRD &= ~(1 << DD2); // set pin D2 (sensor) as input
@@ -12,9 +16,9 @@ IR::IR()
     TCCR0A |= (1 << WGM01);  // CTC
     TIMSK0 |= (1 << OCIE0A); // interrupt on comp A
     OCR0A = BLINK_DURATION;
-    
+
     OCR1A = PULSE_DURATION + ONE_DURATION;
-    TCCR1B |= (1 << WGM12); // CTC
+    TCCR1B |= (1 << WGM12);                  // CTC
     TIMSK1 |= (1 << OCIE1A) | (1 << OCIE1B); // interrupt on comp A and B
     OCR1B = PULSE_DURATION;
 
@@ -57,6 +61,11 @@ void IR::shift_output_buffer()
     output_buffer >>= 1;
 }
 
+uint8_t IR::get_input_buffer()
+{
+    return input_buffer;
+}
+
 void IR::write_to_input_buffer(uint8_t value)
 {
     input_buffer <<= 1;
@@ -89,23 +98,6 @@ void IR::inc_received_bits()
     received_bits++;
 }
 
-void IR::read_data()
-{
-    if (!(get_flags() & IR_FLAG_START_READING))
-    {
-        return;
-    }
-    for (int i = 0; i < MESSAGE_SIZE; i++)
-    {
-        while (!(get_flags() & IR_FLAG_BIT_READY))
-        {
-        }
-        read_bit();
-    }
-    interpret_data();
-    clear_flag(IR_FLAG_START_READING);
-}
-
 void IR::send_data(uint8_t data)
 {
     const uint8_t DATA_SIZE = sizeof(data) * 8;
@@ -113,7 +105,8 @@ void IR::send_data(uint8_t data)
     uint8_t parity_bit = 0;
     uint16_t to_send = 0;
 
-    if ((get_flags() & IR_FLAG_READY_TO_SEND)) {
+    if ((get_flags() & IR_FLAG_READY_TO_SEND))
+    {
         return;
     }
     for (uint8_t i = 0; i < DATA_SIZE; i++)
@@ -157,15 +150,16 @@ void IR::interpret_data()
         }
     }
     // are stop bit and start bit set?
-    if (input_buffer & 0x01 && input_buffer >> (MESSAGE_SIZE - 1) && set_bits % 2 && parity_bit)
+    if (input_buffer & 0x01 && input_buffer >> (MESSAGE_SIZE - 1) && set_bits % 2 == parity_bit)
     {
         // valid data
-        Serial.println(data);
+        received_data[0] = data;
     }
     else
     {
         // invalid data
-        Serial.println("garbage");
+        Serial.print("garbAge! ");
+        Serial.println(input_buffer, BIN);
     }
 }
 
@@ -182,4 +176,14 @@ void IR::set_flag(uint8_t flag)
 void IR::clear_flag(uint8_t flag)
 {
     flags &= ~flag;
+}
+
+uint8_t *IR::get_received_data()
+{
+    return received_data;
+}
+
+void IR::set_received_data(uint8_t index, uint8_t value)
+{
+    received_data[index] = value;
 }
