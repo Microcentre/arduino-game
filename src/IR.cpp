@@ -8,6 +8,7 @@ IR::IR()
     input_buffer = 0;
     timer_start = 0;
     received_bits = 0;
+    received_data[0] = 0;
 
     DDRD |= (1 << DD6); // set pin D6 (LED) as output
     DDRD |= (1 << DD7);
@@ -66,7 +67,12 @@ uint8_t IR::get_input_buffer()
     return input_buffer;
 }
 
-void IR::write_to_input_buffer(uint8_t value)
+void IR::set_input_buffer(uint8_t value)
+{
+    input_buffer = value;
+}
+
+void IR::push_input_buffer(uint8_t value)
 {
     input_buffer <<= 1;
     input_buffer |= value;
@@ -130,15 +136,16 @@ void IR::send_data(uint8_t data)
     to_send <<= 1;
     to_send |= START_BIT;
     output_buffer = to_send;
+    set_flag(IR_FLAG_READY_TO_SEND);
+    set_flag(IR_FLAG_SENDING_START);
     start_blinking();
     start_signal_timer();
-    set_flag(IR_FLAG_READY_TO_SEND);
 }
 
 void IR::interpret_data()
 {
     uint8_t set_bits = 0;
-    uint8_t parity_bit = input_buffer & PARITY_MASK;
+    uint8_t parity_bit = (input_buffer & PARITY_MASK) >> 1;
     uint8_t data = (input_buffer & DATA_MASK) >> 2; // remove start, stop and parity
     const uint8_t DATA_SIZE = sizeof(data) * 8;
 
@@ -154,13 +161,16 @@ void IR::interpret_data()
     {
         // valid data
         received_data[0] = data;
+        Serial.println(received_data[0], BIN);
     }
     else
     {
         // invalid data
-        Serial.print("garbAge! ");
+        Serial.print("garbage! ");
         Serial.println(input_buffer, BIN);
     }
+    clear_flag(IR_FLAG_MESSAGE_RECEIVED);
+    input_buffer = 0;
 }
 
 uint8_t IR::get_flags()

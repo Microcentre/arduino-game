@@ -12,11 +12,15 @@ const uint8_t BLINK_DURATION = 211; // 16000000/56000 = 421/2 = 211
 const uint16_t PULSE_DURATION = 9000; //  562.5µs 
 const uint16_t ZERO_DURATION = 9000; //  562.5µs
 const uint16_t ONE_DURATION = 27000; // 1.6875ms
+const uint16_t START_DURATION = 54000;    // 3.3750ms
+
+const uint16_t SIGNAL_DEVIATION = 2000;
 
 enum IRFlags {
     // sending
     IR_FLAG_READY_TO_SEND    = 0b00000001,
     IR_FLAG_SENDING_PULSES   = 0b00000010,
+    IR_FLAG_SENDING_START    = 0b00000100,
     // receiving
     IR_FLAG_BIT_READY        = 0b00010000,
     IR_FLAG_START_READING    = 0b00100000,
@@ -38,7 +42,8 @@ class IR
         void shift_output_buffer();
 
         uint8_t get_input_buffer();
-        void write_to_input_buffer(uint8_t);
+        void set_input_buffer(uint8_t);
+        void push_input_buffer(uint8_t);
 
         uint16_t get_timer_start();
         void set_timer_start(uint16_t);

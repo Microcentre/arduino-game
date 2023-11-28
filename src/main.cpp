@@ -24,7 +24,11 @@ ISR(TIMER1_COMPB_vect)
         }
 
         // what are we sending right now?
-        if (p_infrared->get_output_buffer() & 0x01)
+        if (p_infrared->get_flags() & IR_FLAG_SENDING_START)
+        {
+            OCR1A = PULSE_DURATION + START_DURATION;
+        }
+        else if (p_infrared->get_output_buffer() & 0x01)
         {
             OCR1A = PULSE_DURATION + ONE_DURATION;
         }
@@ -41,19 +45,23 @@ ISR(TIMER1_COMPA_vect)
     if (p_infrared->get_flags() & IR_FLAG_READY_TO_SEND)
     {
         p_infrared->start_blinking();
-        p_infrared->shift_output_buffer();
+        if (p_infrared->get_flags() & IR_FLAG_SENDING_START)
+        {
+            p_infrared->clear_flag(IR_FLAG_SENDING_START);
+        }
+        else
+        {
+            p_infrared->shift_output_buffer();
+        }
     }
 }
 
 ISR(INT0_vect)
 {
-    static uint16_t timer_diff; // static to make it go in RAM as a pseudo-global var, not to the stack as a local
+    static uint16_t timer_diff;
     if (!(p_infrared->get_flags() & IR_FLAG_MESSAGE_RECEIVED))
     {
-        if (!(p_infrared->get_flags() & IR_FLAG_START_READING))
-        {
-            p_infrared->set_flag(IR_FLAG_START_READING);
-        }
+
         if (!(PIND & (1 << PIND2)))
         {
             if (TCNT1 < p_infrared->get_timer_start())
@@ -65,13 +73,22 @@ ISR(INT0_vect)
                 timer_diff = TCNT1 - p_infrared->get_timer_start();
             }
 
-            if (timer_diff <= ONE_DURATION + 1000 && timer_diff >= ONE_DURATION - 1000)
+            if (timer_diff <= START_DURATION + SIGNAL_DEVIATION && timer_diff >= START_DURATION - SIGNAL_DEVIATION)
             {
-                p_infrared->write_to_input_buffer(1);
+                p_infrared->set_flag(IR_FLAG_START_READING);
+                p_infrared->set_received_bits(0);
+                p_infrared->set_input_buffer(0);
             }
-            else if (timer_diff <= ZERO_DURATION + 1000 && timer_diff >= ZERO_DURATION - 1000)
+            else
             {
-                p_infrared->write_to_input_buffer(0);
+                if (timer_diff <= ONE_DURATION + SIGNAL_DEVIATION && timer_diff >= ONE_DURATION - SIGNAL_DEVIATION)
+                {
+                    p_infrared->push_input_buffer(1);
+                }
+                else if (timer_diff <= ZERO_DURATION + SIGNAL_DEVIATION && timer_diff >= ZERO_DURATION - SIGNAL_DEVIATION)
+                {
+                    p_infrared->push_input_buffer(0);
+                }
             }
 
             if (p_infrared->get_received_bits() >= MESSAGE_SIZE)
@@ -91,7 +108,6 @@ ISR(INT0_vect)
 
 void setup()
 {
-    // infrared = IR();
     p_infrared = new IR();
     Serial.begin(9600);
     sei();
@@ -104,12 +120,12 @@ int main()
     while (1)
     {
         _delay_ms(20);
-        p_infrared->send_data(0b11101110);
+        p_infrared->send_data(0b11010011);
         _delay_ms(20);
-        if (p_infrared->get_flags() & IR_FLAG_MESSAGE_RECEIVED) {
+        if (p_infrared->get_flags() & IR_FLAG_MESSAGE_RECEIVED)
+        {
             p_infrared->interpret_data();
         }
-        Serial.println(p_infrared->get_received_data()[0], BIN);
     }
     return 0;
 }
