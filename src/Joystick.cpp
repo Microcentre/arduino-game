@@ -29,11 +29,13 @@ bool Joystick::store_state()
     return true;
 }
 
+/// @return [3...252] where 3=left, 128=centre, 252=right
 uint8_t Joystick::get_x_axis()
 {
     return Nunchuk.state.joy_x_axis;
 }
 
+/// @return [2...253] where 2=bottom, 128=centre, 253=top
 uint8_t Joystick::get_y_axis()
 {
     return Nunchuk.state.joy_y_axis;
