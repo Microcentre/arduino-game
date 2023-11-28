@@ -9,12 +9,12 @@ const uint8_t SCREEN_DELAY_MS = 20;
 
 int main(void)
 {
+    // enable global interrupts
+    sei();
+
     Joystick joystick = Joystick();
     Display display = Display();
     Player player = Player();
-
-    // enable global interrupts
-    sei();
 
     // used for storing and comparing previous player position (reduces display flicker)
     uint16_t prev_player_pos_x = 0;
