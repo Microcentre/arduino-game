@@ -12,8 +12,8 @@
 class Display
 {
     public:
-        static const uint16_t HEIGHT_PIXELS = 320;
-        static const uint8_t WIDTH_PIXELS = 240;
+        static const uint16_t HEIGHT_PIXELS = 240;
+        static const uint16_t WIDTH_PIXELS = 320;
 
         /// @brief library used for drawing on the screen
         /// Use hardware SPI (on Uno, #13, #12, #11) and the above for CS/DC
