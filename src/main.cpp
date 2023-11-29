@@ -53,8 +53,12 @@ ISR(TIMER1_COMPA_vect)
         {
             p_infrared->shift_output_buffer();
         }
-    } else if (p_infrared->get_flags() & IR_FLAG_MESSAGE_PENDING) {
+    }
+    else if (p_infrared->get_flags() & IR_FLAG_MESSAGE_PENDING)
+    {
+        p_infrared->clear_flag(IR_FLAG_MESSAGE_PENDING);
         p_infrared->set_flag(IR_FLAG_READY_TO_SEND);
+        p_infrared->set_flag(IR_FLAG_SENDING_START);
         p_infrared->start_blinking();
     }
 }
@@ -91,6 +95,11 @@ ISR(INT0_vect)
                 {
                     p_infrared->push_input_buffer(0);
                 }
+                else
+                {
+                    p_infrared->set_received_bits(0);
+                    p_infrared->set_input_buffer(0);
+                }
             }
 
             if (p_infrared->get_received_bits() >= MESSAGE_SIZE)
@@ -118,16 +127,15 @@ void setup()
 int main()
 {
     setup();
-    _delay_ms(20);
     while (1)
     {
-        _delay_ms(20);
-        // p_infrared->send_data(0b11010011);
-        _delay_ms(20);
+        p_infrared->send_data(0b01010101);
         if (p_infrared->get_flags() & IR_FLAG_MESSAGE_RECEIVED)
         {
             p_infrared->interpret_data();
-        } else {
+        }
+        else
+        {
         }
     }
     return 0;

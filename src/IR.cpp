@@ -18,7 +18,7 @@ IR::IR()
     TIMSK0 |= (1 << OCIE0A); // interrupt on comp A
     OCR0A = BLINK_DURATION;
 
-    OCR1A = PULSE_DURATION + ONE_DURATION;
+    OCR1A = PULSE_DURATION + START_DURATION;
     TCCR1B |= (1 << WGM12);                  // CTC
     TIMSK1 |= (1 << OCIE1A) | (1 << OCIE1B); // interrupt on comp A and B
     OCR1B = PULSE_DURATION;
@@ -113,7 +113,7 @@ void IR::send_data(uint8_t data)
     uint8_t parity_bit = 0;
     uint16_t to_send = 0;
 
-    if ((get_flags() & IR_FLAG_READY_TO_SEND))
+    if ((get_flags() & IR_FLAG_READY_TO_SEND) || get_flags() & IR_FLAG_MESSAGE_PENDING)
     {
         return;
     }
