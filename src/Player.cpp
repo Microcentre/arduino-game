@@ -10,7 +10,7 @@ void Player::update(double delta)
     MovingObject::update(delta);
 }
 
-void Player::rotate(float rotation)
+void Player::rotate(double rotation)
 {
     this->direction -= rotation * turn_speed;
 }
@@ -23,5 +23,5 @@ void Player::draw(Display display)
 
 void Player::undraw(Display display, int x_position, int y_position)
 {
-    display.canvas.fillCircle(x_position, y_position, 5, ILI9341_BLACK);
+    display.canvas.fillCircle(x_position, y_position, 5, display.background_colour);
 }

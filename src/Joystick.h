@@ -24,8 +24,9 @@ public:
 
     /// @return if Z button is pressed
     bool is_z_pressed();
+
 private:
-    // the highest value the axis can be 
+    // the highest value the axis can be
     const uint8_t MAX_AXIS = 255;
     // const uint8_t MAX_X_AXIS = 252;
     // const uint8_t MAX_Y_AXIS = 253;
