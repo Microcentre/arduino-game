@@ -10,7 +10,7 @@ void Player::update(double delta)
     MovingObject::update(delta);
 }
 
-void Player::rotate(double rotation)
+void Player::rotate(float rotation)
 {
     this->direction -= rotation * turn_speed;
 }
