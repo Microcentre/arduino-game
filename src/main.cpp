@@ -53,6 +53,9 @@ ISR(TIMER1_COMPA_vect)
         {
             p_infrared->shift_output_buffer();
         }
+    } else if (p_infrared->get_flags() & IR_FLAG_MESSAGE_PENDING) {
+        p_infrared->set_flag(IR_FLAG_READY_TO_SEND);
+        p_infrared->start_blinking();
     }
 }
 
@@ -61,7 +64,6 @@ ISR(INT0_vect)
     static uint16_t timer_diff;
     if (!(p_infrared->get_flags() & IR_FLAG_MESSAGE_RECEIVED))
     {
-
         if (!(PIND & (1 << PIND2)))
         {
             if (TCNT1 < p_infrared->get_timer_start())
@@ -120,11 +122,12 @@ int main()
     while (1)
     {
         _delay_ms(20);
-        p_infrared->send_data(0b11010011);
+        // p_infrared->send_data(0b11010011);
         _delay_ms(20);
         if (p_infrared->get_flags() & IR_FLAG_MESSAGE_RECEIVED)
         {
             p_infrared->interpret_data();
+        } else {
         }
     }
     return 0;

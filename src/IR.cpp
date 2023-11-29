@@ -25,6 +25,8 @@ IR::IR()
 
     EIMSK |= (1 << INT0);  // enable interrupts on int0
     EICRA |= (1 << ISC00); // interrupt on any logical change
+
+    start_signal_timer();
 }
 
 void IR::start_blinking()
@@ -136,10 +138,7 @@ void IR::send_data(uint8_t data)
     to_send <<= 1;
     to_send |= START_BIT;
     output_buffer = to_send;
-    set_flag(IR_FLAG_READY_TO_SEND);
-    set_flag(IR_FLAG_SENDING_START);
-    start_blinking();
-    start_signal_timer();
+    set_flag(IR_FLAG_MESSAGE_PENDING);
 }
 
 void IR::interpret_data()
