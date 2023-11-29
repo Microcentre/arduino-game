@@ -36,7 +36,7 @@ uint8_t Joystick::get_x_axis()
 
 uint8_t Joystick::get_y_axis()
 {
-    Nunchuk.state.joy_y_axis;
+    return Nunchuk.state.joy_y_axis;
 }
 
 bool Joystick::is_c_pressed()
