@@ -1,22 +1,27 @@
-#ifndef PLAYER.H
-#define PLAYER.H
+#ifndef PLAYER_H
+#define PLAYER_H
 
 #include "stdint.h"
+#include "MovingObject.h"
 
-const uint8_t PLAYER_RADIUS = 5;
-const uint16_t BOUNDARY_HEIGHT = 318;
-const uint8_t BOUNDARY_WIDTH = 238;
-
-class Player
+class Player : public MovingObject
 {
-    public:
-        Player();
-        void calculate_position(uint8_t joysitck_x, uint8_t joystick_y);
-        uint16_t get_pos_x();
-        uint8_t get_pos_y();
-    private:
-        uint16_t pos_x;
-        uint8_t pos_y;
+public:
+    /// @param speed pixels per second
+    Player(int x_position, int y_position, double speed);
+
+    /// @param delta_s time since last frame in seconds
+    void update(double delta) override;
+    
+    /// @brief call undraw(), then draw()
+    /// @param display display to draw on
+    void draw(Display display) override;
+    
+    /// @brief clear drawing at given position
+    /// @param display display to draw on
+    /// @param x_position X-position of drawing to clear
+    /// @param y_position Y-position of the drawing to clear
+    void undraw(Display display, int x_position, int y_position) override;
 };
 
 #endif
