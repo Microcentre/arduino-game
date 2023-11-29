@@ -13,6 +13,9 @@ public:
     /// @brief angle in radians. 0=up, M_PI=down
     double direction;
 
+    /// @brief if true, when object reaches border it teleports to the opposite side. TODO: if false, destroys on leaving border.
+    bool wrap_around_display = false;
+
     /// @param speed pixels per second
     MovingObject(int x_position, int y_position, double speed);
 

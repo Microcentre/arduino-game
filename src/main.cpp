@@ -19,6 +19,7 @@ int main()
     Joystick joystick = Joystick();
     Display display = Display();
     Player player = Player(Display::WIDTH_PIXELS/2, Display::HEIGHT_PIXELS/2, 100, 0.15); // start around the centre
+    player.wrap_around_display = true;
 
     // game loop
     while (1)
