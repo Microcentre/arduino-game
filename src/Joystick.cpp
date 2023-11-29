@@ -29,18 +29,14 @@ bool Joystick::store_state()
     return true;
 }
 
-float Joystick::get_x_axis()
+uint8_t Joystick::get_x_axis()
 {
-    // state.joy_x_axis = [3...252] where 3=left, 128=centre, 252=right
-    float normalised_x_axis = (float)Nunchuk.state.joy_x_axis / this->MAX_AXIS; // normalise to [0..1]
-    return (normalised_x_axis * 2) - 1; // scale to [0..2] and shift to [1..2]
+    return Nunchuk.state.joy_x_axis;
 }
 
-float Joystick::get_y_axis()
+uint8_t Joystick::get_y_axis()
 {
-    // state.joy_y_axis = [2...253] where 2=bottom, 128=centre, 253=top
-    float normalised_y_axis = (float)Nunchuk.state.joy_y_axis / this->MAX_AXIS; // normalise to [0..1]
-    return (normalised_y_axis * 2) - 1; // scale to [0..2] and shift to [1..2]
+    Nunchuk.state.joy_y_axis;
 }
 
 bool Joystick::is_c_pressed()

@@ -17,18 +17,24 @@ public:
     void update(double delta) override;
 
     /// @brief rotate the player left or right
-    /// @param rotation [-1..1] where -1=left, 0=no change, 1=right
-    void rotate(float rotation);
-    
+    /// @param rotation [0..255] where 0=left, 128=no change, 255=right
+    void rotate(uint8_t rotation);
+
     /// @brief call undraw(), then draw()
     /// @param display display to draw on
     void draw(Display display) override;
-    
+
     /// @brief clear drawing at given position
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display display, int x_position, int y_position) override;
+
+private:
+    // the highest value the axis can be
+    const uint8_t MAX_JOYSTICK_AXIS = 255;
+    // const uint8_t MAX_X_AXIS = 252;
+    // const uint8_t MAX_Y_AXIS = 253;
 };
 
 #endif

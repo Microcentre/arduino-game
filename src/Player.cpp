@@ -10,9 +10,14 @@ void Player::update(double delta)
     MovingObject::update(delta);
 }
 
-void Player::rotate(float rotation)
+void Player::rotate(uint8_t rotation)
 {
-    this->direction -= rotation * turn_speed;
+    // normalise from [0..255] to [0..1]
+    double rotation_modifier = (double)rotation / this->MAX_JOYSTICK_AXIS;
+    // scale to [0..2] and shift to [-1..1]
+    rotation_modifier = (rotation_modifier * 2) - 1;
+    // [-1..1] where -1=bottom, 0=centre, 1=top
+    this->direction -= rotation_modifier * turn_speed;
 }
 
 void Player::draw(Display display)
