@@ -13,17 +13,22 @@ public:
     /// @return true if succeeded, false if failed to read memory
     bool store_state();
 
-    /// @return [3...252] where 3=left, 128=centre, 252=right
-    uint8_t get_x_axis();
+    /// @return [-1..1] where -1=left, 0=centre, 1=right
+    float get_x_axis();
 
-    /// @return [2...253] where 2=bottom, 128=centre, 253=top
-    uint8_t get_y_axis();
+    /// @return [-1..1] where -1=bottom, 0=centre, 1=top
+    float get_y_axis();
 
     /// @return if C button is pressed
     bool is_c_pressed();
 
     /// @return if Z button is pressed
     bool is_z_pressed();
+private:
+    // the highest value the axis can be 
+    const uint8_t MAX_AXIS = 255;
+    // const uint8_t MAX_X_AXIS = 252;
+    // const uint8_t MAX_Y_AXIS = 253;
 };
 
 #endif

@@ -11,7 +11,6 @@
 // 50fps if each frame were to instantly generate.
 const uint8_t SCREEN_DELAY_MS = 20;
 
-
 int main()
 {
     // enable global interrupts
@@ -19,17 +18,24 @@ int main()
 
     Joystick joystick = Joystick();
     Display display = Display();
-    Player player = Player(Display::WIDTH_PIXELS/2, Display::HEIGHT_PIXELS/2, 200); // start around the centre
+    Player player = Player(Display::WIDTH_PIXELS/2, Display::HEIGHT_PIXELS/2, 100, 0.15); // start around the centre
 
     // game loop
     while (1)
     {
-        // store new joystick data in joystick class
+        // delta in seconds (time since last frame) TODO: get accurate delta?
+        double delta = (double)SCREEN_DELAY_MS/1000;
+
+        // handle user input
         if (joystick.store_state())
         {
-            player.update((double)SCREEN_DELAY_MS/1000); // pass delta in seconds (time since last frame)
-            player.draw(display);
+            player.rotate(joystick.get_x_axis());
         }
+        
+        // update & draw objects
+        player.update(delta);
+        player.draw(display);
+        
         _delay_ms(SCREEN_DELAY_MS);
     }
     return (0);

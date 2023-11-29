@@ -1,15 +1,18 @@
 #include "Player.h"
 
-Player::Player(int x_position, int y_position, double speed) : MovingObject(x_position, y_position, speed)
+Player::Player(int x_position, int y_position, double speed, double turn_speed) : MovingObject(x_position, y_position, speed)
 {
+    this->turn_speed = turn_speed;
 }
 
 void Player::update(double delta)
 {
-    this->direction += 0.1;
-    if (this->direction >= 2 * M_PI)
-        this->direction -= 2 * M_PI;
     MovingObject::update(delta);
+}
+
+void Player::rotate(float rotation)
+{
+    this->direction -= rotation * turn_speed;
 }
 
 void Player::draw(Display display)
