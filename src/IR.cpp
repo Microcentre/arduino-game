@@ -4,6 +4,7 @@
 
 IR::IR()
 {
+    // initialize properties
     flags = 0;
     input_buffer = 0;
     timer_start = 0;
@@ -11,14 +12,17 @@ IR::IR()
     received_data[0] = 0;
 
     DDRD |= (1 << DD6); // set pin D6 (LED) as output
-    DDRD |= (1 << DD7);
     DDRD &= ~(1 << DD2); // set pin D2 (sensor) as input
 
+    // setup timer 0, used for blinking the IR LED
     TCCR0A |= (1 << WGM01);  // CTC
     TIMSK0 |= (1 << OCIE0A); // interrupt on comp A
     OCR0A = BLINK_DURATION;
 
-    OCR1A = PULSE_DURATION + START_DURATION;
+    // set up timer 1, used for setting and reading IR signal length
+    OCR1A = PULSE_DURATION + START_DURATION; // set comp A to the largest real signal 
+                                             // to ensure it does not trigger prematurely
+    
     TCCR1B |= (1 << WGM12);                  // CTC
     TIMSK1 |= (1 << OCIE1A) | (1 << OCIE1B); // interrupt on comp A and B
     OCR1B = PULSE_DURATION;
@@ -31,15 +35,15 @@ IR::IR()
 
 void IR::start_blinking()
 {
-    TCCR0B |= (1 << CS00);
+    TCCR0B |= (1 << CS00); // enable timer0 with no prescaler
     TCNT0 = 0;
 }
 
 void IR::stop_blinking()
 {
-    TCCR0B &= ~(1 << CS00);
+    TCCR0B &= ~(1 << CS00); // disable timer 0
     TCNT0 = 0;
-    PORTD &= ~(1 << PD6);
+    PORTD &= ~(1 << PD6); // turn the IR LED off
 }
 
 void IR::start_signal_timer()
@@ -51,7 +55,7 @@ void IR::start_signal_timer()
 void IR::stop_signal_timer()
 {
     TCNT1 = 0;
-    TCCR1B &= ~(1 << CS10); // disable timer1 with no prescaler
+    TCCR1B &= ~(1 << CS10); // disable timer1
 }
 
 uint16_t IR::get_output_buffer()
@@ -74,6 +78,7 @@ void IR::set_input_buffer(uint8_t value)
     input_buffer = value;
 }
 
+// Shift input_buffer left once, and set LSB to the given value
 void IR::push_input_buffer(uint8_t value)
 {
     input_buffer <<= 1;
@@ -113,10 +118,13 @@ void IR::send_data(uint8_t data)
     uint8_t parity_bit = 0;
     uint16_t to_send = 0;
 
-    if ((get_flags() & IR_FLAG_READY_TO_SEND) || get_flags() & IR_FLAG_MESSAGE_PENDING)
+    // if there's already data being sent, don't send new data
+    if ((get_flags() & IR::Flags::SENDING_MESSAGE) || get_flags() & IR::Flags::MESSAGE_PENDING)
     {
         return;
     }
+    
+    // check how many bits in the data are set to 1
     for (uint8_t i = 0; i < DATA_SIZE; i++)
     {
         if (data & (1 << i))
@@ -127,9 +135,9 @@ void IR::send_data(uint8_t data)
     parity_bit = set_bits % 2; // 0 if even, 1 if uneven,
                                // so the full data including parity bit should always be even
 
+
     // set stop bit, parity bit, data bits and start bit
     // in that order, because they're sent LSB-first
-
     to_send |= STOP_BIT;
     to_send <<= 1;
     to_send |= parity_bit;
@@ -138,7 +146,7 @@ void IR::send_data(uint8_t data)
     to_send <<= 1;
     to_send |= START_BIT;
     output_buffer = to_send;
-    set_flag(IR_FLAG_MESSAGE_PENDING);
+    set_flag(IR::Flags::MESSAGE_PENDING);
 }
 
 void IR::interpret_data()
@@ -148,6 +156,7 @@ void IR::interpret_data()
     uint8_t data = (input_buffer & DATA_MASK) >> 2; // remove start, stop and parity
     const uint8_t DATA_SIZE = sizeof(data) * 8;
 
+    // check how many bits in the received data are set to 1
     for (uint8_t i = 0; i < DATA_SIZE; i++)
     {
         if (data & (1 << i))
@@ -155,7 +164,7 @@ void IR::interpret_data()
             set_bits++;
         }
     }
-    // are stop bit and start bit set?
+    // are stop bit and start bit set, and does the parity match?
     if (input_buffer & 0x01 && input_buffer >> (MESSAGE_SIZE - 1) && set_bits % 2 == parity_bit)
     {
         // valid data
@@ -168,7 +177,7 @@ void IR::interpret_data()
         Serial.print("garbage! ");
         Serial.println(input_buffer, BIN);
     }
-    clear_flag(IR_FLAG_MESSAGE_RECEIVED);
+    clear_flag(IR::Flags::MESSAGE_RECEIVED);
     input_buffer = 0;
 }
 
