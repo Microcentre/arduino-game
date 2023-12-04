@@ -1,16 +1,24 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <Vector.h>
 
 #include "IR.h"
 #include "Joystick.h"
 #include "Player.h"
 #include "Display.h"
 #include "MovingObject.h"
+#include "Object.h"
+#include "Game.h"
+
+// time to wait between each frame.
+// to minimise redraw flicker.
+// 50fps if each frame were to instantly generate.
+const uint8_t SCREEN_DELAY_MS = 20;
+/// @brief approximate delta in seconds (time since last frame)
+const double DELTA = (double)SCREEN_DELAY_MS / 1000;
 
 IR *p_infrared;
-
-
 
 ISR(TIMER0_COMPA_vect)
 {
@@ -143,42 +151,32 @@ void setup()
     sei();
 }
 
-// time to wait between each frame.
-// to minimise redraw flicker.
-// 50fps if each frame were to instantly generate.
-const uint8_t SCREEN_DELAY_MS = 20;
-/// @brief approximate delta in seconds (time since last frame)
-const double DELTA = (double)SCREEN_DELAY_MS / 1000;
-
 int main()
 {
     setup();
-    Joystick joystick = Joystick();
-    Display display = Display();
-    Player player = Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
-    player.wrap_around_display = true;
+
+    Game game = Game();
 
     // game loop
     while (1)
     {
-
         // handle user input
-        if (joystick.store_state())
+        if (game.joystick->store_state())
         {
-            player.rotate(joystick.get_x_axis());
-            if (joystick.is_z_pressed())
+            game.player->rotate(game.joystick->get_x_axis());
+            if (game.joystick->is_z_pressed())
             {
-                player.accelerate();
+                game.player->accelerate();
             }
         }
 
-        // update & draw objects
-        player.update(DELTA);
-        player.draw(display);
+        game.update_draw_objects(DELTA);
 
         _delay_ms(SCREEN_DELAY_MS);
+
         p_infrared->send_data(0b10101011);
-        if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED) {
+        if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
+        {
             p_infrared->interpret_data();
         }
     }

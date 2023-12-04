@@ -37,7 +37,7 @@ void MovingObject::update(const double &delta)
     this->set_y_position(new_y_position);
 }
 
-void MovingObject::draw(Display display)
+void MovingObject::draw(const Display *display)
 {
     this->undraw(display, this->previous_x_position, this->previous_y_position);
 }

@@ -23,11 +23,11 @@ public:
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
-    virtual void undraw(Display display, const uint16_t x_position, const uint16_t y_position);
+    virtual void undraw(const Display *display, const uint16_t x_position, const uint16_t y_position);
 
     /// @brief calls undraw(), then draw(). When inheriting call MovingObject::draw() first
     /// @param display display to draw on
-    void draw(Display display) override;
+    void draw(const Display *display) override;
 
     /// @brief moves object. When inheriting call MovingObject::update() last
     /// @param delta_s time since last frame in seconds
@@ -38,6 +38,7 @@ public:
 
     /// @brief set y_position and update previous_y_position
     void set_y_position(const double position) override;
+
 private:
     // drawing a moving object requires undrawing the old drawing.
     // draw() calls undraw() with the below variables before drawing the object
