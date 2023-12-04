@@ -4,8 +4,9 @@
 
 #include "IR.h"
 #include "Joystick.h"
-#include "Display.h"
 #include "Player.h"
+#include "Display.h"
+#include "MovingObject.h"
 
 IR *p_infrared;
 
@@ -142,49 +143,40 @@ void setup()
     sei();
 }
 
+// time to wait between each frame.
+// to minimise redraw flicker.
+// 50fps if each frame were to instantly generate.
 const uint8_t SCREEN_DELAY_MS = 20;
+/// @brief approximate delta in seconds (time since last frame)
+const double DELTA = (double)SCREEN_DELAY_MS / 1000;
 
-int main(void)
+int main()
 {
     setup();
     Joystick joystick = Joystick();
     Display display = Display();
-    Player player = Player();
+    Player player = Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
+    player.wrap_around_display = true;
 
-    // used for storing and comparing previous player position (reduces display flicker)
-    uint16_t prev_player_pos_x = 0;
-    uint8_t prev_player_pos_y = 0;
-    // endless loop
+    // game loop
     while (1)
     {
-        // store new joystick data in joystick class
+
+        // handle user input
         if (joystick.store_state())
         {
-            // calculate new player position based on joystick movement
-            player.calculate_position(joystick.get_x_axis(), joystick.get_y_axis());
-
-            // if position of player has moved
-            if (prev_player_pos_x != player.get_pos_x() || prev_player_pos_y != player.get_pos_y())
+            player.rotate(joystick.get_x_axis());
+            if (joystick.is_z_pressed())
             {
-                // if z is not pressed, remove previous position of player circle, else draw line by not removing dot.
-                // this functionality creates a basic form of pictionary
-                if (!joystick.is_z_pressed())
-                {
-                    display.clear_circle(prev_player_pos_x, prev_player_pos_y, PLAYER_RADIUS);
-                }
-
-                // draw player circle at current position
-                display.draw_circle(player.get_pos_x(), player.get_pos_y(), PLAYER_RADIUS);
-
-                // delay between drawing and clearing, affects speed of player
-                _delay_ms(SCREEN_DELAY_MS);
+                player.accelerate();
             }
-
-            // store current player position for next iteration of while loop
-            prev_player_pos_x = player.get_pos_x();
-            prev_player_pos_y = player.get_pos_y();
         }
 
+        // update & draw objects
+        player.update(DELTA);
+        player.draw(display);
+
+        _delay_ms(SCREEN_DELAY_MS);
         p_infrared->send_data(0b10101011);
         if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED) {
             p_infrared->interpret_data();

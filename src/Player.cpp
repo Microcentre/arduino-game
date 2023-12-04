@@ -1,40 +1,66 @@
 #include "Player.h"
 
-Player::Player()
+Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingObject(x_position, y_position, speed)
 {
-    // start at center position on display
-    pos_x = 170;
-    pos_y = 120;
 }
 
-void Player::calculate_position(uint8_t joystick_x, uint8_t joystick_y)
+void Player::update(const double &delta)
 {
-    // startvalue, using negative numbers. the joystick x and y values ranges from ~0 to ~255
-    int16_t calc_x = joystick_x - 128;
-    int8_t calc_y = joystick_y - 128;
-
-    // calculating speed of player
-    calc_x /= 25;
-    calc_y /= 25;
-
-    // move player and check for collision on display boundaries
-    if (pos_x + calc_x > PLAYER_RADIUS && pos_x + calc_x <= BOUNDARY_HEIGHT - PLAYER_RADIUS)
+    MovingObject::update(delta);
+    speed -= DECEL_RATE;
+    if (speed < 0)
     {
-        pos_x += calc_x;
-    }
-    if (pos_y - calc_y > PLAYER_RADIUS && pos_y - calc_y <= BOUNDARY_WIDTH - PLAYER_RADIUS)
-    {
-        //-= is used to invert y axis
-        pos_y -= calc_y;
+        speed = 0;
     }
 }
 
-uint16_t Player::get_pos_x()
+
+void Player::accelerate()
 {
-    return pos_x;
+    // add vectors together as shown in TO
+    
+    // vector A
+    // angle: direction
+    // magnitude: speed
+
+    // vector B
+    // angle: facing_direction
+    // magnitude: ACCEL_BASE_VALUE
+
+    double vectorA_x = speed * cos(direction);
+    double vectorA_y = speed * sin(direction);
+
+    double vectorB_x = ACCEL_RATE * cos(facing_direction);
+    double vectorB_y = ACCEL_RATE * sin(facing_direction);
+
+    double vectorR_x = vectorA_x + vectorB_x;
+    double vectorR_y = vectorA_y + vectorB_y;
+
+    speed = sqrt(sq(vectorR_x) + sq(vectorR_y));
+    if (speed > MAX_SPEED)
+    {
+        speed = MAX_SPEED;
+    }
+    direction = atan2(vectorR_y, vectorR_x);
 }
 
-uint8_t Player::get_pos_y()
+void Player::rotate(const uint8_t rotation)
 {
-    return pos_y;
+    // normalise from [0..255] to [0..1]
+    double rotation_modifier = (double)rotation / this->MAX_JOYSTICK_AXIS;
+    // scale to [0..2] and shift to [-1..1]
+    rotation_modifier = (rotation_modifier * 2) - 1;
+    // [-1..1] where -1=bottom, 0=centre, 1=top
+    this->facing_direction -= rotation_modifier * this->TURN_SPEED;
+}
+
+void Player::draw(Display display)
+{
+    MovingObject::draw(display);
+    display.canvas.fillCircle(this->get_x_position(), this->get_y_position(), 5, ILI9341_WHITE);
+}
+
+void Player::undraw(Display display, const uint16_t x_position, const uint16_t y_position)
+{
+    display.canvas.fillCircle(x_position, y_position, 5, display.background_colour);
 }
