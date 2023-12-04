@@ -17,14 +17,14 @@ public:
     bool wrap_around_display = false;
 
     /// @param speed pixels per second
-    MovingObject(int x_position, int y_position, double speed);
+    MovingObject(uint16_t x_position, uint16_t y_position, double speed);
 
     /// @brief clear drawing at given position
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
-    virtual void undraw(Display display, int x_position, int y_position);
-    
+    virtual void undraw(Display display, uint16_t x_position, uint16_t y_position);
+
     /// @brief calls undraw(), then draw(). When inheriting call MovingObject::draw() first
     /// @param display display to draw on
     void draw(Display display) override;
@@ -34,15 +34,16 @@ public:
     void update(double delta) override;
 
     /// @brief set x_position and update previous_x_position
-    void set_x_position(int position) override;
+    void set_x_position(uint16_t position) override;
 
     /// @brief set y_position and update previous_y_position
-    void set_y_position(int position) override;
+    void set_y_position(uint16_t position) override;
+
 private:
     // drawing a moving object requires undrawing the old drawing.
     // draw() calls undraw() with the below variables before drawing the object
-    double previous_x_position;
-    double previous_y_position;
+    uint16_t previous_x_position;
+    uint16_t previous_y_position;
 };
 
 #endif
