@@ -16,7 +16,6 @@ const double DELTA = (double)SCREEN_DELAY_MS / 1000;
 
 int main()
 {
-    Serial.begin(9600);
     // enable global interrupts
     sei();
 
