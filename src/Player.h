@@ -15,7 +15,7 @@ public:
 
     /// @brief rotate the player left or right
     /// @param rotation [0..255] where 0=left, 128=no change, 255=right
-    void rotate(uint8_t rotation);
+    void rotate(const uint8_t rotation);
 
     /// @brief call undraw(), then draw()
     /// @param display display to draw on
@@ -25,7 +25,7 @@ public:
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
-    void undraw(Display display, uint16_t x_position, uint16_t y_position) override;
+    void undraw(Display display, const uint16_t x_position, const uint16_t y_position) override;
 
 private:
     /// @brief in radians per second (so small numbers)

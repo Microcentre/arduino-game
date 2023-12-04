@@ -42,13 +42,13 @@ void MovingObject::draw(Display display)
     this->undraw(display, this->previous_x_position, this->previous_y_position);
 }
 
-void MovingObject::set_x_position(uint16_t position)
+void MovingObject::set_x_position(const uint16_t position)
 {
     this->previous_x_position = this->get_x_position();
     Object::set_x_position(position);
 }
 
-void MovingObject::set_y_position(uint16_t position)
+void MovingObject::set_y_position(const uint16_t position)
 {
     this->previous_y_position = this->get_y_position();
     Object::set_y_position(position);

@@ -9,7 +9,7 @@ void Player::update(const double &delta)
     MovingObject::update(delta);
 }
 
-void Player::rotate(uint8_t rotation)
+void Player::rotate(const uint8_t rotation)
 {
     // normalise from [0..255] to [0..1]
     double rotation_modifier = (double)rotation / this->MAX_JOYSTICK_AXIS;
@@ -25,7 +25,7 @@ void Player::draw(Display display)
     display.canvas.fillCircle(this->get_x_position(), this->get_y_position(), 5, ILI9341_WHITE);
 }
 
-void Player::undraw(Display display, uint16_t x_position, uint16_t y_position)
+void Player::undraw(Display display, const uint16_t x_position, const uint16_t y_position)
 {
     display.canvas.fillCircle(x_position, y_position, 5, display.background_colour);
 }

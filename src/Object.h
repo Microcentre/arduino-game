@@ -9,10 +9,10 @@ class Object
 public:
     Object(uint16_t x_position, uint16_t y_position);
 
-    virtual void set_x_position(uint16_t position);
+    virtual void set_x_position(const uint16_t position);
     uint16_t get_x_position();
 
-    virtual void set_y_position(uint16_t position);
+    virtual void set_y_position(const uint16_t position);
     uint16_t get_y_position();
 
     /// @brief Make any changes, called before drawing
