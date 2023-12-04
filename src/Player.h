@@ -7,11 +7,8 @@
 class Player : public MovingObject
 {
 public:
-    /// @brief in radians per second (so small numbers)
-    double turn_speed;
-
     /// @param speed pixels per second
-    Player(int x_position, int y_position, double speed, double turn_speed);
+    Player(int x_position, int y_position, double speed);
 
     /// @param delta_s time since last frame in seconds
     void update(double delta) override;
@@ -31,10 +28,11 @@ public:
     void undraw(Display display, int x_position, int y_position) override;
 
 private:
-    // the highest value the axis can be
+    /// @brief in radians per second (so small numbers)
+    static const float TURN_SPEED = 0.15;
+
+    /// @brief the highest value the axis can be
     const uint8_t MAX_JOYSTICK_AXIS = 255;
-    // const uint8_t MAX_X_AXIS = 252;
-    // const uint8_t MAX_Y_AXIS = 253;
 };
 
 #endif

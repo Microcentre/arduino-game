@@ -1,8 +1,7 @@
 #include "Player.h"
 
-Player::Player(int x_position, int y_position, double speed, double turn_speed) : MovingObject(x_position, y_position, speed)
+Player::Player(int x_position, int y_position, double speed) : MovingObject(x_position, y_position, speed)
 {
-    this->turn_speed = turn_speed;
 }
 
 void Player::update(double delta)
@@ -17,7 +16,7 @@ void Player::rotate(uint8_t rotation)
     // scale to [0..2] and shift to [-1..1]
     rotation_modifier = (rotation_modifier * 2) - 1;
     // [-1..1] where -1=bottom, 0=centre, 1=top
-    this->direction -= rotation_modifier * turn_speed;
+    this->direction -= rotation_modifier * this->TURN_SPEED;
 }
 
 void Player::draw(Display display)

@@ -18,25 +18,25 @@ int main()
 
     Joystick joystick = Joystick();
     Display display = Display();
-    Player player = Player(Display::WIDTH_PIXELS/2, Display::HEIGHT_PIXELS/2, 100, 0.15); // start around the centre
+    Player player = Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
     player.wrap_around_display = true;
 
     // game loop
     while (1)
     {
         // delta in seconds (time since last frame) TODO: get accurate delta?
-        double delta = (double)SCREEN_DELAY_MS/1000;
+        double delta = (double)SCREEN_DELAY_MS / 1000;
 
         // handle user input
         if (joystick.store_state())
         {
             player.rotate(joystick.get_x_axis());
         }
-        
+
         // update & draw objects
         player.update(delta);
         player.draw(display);
-        
+
         _delay_ms(SCREEN_DELAY_MS);
     }
     return (0);
