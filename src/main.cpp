@@ -25,7 +25,7 @@ int main()
     player.wrap_around_display = true;
 
     bool bullet_created = false;
-    Bullet *bullet;
+    Bullet *bullet; // create empty bullet pointer for conditional use of bullet updates
 
     // game loop
     while (1)
@@ -37,6 +37,7 @@ int main()
             player.rotate(joystick.get_x_axis());
         }
 
+        // create bullet once when c is pressed
         if (joystick.is_c_pressed() && !bullet_created)
         {
             bullet = new Bullet(player.get_x_position(), player.get_y_position(), player.direction);
@@ -47,6 +48,7 @@ int main()
         player.update(DELTA);
         player.draw(display);
 
+        // updates bullets only if one exists
         if (bullet_created)
         {
             bullet->update(DELTA);
