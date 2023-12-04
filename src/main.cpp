@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Display.h"
 #include "MovingObject.h"
+#include "Asteroid.h"
 
 IR *p_infrared;
 
@@ -156,7 +157,9 @@ int main()
     Joystick joystick = Joystick();
     Display display = Display();
     Player player = Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
-    player.wrap_around_display = true;
+    player.wrap_around_display = true;    
+    Asteroid asteroid = Asteroid(50,50,80,M_PI_2);
+    asteroid.wrap_around_display = true;      
 
     // game loop
     while (1)
@@ -175,6 +178,9 @@ int main()
         // update & draw objects
         player.update(DELTA);
         player.draw(display);
+
+        asteroid.update(DELTA);
+        asteroid.draw(display);
 
         _delay_ms(SCREEN_DELAY_MS);
         p_infrared->send_data(0b10101011);
