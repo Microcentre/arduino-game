@@ -1,34 +1,34 @@
 #include <math.h>
 #include "MovingObject.h"
 
-MovingObject::MovingObject(int x_position, int y_position, double speed) : Object(x_position, y_position)
+MovingObject::MovingObject(uint16_t x_position, uint16_t y_position, double speed) : Object(x_position, y_position)
 {
     this->speed = speed;
     this->direction = 0;
 }
 
-void MovingObject::update(double delta)
+void MovingObject::update(const double &delta)
 {
     Object::update(delta);
-    
+
     // calculate new X position
-    double x_position_offset = (int)this->speed * sin(this->direction) * delta;
+    double x_position_offset = this->speed * sin(this->direction) * delta;
     double new_x_position = this->get_x_position() + x_position_offset;
 
     // calculate new Y position
-    double y_position_offset = (int)this->speed * cos(this->direction) * delta;
+    double y_position_offset = this->speed * cos(this->direction) * delta;
     double new_y_position = this->get_y_position() + y_position_offset;
 
     // on leaving screen borders, teleport to other side
-    if(this->wrap_around_display)
+    if (this->wrap_around_display)
     {
-        if(new_x_position < 0)
+        if (new_x_position < 0)
             new_x_position = Display::WIDTH_PIXELS;
-        else if(new_x_position > Display::WIDTH_PIXELS)
+        else if (new_x_position > Display::WIDTH_PIXELS)
             new_x_position = 0;
-        if(new_y_position < 0)
+        if (new_y_position < 0)
             new_y_position = Display::HEIGHT_PIXELS;
-        else if(new_y_position > Display::HEIGHT_PIXELS)
+        else if (new_y_position > Display::HEIGHT_PIXELS)
             new_y_position = 0;
     }
 
@@ -42,13 +42,13 @@ void MovingObject::draw(Display display)
     this->undraw(display, this->previous_x_position, this->previous_y_position);
 }
 
-void MovingObject::set_x_position(double position)
+void MovingObject::set_x_position(const double position)
 {
     this->previous_x_position = this->get_x_position();
     Object::set_x_position(position);
 }
 
-void MovingObject::set_y_position(double position)
+void MovingObject::set_y_position(const double position)
 {
     this->previous_y_position = this->get_y_position();
     Object::set_y_position(position);

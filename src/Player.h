@@ -8,14 +8,14 @@ class Player : public MovingObject
 {
 public:
     /// @param speed pixels per second
-    Player(int x_position, int y_position, double speed);
+    Player(uint16_t x_position, uint16_t y_position, double speed);
 
     /// @param delta_s time since last frame in seconds
-    void update(double delta) override;
+    void update(const double &delta) override;
 
     /// @brief rotate the player left or right
     /// @param rotation [0..255] where 0=left, 128=no change, 255=right
-    void rotate(uint8_t rotation);
+    void rotate(const uint8_t rotation);
 
     void accelerate();
 
@@ -27,7 +27,7 @@ public:
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
-    void undraw(Display display, int x_position, int y_position) override;
+    void undraw(Display display, const uint16_t x_position, const uint16_t y_position) override;
 
 private:
     /// @brief in radians per second (so small numbers)

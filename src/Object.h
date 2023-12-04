@@ -9,15 +9,15 @@ class Object
 public:
     Object(double x_position, double y_position);
 
-    virtual void set_x_position(double position);
+    virtual void set_x_position(const double position);
     double get_x_position();
 
-    virtual void set_y_position(double position);
+    virtual void set_y_position(const double position);
     double get_y_position();
     
     /// @brief Make any changes, called before drawing
     /// @param delta_s time since last frame in seconds
-    virtual void update(double delta_s);
+    virtual void update(const double &delta_s);
 
     /// @brief draw the object on the screen
     /// @param display display to draw on
