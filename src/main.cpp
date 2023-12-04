@@ -31,6 +31,10 @@ int main()
         if (joystick.store_state())
         {
             player.rotate(joystick.get_x_axis());
+            if (joystick.is_z_pressed())
+            {
+                player.accelerate();
+            }
         }
 
         // update & draw objects

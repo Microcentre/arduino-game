@@ -7,13 +7,13 @@
 class Object
 {
 public:
-    Object(int x_position, int y_position);
+    Object(double x_position, double y_position);
 
-    virtual void set_x_position(int position);
-    int get_x_position();
+    virtual void set_x_position(double position);
+    double get_x_position();
 
-    virtual void set_y_position(int position);
-    int get_y_position();
+    virtual void set_y_position(double position);
+    double get_y_position();
     
     /// @brief Make any changes, called before drawing
     /// @param delta_s time since last frame in seconds

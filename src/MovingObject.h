@@ -34,10 +34,10 @@ public:
     void update(double delta) override;
 
     /// @brief set x_position and update previous_x_position
-    void set_x_position(int position) override;
+    void set_x_position(double position) override;
 
     /// @brief set y_position and update previous_y_position
-    void set_y_position(int position) override;
+    void set_y_position(double position) override;
 private:
     // drawing a moving object requires undrawing the old drawing.
     // draw() calls undraw() with the below variables before drawing the object
