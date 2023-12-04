@@ -1,8 +1,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <Wire.h>
-#include <HardwareSerial.h>
 #include <Nunchuk.h>
+
 #include "Joystick.h"
 
 #define NUNCHUK_ADDRESS 0x52
