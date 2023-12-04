@@ -1,6 +1,6 @@
-#include <IR.h>
 #include <avr/interrupt.h>
-#include <HardwareSerial.h>
+
+#include "IR.h"
 
 IR::IR()
 {
@@ -169,13 +169,10 @@ void IR::interpret_data()
     {
         // valid data
         received_data[0] = data;
-        Serial.println(received_data[0], BIN);
     }
     else
     {
         // invalid data
-        Serial.print("garbage! ");
-        Serial.println(input_buffer, BIN);
     }
     clear_flag(IR::Flags::MESSAGE_RECEIVED);
     input_buffer = 0;
