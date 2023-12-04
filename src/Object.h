@@ -7,14 +7,14 @@
 class Object
 {
 public:
-    Object(uint16_t x_position, uint16_t y_position);
+    Object(double x_position, double y_position);
 
-    virtual void set_x_position(const uint16_t position);
-    uint16_t get_x_position();
+    virtual void set_x_position(const double position);
+    double get_x_position();
 
-    virtual void set_y_position(const uint16_t position);
-    uint16_t get_y_position();
-
+    virtual void set_y_position(const double position);
+    double get_y_position();
+    
     /// @brief Make any changes, called before drawing
     /// @param delta_s time since last frame in seconds
     virtual void update(const double &delta_s);
@@ -24,8 +24,8 @@ public:
     virtual void draw(Display display);
 
 private:
-    uint16_t x_position;
-    uint16_t y_position;
+    double x_position;
+    double y_position;
 };
 
 #endif

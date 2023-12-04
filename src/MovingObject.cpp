@@ -12,12 +12,12 @@ void MovingObject::update(const double &delta)
     Object::update(delta);
 
     // calculate new X position
-    uint16_t x_position_offset = (uint16_t)this->speed * sin(this->direction) * delta;
-    uint16_t new_x_position = this->get_x_position() + x_position_offset;
+    double x_position_offset = this->speed * sin(this->direction) * delta;
+    double new_x_position = this->get_x_position() + x_position_offset;
 
     // calculate new Y position
-    uint16_t y_position_offset = (uint16_t)this->speed * cos(this->direction) * delta;
-    uint16_t new_y_position = this->get_y_position() + y_position_offset;
+    double y_position_offset = this->speed * cos(this->direction) * delta;
+    double new_y_position = this->get_y_position() + y_position_offset;
 
     // on leaving screen borders, teleport to other side
     if (this->wrap_around_display)
@@ -42,13 +42,13 @@ void MovingObject::draw(Display display)
     this->undraw(display, this->previous_x_position, this->previous_y_position);
 }
 
-void MovingObject::set_x_position(const uint16_t position)
+void MovingObject::set_x_position(const double position)
 {
     this->previous_x_position = this->get_x_position();
     Object::set_x_position(position);
 }
 
-void MovingObject::set_y_position(const uint16_t position)
+void MovingObject::set_y_position(const double position)
 {
     this->previous_y_position = this->get_y_position();
     Object::set_y_position(position);

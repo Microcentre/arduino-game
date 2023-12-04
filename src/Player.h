@@ -17,6 +17,8 @@ public:
     /// @param rotation [0..255] where 0=left, 128=no change, 255=right
     void rotate(const uint8_t rotation);
 
+    void accelerate();
+
     /// @brief call undraw(), then draw()
     /// @param display display to draw on
     void draw(Display display) override;
@@ -32,7 +34,15 @@ private:
     static const float TURN_SPEED = 0.15;
 
     /// @brief the highest value the axis can be
-    const uint8_t MAX_JOYSTICK_AXIS = 255;
+    static const uint8_t MAX_JOYSTICK_AXIS = 255;
+    
+    /// @brief acceleration per frame holding the gas button
+    static const double ACCEL_RATE = 4.0;
+    /// @brief deceleration per frame when not holding the gas button
+    static const double DECEL_RATE = 0.5;
+    static const double MAX_SPEED = 512;
+
+    double facing_direction;
 };
 
 #endif
