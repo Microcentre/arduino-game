@@ -11,7 +11,7 @@ public:
     Player(uint16_t x_position, uint16_t y_position, double speed);
 
     /// @param delta_s time since last frame in seconds
-    void update(double delta) override;
+    void update(const double &delta) override;
 
     /// @brief rotate the player left or right
     /// @param rotation [0..255] where 0=left, 128=no change, 255=right

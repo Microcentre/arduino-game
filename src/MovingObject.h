@@ -31,7 +31,7 @@ public:
 
     /// @brief moves object. When inheriting call MovingObject::update() last
     /// @param delta_s time since last frame in seconds
-    void update(double delta) override;
+    void update(const double &delta) override;
 
     /// @brief set x_position and update previous_x_position
     void set_x_position(uint16_t position) override;

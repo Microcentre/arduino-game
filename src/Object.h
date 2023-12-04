@@ -17,7 +17,7 @@ public:
 
     /// @brief Make any changes, called before drawing
     /// @param delta_s time since last frame in seconds
-    virtual void update(double delta_s);
+    virtual void update(const double &delta_s);
 
     /// @brief draw the object on the screen
     /// @param display display to draw on

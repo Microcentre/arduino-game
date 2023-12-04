@@ -10,6 +10,8 @@
 // to minimise redraw flicker.
 // 50fps if each frame were to instantly generate.
 const uint8_t SCREEN_DELAY_MS = 20;
+/// @brief approximate delta in seconds (time since last frame)
+const double DELTA = (double)SCREEN_DELAY_MS / 1000;
 
 int main()
 {
@@ -24,8 +26,6 @@ int main()
     // game loop
     while (1)
     {
-        // delta in seconds (time since last frame) TODO: get accurate delta?
-        double delta = (double)SCREEN_DELAY_MS / 1000;
 
         // handle user input
         if (joystick.store_state())
@@ -34,7 +34,7 @@ int main()
         }
 
         // update & draw objects
-        player.update(delta);
+        player.update(DELTA);
         player.draw(display);
 
         _delay_ms(SCREEN_DELAY_MS);

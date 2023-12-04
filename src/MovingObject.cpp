@@ -7,7 +7,7 @@ MovingObject::MovingObject(uint16_t x_position, uint16_t y_position, double spee
     this->direction = 0;
 }
 
-void MovingObject::update(double delta)
+void MovingObject::update(const double &delta)
 {
     Object::update(delta);
 

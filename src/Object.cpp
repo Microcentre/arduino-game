@@ -26,6 +26,6 @@ uint16_t Object::get_y_position()
     return this->y_position;
 }
 
-void Object::update(double delta)
+void Object::update(const double &delta)
 {
 }

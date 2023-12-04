@@ -4,7 +4,7 @@ Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingO
 {
 }
 
-void Player::update(double delta)
+void Player::update(const double &delta)
 {
     MovingObject::update(delta);
 }
