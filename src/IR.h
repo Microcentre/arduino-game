@@ -23,10 +23,12 @@ public:
     {
         // sending
         SENDING_MESSAGE = 0b00000001,
-        SENDING_START = 0b00000100,
-        MESSAGE_PENDING = 0b00001000,
+        SENDING_START = 0b00000010,
+        MESSAGE_PENDING = 0b00000100,
+        // bit 3 reserved
+        
         // receiving
-        MESSAGE_RECEIVED = 0b01000000,
+        MESSAGE_RECEIVED = 0b00010000,
     };
     IR();
     void start_blinking();
