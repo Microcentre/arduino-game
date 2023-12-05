@@ -1,7 +1,7 @@
 #include <math.h>
 #include "MovingObject.h"
 
-MovingObject::MovingObject(uint16_t x_position, uint16_t y_position, double speed) : Object(x_position, y_position)
+MovingObject::MovingObject(int16_t x_position, int16_t y_position, double speed) : Object(x_position, y_position)
 {
     this->speed = speed;
     this->direction = 0;
