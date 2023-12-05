@@ -167,11 +167,11 @@ int main()
 
         _delay_ms(SCREEN_DELAY_MS);
 
-        // p_infrared->send_data(0b10101011);
-        // if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
-        // {
-        //     p_infrared->interpret_data();
-        // }
+        p_infrared->send_data(0b10101011);
+        if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
+        {
+            p_infrared->interpret_data();
+        }
     }
     return (0);
 }
