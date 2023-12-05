@@ -12,8 +12,6 @@
 
 IR *p_infrared;
 
-
-
 ISR(TIMER0_COMPA_vect)
 {
     PORTD ^= (1 << PD6);
@@ -158,9 +156,9 @@ int main()
     Joystick joystick = Joystick();
     Display display = Display();
     Player player = Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
-    player.wrap_around_display = true;    
-    Asteroid asteroid = Asteroid(50,50,80,M_PI_2);
-    asteroid.wrap_around_display = true;      
+    player.wrap_around_display = true;
+    Asteroid asteroid = Asteroid(50, 50, 80, M_PI_2);
+    asteroid.wrap_around_display = true;
 
     bool bullet_created = false;
     Bullet *bullet; // create empty bullet pointer for conditional use of bullet updates
@@ -177,13 +175,13 @@ int main()
             {
                 player.accelerate();
             }
-        }
 
-        // create bullet once when c is pressed
-        if (joystick.is_c_pressed() && !bullet_created)
-        {
-            bullet = new Bullet(player.get_x_position(), player.get_y_position(), player.direction);
-            bullet_created = true;
+            // create bullet once when c is pressed
+            if (joystick.is_c_pressed() && !bullet_created)
+            {
+                bullet = new Bullet(player.get_x_position(), player.get_y_position(), player.get_facing_direction());
+                bullet_created = true;
+            }
         }
 
         // update & draw objects
@@ -202,7 +200,8 @@ int main()
 
         _delay_ms(SCREEN_DELAY_MS);
         p_infrared->send_data(0b10101011);
-        if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED) {
+        if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
+        {
             p_infrared->interpret_data();
         }
     }

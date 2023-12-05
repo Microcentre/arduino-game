@@ -22,7 +22,7 @@ public:
     void undraw(Display display, const uint16_t x_position, const uint16_t y_position) override;
 
 private:
-    const double SPEED = 300;
+    const double SPEED = 700;
 };
 
 #endif
