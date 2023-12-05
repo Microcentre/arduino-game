@@ -29,13 +29,15 @@ public:
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display display, const uint16_t x_position, const uint16_t y_position) override;
 
+    double get_facing_direction();
+
 private:
     /// @brief in radians per second (so small numbers)
     static const float TURN_SPEED = 0.15;
 
     /// @brief the highest value the axis can be
     static const uint8_t MAX_JOYSTICK_AXIS = 255;
-    
+
     /// @brief acceleration per frame holding the gas button
     static const double ACCEL_RATE = 4.0;
     /// @brief deceleration per frame when not holding the gas button

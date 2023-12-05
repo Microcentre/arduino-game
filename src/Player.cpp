@@ -14,11 +14,10 @@ void Player::update(const double &delta)
     }
 }
 
-
 void Player::accelerate()
 {
     // add vectors together as shown in TO
-    
+
     // vector A
     // angle: direction
     // magnitude: speed
@@ -63,4 +62,9 @@ void Player::draw(Display display)
 void Player::undraw(Display display, const uint16_t x_position, const uint16_t y_position)
 {
     display.canvas.fillCircle(x_position, y_position, 5, display.background_colour);
+}
+
+double Player::get_facing_direction()
+{
+    return facing_direction;
 }
