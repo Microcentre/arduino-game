@@ -1,5 +1,4 @@
 #include "GameScreen.h"
-#include "HardwareSerial.h"
 
 GameScreen::GameScreen(const Display *display, const Joystick *joystick) : Screen(display, joystick)
 {
@@ -12,8 +11,6 @@ GameScreen::GameScreen(const Display *display, const Joystick *joystick) : Scree
     this->objects = Vector<Object *>(objects_array);
 
     this->add_object(this->player);
-
-    Serial.begin(9600);
 }
 
 GameScreen::~GameScreen()
