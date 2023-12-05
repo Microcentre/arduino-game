@@ -17,7 +17,7 @@ public:
     bool wrap_around_display = false;
 
     /// @param speed pixels per second
-    MovingObject(uint16_t x_position, uint16_t y_position, double speed);
+    MovingObject(int16_t x_position, int16_t y_position, double speed);
 
     /// @brief clear drawing at given position
     /// @param display display to draw on
@@ -38,6 +38,7 @@ public:
 
     /// @brief set y_position and update previous_y_position
     void set_y_position(const double position) override;
+
 private:
     // drawing a moving object requires undrawing the old drawing.
     // draw() calls undraw() with the below variables before drawing the object

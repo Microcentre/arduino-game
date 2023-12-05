@@ -6,7 +6,7 @@
 class Bullet : public MovingObject
 {
 public:
-    Bullet(uint16_t x_position, uint16_t y_position, double direction);
+    Bullet(int16_t x_position, int16_t y_position, double direction);
 
     /// @param delta_s time since last frame in seconds
     void update(const double &delta) override;
@@ -21,8 +21,13 @@ public:
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display display, const uint16_t x_position, const uint16_t y_position) override;
 
+    virtual ~Bullet();
+
+    int frames_alive = 0;
+
 private:
     const double SPEED = 700;
+    
 };
 
 #endif

@@ -1,13 +1,18 @@
 #include "Bullet.h"
 
-Bullet::Bullet(uint16_t x_position, uint16_t y_position, double direction) : MovingObject(x_position, y_position, speed)
+Bullet::Bullet(int16_t x_position, int16_t y_position, double direction) : MovingObject(x_position, y_position, speed)
 {
     this->direction = direction;
     this->speed = SPEED;
 }
 
+Bullet::~Bullet()
+{
+}
+
 void Bullet::update(const double &delta)
 {
+    frames_alive++;
     MovingObject::update(delta);
 }
 

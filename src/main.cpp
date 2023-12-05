@@ -177,7 +177,7 @@ int main()
             }
 
             // create bullet once when c is pressed
-            if (joystick.is_c_pressed() && !bullet_created)
+            if (joystick.is_c_pressed() && bullet_created == false)
             {
                 bullet = new Bullet(player.get_x_position(), player.get_y_position(), player.get_facing_direction());
                 bullet_created = true;
@@ -193,6 +193,12 @@ int main()
         {
             bullet->update(DELTA);
             bullet->draw(display);
+            if (bullet->frames_alive >= 15)
+            {
+                bullet->undraw(display, bullet->get_x_position(), bullet->get_y_position());
+                delete bullet;
+                bullet_created = false;
+            }
         }
 
         asteroid.update(DELTA);
