@@ -9,7 +9,7 @@
 #include "Display.h"
 #include "MovingObject.h"
 #include "Object.h"
-#include "Game.h"
+#include "Screens/GameScreen.h"
 
 // time to wait between each frame.
 // to minimise redraw flicker.
@@ -155,30 +155,23 @@ int main()
 {
     setup();
 
-    Game game = Game();
+    const Display display = Display();
+    const Joystick joystick = Joystick();
+
+    GameScreen game = GameScreen(&display,&joystick);
 
     // game loop
     while (1)
     {
-        // handle user input
-        if (game.joystick->store_state())
-        {
-            game.player->rotate(game.joystick->get_x_axis());
-            if (game.joystick->is_z_pressed())
-            {
-                game.player->accelerate();
-            }
-        }
-
-        game.update_draw_objects(DELTA);
+        game.update(DELTA);
 
         _delay_ms(SCREEN_DELAY_MS);
 
-        p_infrared->send_data(0b10101011);
-        if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
-        {
-            p_infrared->interpret_data();
-        }
+        // p_infrared->send_data(0b10101011);
+        // if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
+        // {
+        //     p_infrared->interpret_data();
+        // }
     }
     return (0);
 }
