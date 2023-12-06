@@ -19,7 +19,7 @@ void Bullet::update(const double &delta)
 {
     // delete bullet after a while
     frames_alive++;
-    if (frames_alive > 10)
+    if (frames_alive > Bullet::SHOOT_DELAY)
     {
         Bullet::bullet_delay_passed = true;
     }

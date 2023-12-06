@@ -36,6 +36,8 @@ private:
 
     /// @brief How many frames it takes before the bullet despawns
     static const uint8_t DECAY_FRAMES = 15;
+
+    static const uint8_t SHOOT_DELAY = 10;
 };
 
 #endif
