@@ -23,8 +23,7 @@ void Bullet::update(const double &delta)
     {
         Bullet::bullet_delay_passed = true;
     }
-    
-    if (frames_alive > 15)
+    if (frames_alive > Bullet::DECAY_FRAMES)
     {
         this->marked_for_deletion = true;
         return;
