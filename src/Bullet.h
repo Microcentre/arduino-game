@@ -25,7 +25,11 @@ public:
 
     int frames_alive = 0;
 
-    static bool bullet_created;
+    static uint8_t bullet_amount;
+
+    static const uint8_t MAX_BULLETS = 3;
+
+    static bool bullet_delay_passed;
 private:
     const double SPEED = 700;
 };
