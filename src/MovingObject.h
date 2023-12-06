@@ -14,20 +14,14 @@ public:
     double direction;
 
     /// @brief if true, when object reaches border it teleports to the opposite side. TODO: if false, destroys on leaving border.
-    bool wrap_around_display = false;
+    bool wrap_around_display = true;
 
     /// @param speed pixels per second
-    MovingObject(uint16_t x_position, uint16_t y_position, double speed);
-
-    /// @brief clear drawing at given position
-    /// @param display display to draw on
-    /// @param x_position X-position of drawing to clear
-    /// @param y_position Y-position of the drawing to clear
-    virtual void undraw(const Display *display, const uint16_t x_position, const uint16_t y_position);
+    MovingObject(double x_position, double y_position, double speed);
 
     /// @brief calls undraw(), then draw(). When inheriting call MovingObject::draw() first
     /// @param display display to draw on
-    void draw(const Display *display) override;
+    void draw(Display *display) override;
 
     /// @brief moves object. When inheriting call MovingObject::update() last
     /// @param delta_s time since last frame in seconds

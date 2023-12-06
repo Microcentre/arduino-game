@@ -22,13 +22,15 @@ public:
 
     /// @brief call undraw(), then draw()
     /// @param display display to draw on
-    void draw(const Display *display) override;
+    void draw(Display *display) override;
 
     /// @brief clear drawing at given position
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
-    void undraw(const Display *display, const uint16_t x_position, const uint16_t y_position) override;
+    void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
+
+    double facing_direction;
 
 private:
     /// @brief in radians per second (so small numbers)
@@ -42,8 +44,6 @@ private:
     /// @brief deceleration per frame when not holding the gas button
     static const double DECEL_RATE = 0.5;
     static const double MAX_SPEED = 512;
-
-    double facing_direction;
 };
 
 #endif

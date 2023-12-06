@@ -1,15 +1,15 @@
 #include "Screen.h"
 
-Screen::Screen(const Display *display, const Joystick *joystick)
+Screen::Screen(Display *display, Joystick *joystick)
 {
-        this->display = display;
-        this->joystick = joystick;
+    this->display = display;
+    this->joystick = joystick;
 }
 
 void Screen::update(const double &delta)
 {
-        if (this->joystick->store_state())
-        {
-                this->on_joystick_update();
-        }
+    if (this->joystick->store_state())
+    {
+        this->on_joystick_changed();
+    }
 }

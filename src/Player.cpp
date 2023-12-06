@@ -57,13 +57,13 @@ void Player::rotate(const uint8_t rotation)
     this->facing_direction -= rotation_modifier * this->TURN_SPEED;
 }
 
-void Player::draw(const Display *display)
+void Player::draw(Display *display)
 {
     MovingObject::draw(display);
     display->canvas.fillCircle(this->get_x_position(), this->get_y_position(), 5, ILI9341_WHITE);
 }
 
-void Player::undraw(const Display *display, const uint16_t x_position, const uint16_t y_position)
+void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
     display->canvas.fillCircle(x_position, y_position, 5, display->background_colour);
 }

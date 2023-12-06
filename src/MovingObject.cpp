@@ -1,7 +1,7 @@
 #include <math.h>
 #include "MovingObject.h"
 
-MovingObject::MovingObject(uint16_t x_position, uint16_t y_position, double speed) : Object(x_position, y_position)
+MovingObject::MovingObject(double x_position, double y_position, double speed) : Object(x_position, y_position)
 {
     this->speed = speed;
     this->direction = 0;
@@ -37,7 +37,7 @@ void MovingObject::update(const double &delta)
     this->set_y_position(new_y_position);
 }
 
-void MovingObject::draw(const Display *display)
+void MovingObject::draw(Display *display)
 {
     this->undraw(display, this->previous_x_position, this->previous_y_position);
 }

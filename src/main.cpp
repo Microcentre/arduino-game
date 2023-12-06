@@ -1,14 +1,10 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <Vector.h>
 
 #include "IR.h"
 #include "Joystick.h"
-#include "Player.h"
 #include "Display.h"
-#include "MovingObject.h"
-#include "Object.h"
 #include "Screens/GameScreen.h"
 
 // time to wait between each frame.
@@ -155,10 +151,9 @@ int main()
 {
     setup();
 
-    const Display display = Display();
-    const Joystick joystick = Joystick();
-
-    GameScreen game = GameScreen(&display,&joystick);
+    Display display = Display();
+    Joystick joystick = Joystick();
+    GameScreen game = GameScreen(&display, &joystick);
 
     // game loop
     while (1)
