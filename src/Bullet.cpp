@@ -17,7 +17,7 @@ void Bullet::update(const double &delta)
 {
     // delete bullet after a while
     frames_alive++;
-    if (frames_alive > 15)
+    if (frames_alive > Bullet::DECAY_FRAMES)
     {
         this->marked_for_deletion = true;
         return;

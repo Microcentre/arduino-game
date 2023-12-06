@@ -26,8 +26,12 @@ public:
     int frames_alive = 0;
 
     static bool bullet_created;
+
 private:
     const double SPEED = 700;
+
+    /// @brief How many frames it takes before the bullet despawns
+    static const uint8_t DECAY_FRAMES = 15;
 };
 
 #endif
