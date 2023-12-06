@@ -8,11 +8,14 @@
 #include "Object.h"
 #include "Screen.h"
 #include "ObjectsContainer.h"
+#include "Score.h"
 
 class GameScreen : public Screen, public ObjectsContainer
 {
 public:
     Player *player;
+
+    Score *score;
 
     GameScreen(Display *display, Joystick *joystick);
     ~GameScreen();
