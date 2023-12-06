@@ -4,11 +4,15 @@
 
 #include "IR.h"
 #include "Joystick.h"
-#include "Player.h"
 #include "Display.h"
-#include "MovingObject.h"
-#include "Bullet.h"
-#include "Asteroid.h"
+#include "Screens/GameScreen.h"
+
+// time to wait between each frame.
+// to minimise redraw flicker.
+// 50fps if each frame were to instantly generate.
+const uint8_t SCREEN_DELAY_MS = 20;
+/// @brief approximate delta in seconds (time since last frame)
+const double DELTA = (double)SCREEN_DELAY_MS / 1000;
 
 IR *p_infrared;
 
@@ -143,68 +147,21 @@ void setup()
     sei();
 }
 
-// time to wait between each frame.
-// to minimise redraw flicker.
-// 50fps if each frame were to instantly generate.
-const uint8_t SCREEN_DELAY_MS = 20;
-/// @brief approximate delta in seconds (time since last frame)
-const double DELTA = (double)SCREEN_DELAY_MS / 1000;
-
 int main()
 {
     setup();
-    Joystick joystick = Joystick();
-    Display display = Display();
-    Player player = Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
-    player.wrap_around_display = true;
-    Asteroid asteroid = Asteroid(50, 50, 80, M_PI_2);
-    asteroid.wrap_around_display = true;
 
-    bool bullet_created = false;
-    Bullet *bullet; // create empty bullet pointer for conditional use of bullet updates
+    Display display = Display();
+    Joystick joystick = Joystick();
+    GameScreen game = GameScreen(&display, &joystick);
 
     // game loop
     while (1)
     {
-
-        // handle user input
-        if (joystick.store_state())
-        {
-            player.rotate(joystick.get_x_axis());
-            if (joystick.is_z_pressed())
-            {
-                player.accelerate();
-            }
-
-            // create bullet once when c is pressed
-            if (joystick.is_c_pressed() && bullet_created == false)
-            {
-                bullet = new Bullet(player.get_x_position(), player.get_y_position(), player.get_facing_direction());
-                bullet_created = true;
-            }
-        }
-
-        // update & draw objects
-        player.update(DELTA);
-        player.draw(display);
-
-        // updates bullets only if one exists
-        if (bullet_created)
-        {
-            bullet->update(DELTA);
-            bullet->draw(display);
-            if (bullet->frames_alive >= 15)
-            {
-                bullet->undraw(display, bullet->get_x_position(), bullet->get_y_position());
-                delete bullet;
-                bullet_created = false;
-            }
-        }
-
-        asteroid.update(DELTA);
-        asteroid.draw(display);
+        game.update(DELTA);
 
         _delay_ms(SCREEN_DELAY_MS);
+
         p_infrared->send_data(0b10101011);
         if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
         {

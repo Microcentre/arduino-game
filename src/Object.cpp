@@ -29,3 +29,8 @@ double Object::get_y_position()
 void Object::update(const double &delta)
 {
 }
+
+void Object::undraw(Display *display)
+{
+    this->undraw(display, this->x_position, this->y_position);
+}

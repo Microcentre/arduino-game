@@ -21,13 +21,13 @@ public:
 
     /// @brief calls undraw(), then draw(). When inheriting call MovingObject::draw() first
     /// @param display display to draw on
-    void draw(Display display) override;
+    void draw(Display *display) override;
 
     /// @brief clear asteroid at given position
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
-    void undraw(Display display, const uint16_t x_position, const uint16_t y_position) override;
+    void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 };
 
 #endif
