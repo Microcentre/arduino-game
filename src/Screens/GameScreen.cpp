@@ -44,3 +44,10 @@ void GameScreen::on_joystick_changed()
         Bullet::bullet_created = true;
     }
 }
+
+bool GameScreen::bullet_asteroid_colliding(uint16_t x_bullet, uint16_t y_bullet, uint16_t x_asteroid, uint16_t y_asteroid){
+    uint16_t x_distance = x_bullet - x_asteroid;
+    uint16_t y_distance = y_bullet - y_asteroid;    
+    return (sq(x_distance) + sq(y_distance)) < sq(ASTEROID_SIZE);
+}
+
