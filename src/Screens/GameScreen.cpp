@@ -38,9 +38,10 @@ void GameScreen::on_joystick_changed()
     }
 
     // C = shoot
-    if (joystick->is_c_pressed() && Bullet::bullet_created == false)
+    if (joystick->is_c_pressed() && Bullet::bullet_amount < Bullet::MAX_BULLETS && Bullet::bullet_delay_passed == true)
     {
+        Bullet::bullet_delay_passed = false;
         this->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction));
-        Bullet::bullet_created = true;
+        Bullet::bullet_amount++;
     }
 }
