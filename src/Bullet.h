@@ -29,8 +29,6 @@ public:
 
     static const uint8_t MAX_BULLETS = 3;
 
-    static bool bullet_delay_passed;
-
 private:
     const double SPEED = 700;
 
