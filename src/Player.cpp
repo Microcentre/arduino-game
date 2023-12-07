@@ -6,7 +6,7 @@ Player::Player() : Player(0, 0, 0)
 
 Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingObject(x_position, y_position, speed)
 {
-    this->health = new Health();
+    this->health = new Health(this);
 }
 
 void Player::update(const double &delta)
@@ -67,4 +67,27 @@ void Player::draw(Display *display)
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
     display->canvas.fillCircle(x_position, y_position, 5, display->background_colour);
+}
+
+Player::Health::Health(Player *player)
+{
+    this->player = player;
+    show();
+}
+
+void Player::Health::show()
+{
+}
+
+void Player::Health::adjust(Display *display)
+{
+    health--;
+    player->undraw(display, player->get_x_position(), player->get_y_position());
+    player->set_x_position(Display::WIDTH_PIXELS / 2);
+    player->set_y_position(Display::HEIGHT_PIXELS / 2);
+    if (health == GAME_OVER_HEALTH)
+    {
+        resetFunc();
+    }
+    show();
 }
