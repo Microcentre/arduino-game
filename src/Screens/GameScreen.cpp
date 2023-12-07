@@ -4,10 +4,11 @@
 
 GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, joystick)
 {
-    //initialize object arrays
+    // array of objects on the screen to be updated & rendered.
+    // Vector<> is a custom library that IS dynamic,
+    // which for some reason has to be intialised in this hacky way
     Object *asteroid_array[MAX_AMOUNT_OF_OBJECTS];
     Object *bullet_array[MAX_AMOUNT_OF_OBJECTS];
-
     Vector<Object *> asteroid_vector = Vector<Object *>(asteroid_array);
     Vector<Object *> bullet_vector = Vector<Object *>(bullet_array);
 
