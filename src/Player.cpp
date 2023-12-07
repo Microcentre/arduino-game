@@ -91,12 +91,12 @@ void Player::draw(Display *display, const uint16_t x_position, const uint16_t y_
 
     // the right direction is 90 degrees to the right of the facing direction
     double right_direction = facing_direction - M_PI_2;
-    // draw point in direction of `right_direction` with the calculated offset
+    // draw point in direction of `right_direction` with the calculated position (player_size offset * angle)
     uint16_t right_x = x_position + (Player::PLAYER_SIZE * sin(right_direction));
     uint16_t right_y = y_position + (Player::PLAYER_SIZE * cos(right_direction));
 
     double left_direction = facing_direction + M_PI_2;
-    // draw point in direction of `left_direction` with the calculated offset
+    // draw point in direction of `left_direction` with the calculated position (player_size offset * angle)
     uint16_t left_x = x_position + (Player::PLAYER_SIZE * sin(left_direction));
     uint16_t left_y = y_position + (Player::PLAYER_SIZE * cos(left_direction));
 
