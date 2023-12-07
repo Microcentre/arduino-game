@@ -10,6 +10,9 @@ GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, j
     this->player->wrap_around_display = true;
     this->add_object(this->player);
 
+    this->score = new Score(display, Score::X_POS_TEXT, Score::Y_POS_TEXT);
+    this->add_object(this->score);
+
     // create asteroid
     this->add_object(new Asteroid(50, 50, 80, M_PI_2));
 }
@@ -19,6 +22,7 @@ GameScreen::~GameScreen()
     delete Screen::joystick;
     delete Screen::display;
     delete this->player;
+    delete this->score;
 }
 
 void GameScreen::update(const double &delta)
