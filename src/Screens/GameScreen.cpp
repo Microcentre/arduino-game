@@ -38,12 +38,17 @@ void GameScreen::on_joystick_changed()
     }
 
     // C = shoot
-    if (joystick->is_c_first_pressed() && Bullet::bullet_amount < Bullet::MAX_BULLETS)
+    if (joystick->is_c_pressed())
     {
-        this->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction));
-        Bullet::bullet_amount++;
+        if (!(joystick->c_pressed_last_frame) && Bullet::bullet_amount < Bullet::MAX_BULLETS)
+        {
+            this->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction));
+            Bullet::bullet_amount++;
+        }
         joystick->c_pressed_last_frame = true;
-    } else {
+    }
+    else
+    {
         joystick->c_pressed_last_frame = false;
     }
 }

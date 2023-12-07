@@ -46,7 +46,7 @@ bool Joystick::is_c_pressed()
 
 bool Joystick::is_c_first_pressed()
 {
-    return is_c_pressed && !(c_pressed_last_frame);
+    return is_c_pressed() && !(c_pressed_last_frame);
 }
 
 bool Joystick::is_z_pressed()
