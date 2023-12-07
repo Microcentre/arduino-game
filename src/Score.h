@@ -15,6 +15,8 @@ public:
 
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 
+    void add_score(uint8_t amount);
+
     static int score;
 
     static int previous_score;

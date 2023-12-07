@@ -29,3 +29,9 @@ void Score::update(const double &delta)
 {
     Object::update(delta);
 }
+
+void Score::add_score(uint8_t amount)
+{
+    previous_score = score;
+    score += amount;
+}
