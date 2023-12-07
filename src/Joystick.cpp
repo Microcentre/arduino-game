@@ -44,6 +44,11 @@ bool Joystick::is_c_pressed()
     return Nunchuk.state.c_button;
 }
 
+bool Joystick::is_c_first_pressed()
+{
+    return is_c_pressed && !(c_pressed_last_frame);
+}
+
 bool Joystick::is_z_pressed()
 {
     return Nunchuk.state.z_button;

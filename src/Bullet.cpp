@@ -1,7 +1,5 @@
 #include "Bullet.h"
 
-bool Bullet::bullet_delay_passed = true;
-
 uint8_t Bullet::bullet_amount = 0;
 
 Bullet::Bullet(int16_t x_position, int16_t y_position, double direction) : MovingObject(x_position, y_position, speed)
@@ -19,10 +17,6 @@ void Bullet::update(const double &delta)
 {
     // delete bullet after a while
     frames_alive++;
-    if (frames_alive > Bullet::SHOOT_DELAY)
-    {
-        Bullet::bullet_delay_passed = true;
-    }
     if (frames_alive > Bullet::DECAY_FRAMES)
     {
         this->marked_for_deletion = true;
