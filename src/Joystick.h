@@ -22,8 +22,13 @@ public:
     /// @return if C button is pressed
     bool is_c_pressed();
 
+    /// @return if C button is pressed for the first time this frame
+    bool is_c_first_pressed();
+
     /// @return if Z button is pressed
     bool is_z_pressed();
+
+    uint8_t c_pressed_last_frame;
 };
 
 #endif

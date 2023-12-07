@@ -20,6 +20,7 @@ GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, j
 
     //start first wave (won't work in main.cpp for some reason..)
     start_wave(1);
+    this->score = new Score(display, Score::X_POS_TEXT, Score::Y_POS_TEXT);
 }
 
 GameScreen::~GameScreen()
@@ -27,6 +28,7 @@ GameScreen::~GameScreen()
     delete Screen::joystick;
     delete Screen::display;
     delete this->player;
+    delete this->score;
 }
 
 void GameScreen::update(const double &delta)
@@ -37,11 +39,13 @@ void GameScreen::update(const double &delta)
     //update
     Screen::update(delta);
     this->player->update(delta);
+    this->score->update(delta);
     this->bullet_container->update_objects(delta);
     this->asteroid_container->update_objects(delta);
 
     //draw
     this->player->draw(this->display);
+    this->score->draw(this->display);
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
 }
@@ -63,6 +67,7 @@ void GameScreen::check_bullet_asteroid_collision(){
             if(bullet_asteroid_colliding(bullet_x,bullet_y,asteroid_x,asteroid_y)){
                 this->bullet_container->objects.at(i)->marked_for_deletion = true;
                 this->asteroid_container->objects.at(j)->marked_for_deletion = true;
+                this->score->add_score(10);
             }
         }
     }
@@ -79,11 +84,18 @@ void GameScreen::on_joystick_changed()
     }
 
     // C = shoot
-    if (joystick->is_c_pressed() && Bullet::bullet_created == false)
+    if (joystick->is_c_pressed())
     {
-        // this->asteroid_container->add_object(new Asteroid(player->get_x_position(), player->get_y_position(), 40, player->facing_direction * M_PI));
-        this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction));
-        Bullet::bullet_created = true;
+        if (!(joystick->c_pressed_last_frame) && Bullet::bullet_amount < Bullet::MAX_BULLETS)
+        {
+            this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction));
+            Bullet::bullet_amount++;
+        }
+        joystick->c_pressed_last_frame = true;
+    }
+    else
+    {
+        joystick->c_pressed_last_frame = false;
     }
 }
 

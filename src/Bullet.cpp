@@ -1,6 +1,6 @@
 #include "Bullet.h"
 
-bool Bullet::bullet_created = false;
+uint8_t Bullet::bullet_amount = 0;
 
 Bullet::Bullet(int16_t x_position, int16_t y_position, double direction) : MovingObject(x_position, y_position, speed)
 {
@@ -10,7 +10,7 @@ Bullet::Bullet(int16_t x_position, int16_t y_position, double direction) : Movin
 
 Bullet::~Bullet()
 {
-    Bullet::bullet_created = false; // allow next bullet to be created
+    Bullet::bullet_amount--; // allow next bullet to be created
 }
 
 void Bullet::update(const double &delta)
