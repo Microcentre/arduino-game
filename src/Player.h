@@ -3,10 +3,14 @@
 
 #include "stdint.h"
 #include "MovingObject.h"
+#include "Health.h"
 
 class Player : public MovingObject
 {
 public:
+
+    Health *health;
+    
     Player();
     /// @param speed pixels per second
     Player(uint16_t x_position, uint16_t y_position, double speed);

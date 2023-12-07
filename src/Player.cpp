@@ -6,6 +6,7 @@ Player::Player() : Player(0, 0, 0)
 
 Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingObject(x_position, y_position, speed)
 {
+    this->health = new Health();
 }
 
 void Player::update(const double &delta)
