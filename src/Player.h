@@ -53,8 +53,8 @@ private:
     /// @brief player size from centre to corner, the TOTAL player radius would be 2*PLAYER_SIZE.
     static constexpr uint8_t PLAYER_SIZE = 8;
 
-    /// @brief How pointy the front is. 10=normal (equilateral triangle), 25 = 2.5 times as pointy
-    static constexpr uint8_t POINTINESS = 25;
+    /// @brief How pointy the front is. 1=normal (equilateral triangle)
+    static constexpr double POINTINESS = 2.5;
 
     /// @brief store previous facing_direction for undraw()
     double previous_facing_direction;

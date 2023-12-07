@@ -79,9 +79,8 @@ double Player::get_front_y_position()
 
 void Player::draw(Display *display, const uint16_t x_position, const uint16_t y_position, double facing_direction, uint16_t colour)
 {
-    double pointiness = (double)Player::POINTINESS / 10;
-    uint16_t front_x = x_position + ((Player::PLAYER_SIZE * pointiness) * sin(facing_direction));
-    uint16_t front_y = y_position + ((Player::PLAYER_SIZE * pointiness) * cos(facing_direction));
+    uint16_t front_x = x_position + ((Player::PLAYER_SIZE * Player::POINTINESS) * sin(facing_direction));
+    uint16_t front_y = y_position + ((Player::PLAYER_SIZE * Player::POINTINESS) * cos(facing_direction));
 
     double right_direction = facing_direction + M_PI_2;
     uint16_t right_x = x_position + (Player::PLAYER_SIZE * sin(right_direction));
