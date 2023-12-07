@@ -9,10 +9,13 @@
 #include "Screen.h"
 #include "ObjectsContainer.h"
 
-class GameScreen : public Screen, public ObjectsContainer
+class GameScreen : public Screen
 {
 public:
     Player *player;
+
+    ObjectsContainer *asteroid_container;
+    ObjectsContainer *bullet_container;
 
     GameScreen(Display *display, Joystick *joystick);
     ~GameScreen();

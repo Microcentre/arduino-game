@@ -8,7 +8,7 @@
 class ObjectsContainer
 {
 public:
-    ObjectsContainer(Display *display);
+    ObjectsContainer(Display *display, Vector<Object *>(objects_array));
 
     /// @param object object to add to the list of objects that are updated&drawn every frame
     void add_object(Object *object);
