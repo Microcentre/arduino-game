@@ -1,14 +1,13 @@
 #include "ObjectsContainer.h"
 
-ObjectsContainer::ObjectsContainer(Display *display)
+ObjectsContainer::ObjectsContainer(Display *display, Vector<Object *>(objects_array))
 {
     this->display = display;
 
     // array of objects on the screen to be updated & rendered.
     // Vector<> is a custom library that IS dynamic,
     // which for some reason has to be intialised in this hacky way
-    Object *objects_array[ObjectsContainer::MAX_AMOUNT_OF_OBJECTS];
-    this->objects = Vector<Object *>(objects_array);
+    this->objects = objects_array;
 }
 
 void ObjectsContainer::add_object(Object *object)
@@ -31,30 +30,29 @@ void ObjectsContainer::delete_object(Object *object)
 
 void ObjectsContainer::update_objects(const double &delta)
 {
-    auto i = this->objects.begin();
-    while (i != this->objects.end())
+    for(uint8_t i=0; i<this->objects.size(); ++i)
     {
+        Object* object = this->objects.at(i);
         // delete if marked for deletion
-        if ((*i)->marked_for_deletion)
+        if (object->marked_for_deletion)
         {
-            this->delete_object((*i));
-            continue;
+            this->delete_object(object);
+            break;
         }
 
-        (*i)->update(delta);
-        ++i;
+        object->update(delta);
     }
 }
 
 void ObjectsContainer::draw_objects(const double &delta)
 {
-    for (auto i = this->objects.begin(); i != this->objects.end(); ++i)
-        (*i)->draw(this->display);
+    for(uint8_t i=0; i<this->objects.size(); ++i)
+        (this->objects.at(i))->draw(this->display);
 }
 
 uint8_t ObjectsContainer::find_object_index(Object *object)
 {
-    for (int i = 0; i < this->objects.size(); ++i)
+    for (uint8_t i = 0; i < this->objects.size(); ++i)
     {
         if (this->objects.at(i) == object)
             return i;

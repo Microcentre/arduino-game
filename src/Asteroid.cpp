@@ -13,10 +13,10 @@ void Asteroid::update(const double &delta)
 void Asteroid::draw(Display *display)
 {
     MovingObject::draw(display);
-    display->canvas.fillCircle(this->get_x_position(), this->get_y_position(), ASTEROID_SIZE, ILI9341_WHITE);
+    display->canvas.drawCircle(this->get_x_position(), this->get_y_position(), ASTEROID_SIZE, ILI9341_WHITE);
 }
 
 void Asteroid::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
-    display->canvas.fillCircle(x_position, y_position, ASTEROID_SIZE, display->background_colour);
+    display->canvas.drawCircle(x_position, y_position, ASTEROID_SIZE, display->background_colour);
 }
