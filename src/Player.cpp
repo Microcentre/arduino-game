@@ -79,14 +79,24 @@ double Player::get_front_y_position()
 
 void Player::draw(Display *display, const uint16_t x_position, const uint16_t y_position, double facing_direction, uint16_t colour)
 {
+    // draw a triangle by calculating 3 points:
+    // - the front point (right in front of the centre)
+    // - the left point (bottom left of the centre)
+    // - the right point (bottom right of the centre)
+
+    // front point is right in front of the player
+    // based on the POINTINESS variable it gets drawn further away from the centre, making it pointier
     uint16_t front_x = x_position + ((Player::PLAYER_SIZE * Player::POINTINESS) * sin(facing_direction));
     uint16_t front_y = y_position + ((Player::PLAYER_SIZE * Player::POINTINESS) * cos(facing_direction));
 
-    double right_direction = facing_direction + M_PI_2;
+    // the right direction is 90 degrees to the right of the facing direction
+    double right_direction = facing_direction - M_PI_2;
+    // draw point in direction of `right_direction` with the calculated offset
     uint16_t right_x = x_position + (Player::PLAYER_SIZE * sin(right_direction));
     uint16_t right_y = y_position + (Player::PLAYER_SIZE * cos(right_direction));
 
-    double left_direction = facing_direction - M_PI_2;
+    // draw point in direction of `left_direction` with the calculated offset
+    double left_direction = facing_direction + M_PI_2;
     uint16_t left_x = x_position + (Player::PLAYER_SIZE * sin(left_direction));
     uint16_t left_y = y_position + (Player::PLAYER_SIZE * cos(left_direction));
 

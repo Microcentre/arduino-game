@@ -33,7 +33,9 @@ public:
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 
+    /// @return the X position of the front-point of the player
     double get_front_x_position();
+    /// @return the Y position of the front-point of the player
     double get_front_y_position();
 
 private:
