@@ -40,17 +40,17 @@ public:
 
 private:
     /// @brief in radians per second (so small numbers)
-    static constexpr float TURN_SPEED = 0.15;
+    static constexpr float TURN_SPEED = 0.25;
 
     /// @brief the highest value the axis can be
     static const uint8_t MAX_JOYSTICK_AXIS = 255;
 
     /// @brief acceleration per frame holding the gas button
-    static constexpr double ACCEL_RATE = 4.0;
+    static constexpr double ACCEL_RATE = 15.0;
     /// @brief deceleration per frame when not holding the gas button
-    static constexpr double DECEL_RATE = 0.5;
+    static constexpr double DECEL_RATE = 2.0;
     /// @brief Max pixels per second the player may go
-    static constexpr double MAX_SPEED = 512;
+    static constexpr double MAX_SPEED = 650;
 
     /// @brief player size from centre to corner, the TOTAL player radius would be 2*PLAYER_SIZE.
     static constexpr uint8_t PLAYER_SIZE = 8;
