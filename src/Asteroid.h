@@ -31,9 +31,7 @@ public:
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 
-    static const uint8_t SCORE_SMALL = 100;
-    static const uint8_t SCORE_MEDIUM = 50;
-    static const uint8_t SCORE_LARGE = 20;
+    static const uint8_t SCORE_ASTEROID = 50;
 };
 
 #endif
