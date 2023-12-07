@@ -67,6 +67,16 @@ void Player::undraw(Display *display, const uint16_t x_position, const uint16_t 
     this->draw(display, x_position, y_position, this->previous_facing_direction, display->background_colour);
 }
 
+double Player::get_front_x_position()
+{
+    return this->get_x_position() + (Player::PLAYER_SIZE * sin(this->facing_direction));
+}
+
+double Player::get_front_y_position()
+{
+    return this->get_y_position() + (Player::PLAYER_SIZE * cos(this->facing_direction));
+}
+
 void Player::draw(Display *display, const uint16_t x_position, const uint16_t y_position, double facing_direction, uint16_t colour)
 {
     double pointiness = (double)Player::POINTINESS / 10;

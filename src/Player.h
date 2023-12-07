@@ -7,8 +7,7 @@
 class Player : public MovingObject
 {
 public:
-    /// @brief player size from centre to corner, the TOTAL player radius would be 2*PLAYER_SIZE.
-    static constexpr uint8_t PLAYER_SIZE = 8;
+    double facing_direction;
 
     Player();
 
@@ -34,7 +33,8 @@ public:
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 
-    double facing_direction;
+    double get_front_x_position();
+    double get_front_y_position();
 
 private:
     /// @brief in radians per second (so small numbers)
@@ -49,6 +49,9 @@ private:
     static constexpr double DECEL_RATE = 0.5;
     /// @brief Max pixels per second the player may go
     static constexpr double MAX_SPEED = 512;
+
+    /// @brief player size from centre to corner, the TOTAL player radius would be 2*PLAYER_SIZE.
+    static constexpr uint8_t PLAYER_SIZE = 8;
 
     /// @brief How pointy the front is. 10=normal (equilateral triangle), 25 = 2.5 times as pointy
     static constexpr uint8_t POINTINESS = 25;
