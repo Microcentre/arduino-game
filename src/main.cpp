@@ -145,7 +145,6 @@ void setup()
 {
     p_infrared = new IR(); // created as pointer so the ISRs can access it
     sei();
-    Serial.begin(9600);
 }
 
 double total_delta;
