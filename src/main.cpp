@@ -148,6 +148,9 @@ void setup()
     Serial.begin(9600);
 }
 
+double total_delta;
+bool spawned = false;
+
 int main()
 {
     setup();
