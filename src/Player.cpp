@@ -6,6 +6,7 @@ Player::Player() : Player(0, 0, 0)
 
 Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingObject(x_position, y_position, speed)
 {
+    this->facing_direction = 0;
 }
 
 void Player::update(const double &delta)
@@ -13,9 +14,7 @@ void Player::update(const double &delta)
     MovingObject::update(delta);
     speed -= DECEL_RATE;
     if (speed < 0)
-    {
         speed = 0;
-    }
 }
 
 void Player::accelerate()
@@ -41,9 +40,8 @@ void Player::accelerate()
 
     speed = sqrt(sq(vectorR_x) + sq(vectorR_y));
     if (speed > MAX_SPEED)
-    {
         speed = MAX_SPEED;
-    }
+
     direction = atan2(vectorR_y, vectorR_x);
 }
 
@@ -54,16 +52,53 @@ void Player::rotate(const uint8_t rotation)
     // scale to [0..2] and shift to [-1..1]
     rotation_modifier = (rotation_modifier * 2) - 1;
     // [-1..1] where -1=bottom, 0=centre, 1=top
+    this->previous_facing_direction = this->facing_direction;
     this->facing_direction -= rotation_modifier * this->TURN_SPEED;
 }
 
 void Player::draw(Display *display)
 {
     MovingObject::draw(display);
-    display->canvas.fillCircle(this->get_x_position(), this->get_y_position(), 5, ILI9341_WHITE);
+    this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, ILI9341_WHITE);
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
-    display->canvas.fillCircle(x_position, y_position, 5, display->background_colour);
+    this->draw(display, x_position, y_position, this->previous_facing_direction, display->background_colour);
+}
+
+double Player::get_front_x_position()
+{
+    return this->get_x_position() + (Player::PLAYER_SIZE * sin(this->facing_direction));
+}
+
+double Player::get_front_y_position()
+{
+    return this->get_y_position() + (Player::PLAYER_SIZE * cos(this->facing_direction));
+}
+
+void Player::draw(Display *display, const uint16_t x_position, const uint16_t y_position, double facing_direction, uint16_t colour)
+{
+    // draw a triangle by calculating 3 points:
+    // - the front point (right in front of the centre)
+    // - the left point (bottom left of the centre)
+    // - the right point (bottom right of the centre)
+
+    // front point is right in front of the player
+    // based on the POINTINESS variable it gets drawn further away from the centre, making it pointier
+    uint16_t front_x = x_position + ((Player::PLAYER_SIZE * Player::POINTINESS) * sin(facing_direction));
+    uint16_t front_y = y_position + ((Player::PLAYER_SIZE * Player::POINTINESS) * cos(facing_direction));
+
+    // the right direction is 90 degrees to the right of the facing direction
+    double right_direction = facing_direction - M_PI_2;
+    // draw point in direction of `right_direction` with the calculated position (player_size offset * angle)
+    uint16_t right_x = x_position + (Player::PLAYER_SIZE * sin(right_direction));
+    uint16_t right_y = y_position + (Player::PLAYER_SIZE * cos(right_direction));
+
+    double left_direction = facing_direction + M_PI_2;
+    // draw point in direction of `left_direction` with the calculated position (player_size offset * angle)
+    uint16_t left_x = x_position + (Player::PLAYER_SIZE * sin(left_direction));
+    uint16_t left_y = y_position + (Player::PLAYER_SIZE * cos(left_direction));
+
+    display->canvas.drawTriangle(front_x, front_y, right_x, right_y, left_x, left_y, colour);
 }
