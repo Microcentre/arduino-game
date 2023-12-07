@@ -7,7 +7,11 @@
 class Player : public MovingObject
 {
 public:
+    /// @brief player size from centre to corner, the TOTAL player radius would be 2*PLAYER_SIZE.
+    static constexpr uint8_t PLAYER_SIZE = 8;
+
     Player();
+
     /// @param speed pixels per second
     Player(uint16_t x_position, uint16_t y_position, double speed);
 
@@ -34,16 +38,26 @@ public:
 
 private:
     /// @brief in radians per second (so small numbers)
-    static const float TURN_SPEED = 0.15;
+    static constexpr float TURN_SPEED = 0.15;
 
     /// @brief the highest value the axis can be
     static const uint8_t MAX_JOYSTICK_AXIS = 255;
 
     /// @brief acceleration per frame holding the gas button
-    static const double ACCEL_RATE = 4.0;
+    static constexpr double ACCEL_RATE = 4.0;
     /// @brief deceleration per frame when not holding the gas button
-    static const double DECEL_RATE = 0.5;
-    static const double MAX_SPEED = 512;
+    static constexpr double DECEL_RATE = 0.5;
+    /// @brief Max pixels per second the player may go
+    static constexpr double MAX_SPEED = 512;
+
+    /// @brief How pointy the front is. 10=normal (equilateral triangle), 25 = 2.5 times as pointy
+    static constexpr uint8_t POINTINESS = 25;
+
+    /// @brief store previous facing_direction for undraw()
+    double previous_facing_direction;
+
+    /// @brief draws the player. used by draw() and undraw()
+    void draw(Display *display, const uint16_t x_position, const uint16_t y_position, double facing_direction, uint16_t colour);
 };
 
 #endif
