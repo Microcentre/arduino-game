@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <HardwareSerial.h>
 
 #include "IR.h"
 #include "Joystick.h"
@@ -145,6 +146,7 @@ ISR(INT0_vect)
 void setup()
 {
     p_infrared = new IR(); // created as pointer so the ISRs can access it
+    Serial.begin(9600);
     sei();
 }
 
@@ -166,7 +168,7 @@ int main()
 
         _delay_ms(SCREEN_DELAY_MS);
 
-        p_infrared->send_data(0b10101011);
+        p_infrared->send_data(0b10101111);
         if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
         {
             p_infrared->interpret_data();
