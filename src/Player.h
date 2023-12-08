@@ -7,6 +7,16 @@
 class Player : public MovingObject
 {
 public:
+    /// @brief executes specific behavior when player is hurt
+    class HurtObserver
+    {
+    public:
+        /// @brief executes observer behavior
+        virtual void update(Player *player) = 0;
+    };
+
+    uint8_t health = 3;
+
     double facing_direction;
 
     Player();
@@ -33,10 +43,16 @@ public:
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 
+    /// @brief -1 health, resets player to centre of screen and handles all hurtobservers
+    void hurt(Display *display);
+    /// @brief adds a new hurtobserver to the observer array
+    void add_hurt_observer(Player::HurtObserver *observer);
     /// @return the X position of the front-point of the player
     double get_front_x_position();
     /// @return the Y position of the front-point of the player
     double get_front_y_position();
+    /// @brief at this health game restarts
+    const uint8_t GAME_OVER_HEALTH = 0;
 
 private:
     /// @brief in radians per second (so small numbers)
@@ -47,6 +63,10 @@ private:
 
     /// @brief acceleration per frame holding the gas button
     static constexpr double ACCEL_RATE = 15.0;
+
+    HurtObserver *hurt_observers[1];
+    uint8_t hurt_observers_size = 0;
+
     /// @brief deceleration per frame when not holding the gas button
     static constexpr double DECEL_RATE = 2.0;
     /// @brief Max pixels per second the player may go

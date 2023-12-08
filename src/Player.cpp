@@ -102,3 +102,24 @@ void Player::draw(Display *display, const uint16_t x_position, const uint16_t y_
 
     display->canvas.drawTriangle(front_x, front_y, right_x, right_y, left_x, left_y, colour);
 }
+
+void Player::hurt(Display *display)
+{
+    health--;
+
+    // reset player
+    undraw(display, this->get_x_position(), this->get_y_position());
+    set_x_position(Display::WIDTH_PIXELS / 2);
+    set_y_position(Display::HEIGHT_PIXELS / 2);
+    speed = 0;
+
+    // call all observers
+    for (int i = 0; i < hurt_observers_size; ++i)
+        hurt_observers[i]->update(this);
+}
+
+void Player::add_hurt_observer(Player::HurtObserver *observer)
+{
+    this->hurt_observers[hurt_observers_size] = observer;
+    this->hurt_observers_size++;
+}
