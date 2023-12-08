@@ -2,7 +2,6 @@
 
 ResetArduinoOnHurt::ResetArduinoOnHurt()
 {
-
 }
 
 void ResetArduinoOnHurt::update(Player *Player)

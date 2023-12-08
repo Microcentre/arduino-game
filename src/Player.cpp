@@ -103,15 +103,6 @@ void Player::draw(Display *display, const uint16_t x_position, const uint16_t y_
     display->canvas.drawTriangle(front_x, front_y, right_x, right_y, left_x, left_y, colour);
 }
 
-// void Player::Health::adjust(Display *display)
-// {
-//     if (health == GAME_OVER_HEALTH)
-//     {
-//         resetFunc();
-//     }
-//     show();
-// }
-
 void Player::hurt(Display *display)
 {
     health--;

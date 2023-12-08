@@ -21,10 +21,9 @@ GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, j
     // create player
     this->player = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
     this->player->wrap_around_display = true;
-    this->add_object(this->player);
     player->add_hurt_observer(h1);
 
-    //start first wave (won't work in main.cpp for some reason..)
+    // start first wave (won't work in main.cpp for some reason..)
     start_wave(1);
     this->score = new Score(display, Score::X_POS_TEXT, Score::Y_POS_TEXT);
 }
@@ -39,45 +38,46 @@ GameScreen::~GameScreen()
 
 void GameScreen::update(const double &delta)
 {
-    //check for collision
+    // check for collision
     check_bullet_asteroid_collision();
 
-    //update
+    // update
     Screen::update(delta);
     this->player->update(delta);
     this->score->update(delta);
     this->bullet_container->update_objects(delta);
     this->asteroid_container->update_objects(delta);
 
-    //draw
+    // draw
     this->player->draw(this->display);
     this->score->draw(this->display);
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
 }
 
-void GameScreen::check_bullet_asteroid_collision(){
-    for(uint8_t i=0; i<this->bullet_container->objects.size(); ++i)
+void GameScreen::check_bullet_asteroid_collision()
+{
+    for (uint8_t i = 0; i < this->bullet_container->objects.size(); ++i)
     {
-        //store bullet x and y
+        // store bullet x and y
         uint16_t bullet_x = this->bullet_container->objects.at(i)->get_x_position();
         uint16_t bullet_y = this->bullet_container->objects.at(i)->get_y_position();
-        
-        for(uint8_t j=0; j<this->asteroid_container->objects.size(); ++j)
+
+        for (uint8_t j = 0; j < this->asteroid_container->objects.size(); ++j)
         {
-            //store asteroid x and y
+            // store asteroid x and y
             uint16_t asteroid_x = this->asteroid_container->objects.at(j)->get_x_position();
             uint16_t asteroid_y = this->asteroid_container->objects.at(j)->get_y_position();
-            
-            //mark colliding bullet and asteroid for deletion
-            if(bullet_asteroid_colliding(bullet_x,bullet_y,asteroid_x,asteroid_y)){
+
+            // mark colliding bullet and asteroid for deletion
+            if (bullet_asteroid_colliding(bullet_x, bullet_y, asteroid_x, asteroid_y))
+            {
                 this->bullet_container->objects.at(i)->marked_for_deletion = true;
                 this->asteroid_container->objects.at(j)->marked_for_deletion = true;
                 this->score->add_score(Asteroid::SCORE_ASTEROID);
             }
         }
     }
-        
 }
 
 void GameScreen::on_joystick_changed()
