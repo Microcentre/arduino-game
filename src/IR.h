@@ -29,6 +29,7 @@ public:
         
         // receiving
         MESSAGE_RECEIVED = 0b00010000,
+        MESSAGE_STARTED = 0b00100000,
     };
     IR();
     void start_blinking();

@@ -103,8 +103,9 @@ ISR(INT0_vect)
                 // signal is START
                 p_infrared->set_received_bits(0);
                 p_infrared->set_input_buffer(0);
+                p_infrared->set_flag(IR::Flags::MESSAGE_STARTED);
             }
-            else
+            else if (p_infrared->get_flags() & IR::Flags::MESSAGE_STARTED)
             {
                 if (timer_diff <= ONE_DURATION + SIGNAL_DEVIATION && timer_diff >= ONE_DURATION - SIGNAL_DEVIATION)
                 {
