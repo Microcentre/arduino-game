@@ -17,7 +17,7 @@ public:
 
 private:
     /// @brief contains binary values to display numbers on SSD
-    uint8_t display[4] = {
+    const uint8_t display[4] = {
         //0 = led on, 1 = led off (anode sevenseg display)
         0b11000000, // 0
         0b11111001, // 1
