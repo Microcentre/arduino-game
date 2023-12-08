@@ -29,8 +29,6 @@ GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, j
     ResetArduinoOnHurt *h2 = new ResetArduinoOnHurt();
     player->add_hurt_observer(h2);
 
-
-
     // start first wave (won't work in main.cpp for some reason..)
     start_wave(1);
     this->score = new Score(display, Score::X_POS_TEXT, Score::Y_POS_TEXT);
@@ -102,7 +100,6 @@ void GameScreen::on_joystick_changed()
     {
         if (!(joystick->c_pressed_last_frame) && Bullet::bullet_amount < Bullet::MAX_BULLETS)
         {
-            player->hurt(Screen::display);
             this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction));
             Bullet::bullet_amount++;
         }
