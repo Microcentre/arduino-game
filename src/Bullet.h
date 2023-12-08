@@ -30,7 +30,7 @@ public:
     static const uint8_t MAX_BULLETS = 3;
 
 private:
-    const double SPEED = 700;
+    const double SPEED = 1024;
 
     /// @brief How many frames it takes before the bullet despawns
     static const uint8_t DECAY_FRAMES = 15;
