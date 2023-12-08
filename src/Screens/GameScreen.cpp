@@ -68,7 +68,7 @@ void GameScreen::check_bullet_asteroid_collision(){
             if(bullet_asteroid_colliding(bullet_x,bullet_y,asteroid_x,asteroid_y)){
                 this->bullet_container->objects.at(i)->marked_for_deletion = true;
                 this->asteroid_container->objects.at(j)->marked_for_deletion = true;
-                this->score->add_score(10);
+                this->score->add_score(Asteroid::SCORE_ASTEROID);
             }
         }
     }

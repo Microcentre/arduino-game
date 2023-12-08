@@ -5,6 +5,8 @@
 
 const uint8_t ASTEROID_SIZE = 20;
 
+
+
 class Asteroid : public MovingObject
 {
 public:
@@ -28,6 +30,8 @@ public:
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
+
+    static const uint8_t SCORE_ASTEROID = 50;
 };
 
 #endif
