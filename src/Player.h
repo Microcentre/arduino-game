@@ -3,14 +3,18 @@
 
 #include "stdint.h"
 #include "MovingObject.h"
-#include "Health.h"
 
 class Player : public MovingObject
 {
 public:
+    class HurtObserver
+    {
+    public:
+        virtual void update(Player *player) = 0;
+    };
 
-    Health *health;
-    
+    uint8_t health = 3;
+
     Player();
     /// @param speed pixels per second
     Player(uint16_t x_position, uint16_t y_position, double speed);
@@ -34,7 +38,13 @@ public:
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 
+    /// @brief -1 health
+    void hurt(Display *display);
+    void add_hurt_observer(Player::HurtObserver *observer);
+
     double facing_direction;
+
+    const uint8_t GAME_OVER_HEALTH = 0;
 
 private:
     /// @brief in radians per second (so small numbers)
@@ -48,6 +58,9 @@ private:
     /// @brief deceleration per frame when not holding the gas button
     static const double DECEL_RATE = 0.5;
     static const double MAX_SPEED = 512;
+
+    HurtObserver *hurt_observers[1];
+    uint8_t hurt_observers_size = 0;
 };
 
 #endif

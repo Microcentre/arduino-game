@@ -1,14 +1,17 @@
 #include "GameScreen.h"
 #include "Bullet.h"
 #include "Asteroid.h"
+#include "ResetArduinoOnHurt.h"
 
 GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, joystick), ObjectsContainer(display)
 {
+    ResetArduinoOnHurt *h1 = new ResetArduinoOnHurt();
 
     // create player
     this->player = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
     this->player->wrap_around_display = true;
     this->add_object(this->player);
+    player->add_hurt_observer(h1);
 
     this->score = new Score(display, Score::X_POS_TEXT, Score::Y_POS_TEXT);
     this->add_object(this->score);
