@@ -2,11 +2,10 @@
 #include "Bullet.h"
 #include "Asteroid.h"
 #include "ResetArduinoOnHurt.h"
+#include "ShowHealthOnSSD.h"
 
 GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, joystick)
 {
-    ResetArduinoOnHurt *h1 = new ResetArduinoOnHurt();
-
     // array of objects on the screen to be updated & rendered.
     // Vector<> is a custom library that IS dynamic,
     // which for some reason has to be intialised in this hacky way
@@ -21,7 +20,16 @@ GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, j
     // create player
     this->player = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
     this->player->wrap_around_display = true;
+
+    // add health display observer to player
+    ShowHealthOnSSD *h1 = new ShowHealthOnSSD(player);
     player->add_hurt_observer(h1);
+
+    // add game reset observer to player
+    ResetArduinoOnHurt *h2 = new ResetArduinoOnHurt();
+    player->add_hurt_observer(h2);
+
+
 
     // start first wave (won't work in main.cpp for some reason..)
     start_wave(1);
@@ -94,6 +102,7 @@ void GameScreen::on_joystick_changed()
     {
         if (!(joystick->c_pressed_last_frame) && Bullet::bullet_amount < Bullet::MAX_BULLETS)
         {
+            player->hurt(Screen::display);
             this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction));
             Bullet::bullet_amount++;
         }

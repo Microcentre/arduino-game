@@ -51,7 +51,7 @@ public:
     double get_front_x_position();
     /// @return the Y position of the front-point of the player
     double get_front_y_position();
-    /// @brief at this health game restarts
+    /// @brief 0: at this health game restarts
     const uint8_t GAME_OVER_HEALTH = 0;
 
 private:
@@ -64,7 +64,7 @@ private:
     /// @brief acceleration per frame holding the gas button
     static constexpr double ACCEL_RATE = 15.0;
 
-    HurtObserver *hurt_observers[1];
+    HurtObserver *hurt_observers[2];
     uint8_t hurt_observers_size = 0;
 
     /// @brief deceleration per frame when not holding the gas button
