@@ -143,6 +143,7 @@ ISR(INT0_vect)
 
 void setup()
 {
+    Wire.begin();
     p_infrared = new IR(); // created as pointer so the ISRs can access it
     sei();
 }
