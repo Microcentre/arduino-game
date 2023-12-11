@@ -1,7 +1,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <HardwareSerial.h>
 
 #include "IR.h"
 #include "Joystick.h"
@@ -11,7 +10,7 @@
 // time to wait between each frame.
 // to minimise redraw flicker.
 // 50fps if each frame were to instantly generate.
-const uint8_t SCREEN_DELAY_MS = 30;
+const uint8_t SCREEN_DELAY_MS = 20;
 /// @brief approximate delta in seconds (time since last frame)
 const double DELTA = (double)SCREEN_DELAY_MS / 1000;
 
@@ -146,7 +145,6 @@ ISR(INT0_vect)
 void setup()
 {
     p_infrared = new IR(); // created as pointer so the ISRs can access it
-    Serial.begin(9600);
     sei();
 }
 
