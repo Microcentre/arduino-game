@@ -44,6 +44,7 @@ void GameScreen::update(const double &delta)
 {
     // check for collision
     check_bullet_asteroid_collision();
+    check_player_asteroid_collision();
 
     // update
     Screen::update(delta);
@@ -84,6 +85,31 @@ void GameScreen::check_bullet_asteroid_collision()
     }
 }
 
+void GameScreen::check_player_asteroid_collision()
+{
+    // calculate and store centered player x and y
+    uint16_t rear_player_x = this->player->get_x_position();
+    uint16_t front_player_x = this->player->get_front_x_position();
+    uint16_t centered_player_x = rear_player_x + ((front_player_x - rear_player_x)/2);
+
+    uint16_t rear_player_y = this->player->get_y_position();
+    uint16_t front_player_y = this->player->get_front_y_position();
+    uint16_t centered_player_y = rear_player_y + ((front_player_y - rear_player_y)/2);
+
+    for (uint8_t j = 0; j < this->asteroid_container->objects.size(); ++j)
+    {
+        // store asteroid x and y
+        uint16_t asteroid_x = this->asteroid_container->objects.at(j)->get_x_position();
+        uint16_t asteroid_y = this->asteroid_container->objects.at(j)->get_y_position();
+
+        // call player.hurt() if collided
+        if (player_asteroid_colliding(centered_player_x, centered_player_y, asteroid_x, asteroid_y))
+        {
+            this->player->hurt(this->display);
+        }
+    }
+}
+
 void GameScreen::on_joystick_changed()
 {
     this->player->rotate(this->joystick->get_x_axis());
@@ -113,7 +139,14 @@ bool GameScreen::bullet_asteroid_colliding(uint16_t x_bullet, uint16_t y_bullet,
 {
     uint16_t x_distance = x_bullet - x_asteroid;
     uint16_t y_distance = y_bullet - y_asteroid;
-    return (sq(x_distance) + sq(y_distance)) < sq(ASTEROID_SIZE);
+    return (sq(x_distance) + sq(y_distance)) < sq(Asteroid::ASTEROID_SIZE);
+}
+
+bool GameScreen::player_asteroid_colliding(uint16_t x_player, uint16_t y_player, uint16_t x_asteroid, uint16_t y_asteroid)
+{
+    uint16_t x_distance = x_player - x_asteroid;
+    uint16_t y_distance = y_player - y_asteroid;
+    return (sq(x_distance) + sq(y_distance)) < sq(Asteroid::ASTEROID_SIZE + Player::PLAYER_SIZE);
 }
 
 void GameScreen::start_wave(uint8_t wave)
