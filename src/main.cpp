@@ -145,10 +145,13 @@ ISR(INT0_vect)
 
 void setup()
 {
-    Serial.begin(9600);
+    Wire.begin();
     p_infrared = new IR(); // created as pointer so the ISRs can access it
     sei();
 }
+
+double total_delta;
+bool spawned = false;
 
 int main()
 {

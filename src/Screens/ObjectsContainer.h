@@ -8,8 +8,11 @@
 class ObjectsContainer
 {
 public:
-    ObjectsContainer(Display *display);
-    ~ObjectsContainer();	
+    /// @brief Objects are drawn and updated every frame
+    Vector<Object *> objects;
+
+    ObjectsContainer(Display *display, Vector<Object *>(objects_array));
+    ~ObjectsContainer();
 
     /// @param object object to add to the list of objects that are updated&drawn every frame
     void add_object(Object *object);
@@ -26,12 +29,7 @@ public:
     void draw_objects(const double &delta);
 
 private:
-    static constexpr uint8_t MAX_AMOUNT_OF_OBJECTS = 15;
-
     Display *display;
-
-    /// @brief Objects are drawn and updated every frame
-    Vector<Object *> objects;
 
     /// @return index of object, or -1 if not found
     uint8_t find_object_index(Object *object);
