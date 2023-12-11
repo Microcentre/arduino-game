@@ -5,7 +5,9 @@ PlayerSelectScreen::PlayerSelectScreen(Display *display, Joystick *joystick) : S
 {
     // create player icons and selection icon
     this->p1 = new Player(PLAYER_LEFT_X, PLAYER_Y, 0);
+    this->p1->player_colour = ILI9341_CYAN;
     this->p2 = new Player(PLAYER_RIGHT_X, PLAYER_Y, 0);
+    this->p2->player_colour = ILI9341_ORANGE;
 }
 
 PlayerSelectScreen::~PlayerSelectScreen()
@@ -19,7 +21,7 @@ void PlayerSelectScreen::update(const double &delta)
 
     this->p1->update(delta);
     this->p2->update(delta);
-    
+
     this->p1->draw(this->display);
     this->p2->draw(this->display);
 }

@@ -59,7 +59,7 @@ void Player::rotate(const uint8_t rotation)
 void Player::draw(Display *display)
 {
     MovingObject::draw(display);
-    this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, ILI9341_WHITE);
+    this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, player_colour);
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)

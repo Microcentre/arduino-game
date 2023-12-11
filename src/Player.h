@@ -54,6 +54,8 @@ public:
     /// @brief 0: at this health game restarts
     const uint8_t GAME_OVER_HEALTH = 0;
 
+    uint16_t player_colour;
+
 private:
     /// @brief in radians per second (so small numbers)
     static constexpr float TURN_SPEED = 0.25;
