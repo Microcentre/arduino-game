@@ -5,25 +5,23 @@ PlayerSelectScreen::PlayerSelectScreen(Display *display, Joystick *joystick) : S
 {
     // create player icons and selection icon
     this->p1 = new Player(PLAYER_LEFT_X, PLAYER_Y, 0);
-    this->p1->player_colour = ILI9341_CYAN;
+    this->p1->draw(display, this->p1->get_x_position(), this->p1->get_y_position(), this->p1->facing_direction, ILI9341_CYAN);
     this->p2 = new Player(PLAYER_RIGHT_X, PLAYER_Y, 0);
-    this->p2->player_colour = ILI9341_ORANGE;
+    this->p2->draw(display, this->p2->get_x_position(), this->p2->get_y_position(), this->p2->facing_direction, ILI9341_ORANGE);
 }
 
 PlayerSelectScreen::~PlayerSelectScreen()
 {
+    delete this->p1;
+    this->p1 = nullptr;
+    delete this->p2;
+    this->p2 = nullptr;
 }
 
 void PlayerSelectScreen::update(const double &delta)
 {
     Screen::update(delta);
     drawHud(delta);
-
-    this->p1->update(delta);
-    this->p2->update(delta);
-
-    this->p1->draw(this->display);
-    this->p2->draw(this->display);
 }
 
 void PlayerSelectScreen::drawHud(const double &delta)
@@ -49,10 +47,14 @@ void PlayerSelectScreen::on_joystick_changed()
     if (left_selected && this->joystick->get_x_axis() > 200)
     {
         left_selected = false;
+        this->p1->player_colour = ILI9341_ORANGE;
+        this->p2->player_colour = ILI9341_CYAN;
     }
     else if (!left_selected && this->joystick->get_x_axis() < 70)
     {
         left_selected = true;
+        this->p1->player_colour = ILI9341_CYAN;
+        this->p2->player_colour = ILI9341_ORANGE;
     }
 
     if (this->joystick->is_z_pressed())

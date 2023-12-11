@@ -4,7 +4,7 @@
 #include "ResetArduinoOnHurt.h"
 #include "ShowHealthOnSSD.h"
 
-GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, joystick)
+GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick) 
 {
     // array of objects on the screen to be updated & rendered.
     // Vector<> is a custom library that IS dynamic,
@@ -19,6 +19,7 @@ GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, j
 
     // create player
     this->player = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
+    this->player->player_colour = p1_colour;
     this->player->wrap_around_display = true;
 
     // add health display observer to player

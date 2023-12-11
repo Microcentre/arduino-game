@@ -5,9 +5,12 @@
 #include "Player.h"
 #include "Display.h"
 
-class PlayerSelectScreen: public Screen
+class PlayerSelectScreen : public Screen
 {
 public:
+    Player *p1;
+    Player *p2;
+
     PlayerSelectScreen(Display *display, Joystick *joystick);
     virtual ~PlayerSelectScreen();
 
@@ -18,10 +21,6 @@ public:
     void on_joystick_changed() override;
 
 private:
-
-    Player *p1;
-    Player *p2;
-
     uint8_t left_selected;
 
     static const uint8_t TEXT_X = 43;
@@ -31,13 +30,12 @@ private:
     static const uint8_t SELECT_BOX_Y = 100;
     static const uint8_t BOX_SPACING = 60;
 
-
-    static const uint16_t SELECT_BOX_X_LEFT = (Display::WIDTH_PIXELS - (SELECT_BOX_SIZE*2) - BOX_SPACING)/2;
+    static const uint16_t SELECT_BOX_X_LEFT = (Display::WIDTH_PIXELS - (SELECT_BOX_SIZE * 2) - BOX_SPACING) / 2;
     static const uint16_t SELECT_BOX_X_RIGHT = SELECT_BOX_X_LEFT + SELECT_BOX_SIZE + BOX_SPACING;
 
-    static const uint16_t PLAYER_LEFT_X = SELECT_BOX_X_LEFT + (SELECT_BOX_SIZE/2);
-    static const uint16_t PLAYER_RIGHT_X = SELECT_BOX_X_RIGHT + (SELECT_BOX_SIZE/2);
-    static const uint8_t PLAYER_Y = SELECT_BOX_Y + (SELECT_BOX_SIZE/2);
+    static const uint16_t PLAYER_LEFT_X = SELECT_BOX_X_LEFT + (SELECT_BOX_SIZE / 2);
+    static const uint16_t PLAYER_RIGHT_X = SELECT_BOX_X_RIGHT + (SELECT_BOX_SIZE / 2);
+    static const uint8_t PLAYER_Y = SELECT_BOX_Y + (SELECT_BOX_SIZE / 2);
 };
 
 #endif

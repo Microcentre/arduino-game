@@ -19,7 +19,7 @@ public:
     ObjectsContainer *bullet_container;
     Score *score;
 
-    GameScreen(Display *display, Joystick *joystick);
+    GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour);
     virtual ~GameScreen();
 
     /// @brief checks nunchuck and updates all objects in vector array, called every frame

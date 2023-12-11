@@ -58,6 +58,10 @@ public:
     double get_front_x_position();
     /// @return the Y position of the front-point of the player
     double get_front_y_position();
+
+    /// @brief draws the player. used by draw() and undraw()
+    void draw(Display *display, const uint16_t x_position, const uint16_t y_position, double facing_direction, uint16_t colour);
+
     /// @brief 0: at this health game restarts
     const uint8_t GAME_OVER_HEALTH = 0;
     
@@ -90,8 +94,6 @@ private:
     /// @brief store previous facing_direction for undraw()
     double previous_facing_direction;
 
-    /// @brief draws the player. used by draw() and undraw()
-    void draw(Display *display, const uint16_t x_position, const uint16_t y_position, double facing_direction, uint16_t colour);
 };
 
 #endif
