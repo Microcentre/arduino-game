@@ -9,17 +9,19 @@
 #include "Screen.h"
 #include "ObjectsContainer.h"
 #include "Score.h"
+#include "IR.h"
 
 class GameScreen : public Screen
 {
 public:
     Player *player;
+    Player *player2;
 
     ObjectsContainer *asteroid_container;
     ObjectsContainer *bullet_container;
     Score *score;
 
-    GameScreen(Display *display, Joystick *joystick);
+    GameScreen(Display *display, Joystick *joystick, IR *infrared);
     ~GameScreen();
 
     /// @brief checks nunchuck and updates all objects in vector array, called every frame

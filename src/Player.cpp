@@ -62,6 +62,21 @@ void Player::draw(Display *display)
     this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, ILI9341_WHITE);
 }
 
+void Player::updateFromIR(const double &delta, IR *infrared, Display *display)
+{
+    uint16_t x = infrared->interpret_data(IR::DataIndex::PLAYER_X);
+    uint16_t y = infrared->interpret_data(IR::DataIndex::PLAYER_Y);
+    uint16_t dir = infrared->interpret_data(IR::DataIndex::PLAYER_FACING_DIR);
+    // only assign if data is valid
+    if (x)
+        set_x_position((double)x);
+    if (y)
+        set_y_position((double)y);
+    if (dir)
+        facing_direction = (double)(infrared->interpret_data(IR::DataIndex::PLAYER_FACING_DIR)) / 100;
+    this->undraw(display, this->get_previous_x_position(), this->get_previous_y_position());
+}
+
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
     this->draw(display, x_position, y_position, this->previous_facing_direction, display->background_colour);

@@ -3,6 +3,7 @@
 
 #include "stdint.h"
 #include "MovingObject.h"
+#include "IR.h"
 
 class Player : public MovingObject
 {
@@ -26,6 +27,8 @@ public:
 
     /// @param delta_s time since last frame in seconds
     void update(const double &delta) override;
+
+    void updateFromIR(const double &delta, IR *infrared, Display *display);
 
     /// @brief rotate the player left or right
     /// @param rotation [0..255] where 0=left, 128=no change, 255=right

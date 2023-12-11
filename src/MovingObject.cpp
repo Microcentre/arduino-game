@@ -37,6 +37,16 @@ void MovingObject::update(const double &delta)
     this->set_y_position(new_y_position);
 }
 
+uint16_t MovingObject::get_previous_x_position()
+{
+    return previous_x_position;
+}
+
+uint16_t MovingObject::get_previous_y_position()
+{
+    return previous_y_position;
+}
+
 void MovingObject::draw(Display *display)
 {
     this->undraw(display, this->previous_x_position, this->previous_y_position);

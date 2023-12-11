@@ -27,6 +27,9 @@ public:
     /// @param delta_s time since last frame in seconds
     void update(const double &delta) override;
 
+    uint16_t get_previous_x_position();
+    uint16_t get_previous_y_position();
+
     /// @brief set x_position and update previous_x_position
     void set_x_position(const double position) override;
 

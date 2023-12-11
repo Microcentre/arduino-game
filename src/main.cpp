@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <HardwareSerial.h>
 
 #include "IR.h"
 #include "Joystick.h"
@@ -25,6 +26,7 @@ ISR(TIMER1_COMPB_vect)
         // only be 0 if there is nothing left to send
         if (p_infrared->get_output_buffer() == 0)
         {
+            p_infrared->queue_next_message();
             p_infrared->clear_flag(IR::Flags::SENDING_MESSAGE);
             p_infrared->stop_blinking();
         }
@@ -127,7 +129,9 @@ ISR(INT0_vect)
             {
                 p_infrared->set_received_bits(0);
                 // message is complete, interpret it
-                p_infrared->set_flag(IR::Flags::MESSAGE_RECEIVED);
+                p_infrared->write_data_to_buffer();
+                p_infrared->set_input_buffer(0);
+                // p_infrared->set_flag(IR::Flags::MESSAGE_RECEIVED);
                 p_infrared->clear_flag(IR::Flags::MESSAGE_STARTED);
             }
         }
@@ -146,6 +150,7 @@ void setup()
 {
     Wire.begin();
     p_infrared = new IR(); // created as pointer so the ISRs can access it
+    Serial.begin(9600);
     sei();
 }
 
@@ -158,7 +163,7 @@ int main()
 
     Display display = Display();
     Joystick joystick = Joystick();
-    GameScreen game = GameScreen(&display, &joystick);
+    GameScreen game = GameScreen(&display, &joystick, p_infrared);
 
     // game loop
     while (1)
@@ -166,12 +171,6 @@ int main()
         game.update(DELTA);
 
         _delay_ms(SCREEN_DELAY_MS);
-
-        p_infrared->send_data(0b10101111);
-        if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
-        {
-            p_infrared->interpret_data();
-        }
     }
     return (0);
 }

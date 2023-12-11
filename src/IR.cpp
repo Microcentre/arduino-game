@@ -1,4 +1,5 @@
 #include <avr/interrupt.h>
+#include <HardwareSerial.h>
 
 #include "IR.h"
 
@@ -9,7 +10,15 @@ IR::IR()
     input_buffer = 0;
     timer_start = 0;
     received_bits = 0;
-    received_data[0] = 0;
+    current_send_index = 0;
+
+    // clear send/receive arrays
+    for (uint8_t i = 0; i < DATA_ARRAY_SIZE; i++)
+    {
+        received_data[i] = 0;
+        data_to_send[i] = 0;
+    }
+    
 
     DDRD |= (1 << DD6); // set pin D6 (LED) as output
     DDRD &= ~(1 << DD2); // set pin D2 (sensor) as input
@@ -110,18 +119,17 @@ void IR::inc_received_bits()
     received_bits++;
 }
 
-void IR::send_data(uint8_t data)
+void IR::send_data(uint8_t index, uint16_t data)
 {
-    const uint8_t DATA_SIZE = sizeof(data) * 8;
     uint8_t set_bits = 0;
     uint8_t parity_bit = 0;
     uint16_t to_send = 0;
 
     // if there's already data being sent, don't send new data
-    if (get_flags() & IR::Flags::SENDING_MESSAGE || get_flags() & IR::Flags::MESSAGE_PENDING)
-    {
-        return;
-    }
+    // if (get_flags() & IR::Flags::SENDING_MESSAGE || get_flags() & IR::Flags::MESSAGE_PENDING)
+    // {
+    //     return;
+    // }
     
     // check how many bits in the data are set to 1
     for (uint8_t i = 0; i < DATA_SIZE; i++)
@@ -144,16 +152,16 @@ void IR::send_data(uint8_t data)
     to_send |= data;
     to_send <<= 1;
     to_send |= START_BIT;
-    output_buffer = to_send;
+    data_to_send[index] = to_send;
     set_flag(IR::Flags::MESSAGE_PENDING);
 }
 
-void IR::interpret_data()
+uint16_t IR::interpret_data(uint8_t index)
 {
+    uint16_t input = received_data[index];
     uint8_t set_bits = 0;
-    uint8_t parity_bit = (input_buffer & PARITY_MASK) >> 1;
-    uint8_t data = (input_buffer & DATA_MASK) >> 2; // remove start, stop and parity
-    const uint8_t DATA_SIZE = sizeof(data) * 8;
+    uint8_t parity_bit = (input & PARITY_MASK) >> 1;
+    uint8_t data = (input & DATA_MASK) >> 2; // remove start, stop and parity
 
     // check how many bits in the received data are set to 1
     for (uint8_t i = 0; i < DATA_SIZE; i++)
@@ -164,13 +172,27 @@ void IR::interpret_data()
         }
     }
     // are stop bit and start bit set, and does the parity match?
-    if (input_buffer & 0x01 && input_buffer >> (MESSAGE_SIZE - 1) && set_bits % 2 == parity_bit)
+    clear_flag(IR::Flags::MESSAGE_RECEIVED);
+    if (input & 0x01 && input >> (MESSAGE_SIZE - 1) && set_bits % 2 == parity_bit)
     {
         // valid data
-        received_data[0] = data;
+        return reverse_data(data);
+    } else {
+        return 0;
     }
-    clear_flag(IR::Flags::MESSAGE_RECEIVED);
-    input_buffer = 0;
+}
+
+uint16_t IR::reverse_data(uint16_t data) {
+    uint16_t result = 0;
+
+    for (uint8_t i = 0; i < DATA_SIZE; i++)
+    {
+        result |= data & 0x01;
+        data >>= 1;
+        result <<= 1;
+    }
+    return result;
+    
 }
 
 uint8_t IR::get_flags()
@@ -188,12 +210,31 @@ void IR::clear_flag(uint8_t flag)
     flags &= ~flag;
 }
 
-uint8_t *IR::get_received_data()
+uint16_t IR::get_received_data(uint8_t index)
 {
-    return received_data;
+    interpret_data(index);
+    return received_data[index];
 }
 
-void IR::set_received_data(uint8_t index, uint8_t value)
+void IR::set_received_data(uint8_t index, uint16_t value)
 {
     received_data[index] = value;
+}
+
+void IR::queue_next_message()
+{
+    current_send_index++;
+    if (current_send_index > DATA_ARRAY_SIZE) {
+        current_send_index = 0;
+    }
+    output_buffer = data_to_send[current_send_index];
+}
+
+void IR::write_data_to_buffer()
+{
+    current_read_index++;
+    if (current_read_index > DATA_ARRAY_SIZE) {
+        current_read_index = 0;
+    }
+    received_data[current_read_index] = input_buffer;
 }

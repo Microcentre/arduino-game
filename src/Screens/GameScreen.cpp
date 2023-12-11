@@ -4,7 +4,7 @@
 #include "ResetArduinoOnHurt.h"
 #include "ShowHealthOnSSD.h"
 
-GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, joystick)
+GameScreen::GameScreen(Display *display, Joystick *joystick, IR *infrared) : Screen(display, joystick, infrared)
 {
     // array of objects on the screen to be updated & rendered.
     // Vector<> is a custom library that IS dynamic,
@@ -20,6 +20,9 @@ GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, j
     // create player
     this->player = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
     this->player->wrap_around_display = true;
+    // create player 2, processed through IR
+    this->player2 = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100);
+    this->player2->wrap_around_display = true;
 
     // add health display observer to player
     ShowHealthOnSSD *h1 = new ShowHealthOnSSD(player);
@@ -54,8 +57,19 @@ void GameScreen::update(const double &delta)
     this->bullet_container->update_objects(delta);
     this->asteroid_container->update_objects(delta);
 
+    // handle infrared (send and receive)
+    this->infrared->send_data(IR::DataIndex::PLAYER_X, (uint16_t)this->player->get_x_position());
+    this->infrared->send_data(IR::DataIndex::PLAYER_Y, (uint16_t)this->player->get_y_position());
+    this->infrared->send_data(IR::DataIndex::PLAYER_FACING_DIR, (uint16_t)(this->player->facing_direction * 100));
+    this->infrared->send_data(IR::DataIndex::EVT0, 0);
+    this->infrared->send_data(IR::DataIndex::EVT1, 0);
+
+    // process player 2
+    this->player2->updateFromIR(delta, this->infrared, this->display);
+
     // draw
     this->player->draw(this->display);
+    this->player2->draw(this->display);
     this->score->draw(this->display);
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
