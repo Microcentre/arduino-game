@@ -89,8 +89,6 @@ void GameScreen::check_bullet_asteroid_collision()
 
 void GameScreen::check_player_asteroid_collision()
 {
-    //this->x_position +((this->front_x - this->x_position)/2);
-
     // calculate and store centered player x and y
     uint16_t rear_player_x = this->player->get_x_position();
     uint16_t front_player_x = this->player->get_front_x_position();

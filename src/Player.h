@@ -43,7 +43,8 @@ public:
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 
-    /// @brief clear drawing at given position
+    /// @brief clear drawing at given position, overloaded with actual facing direction
+    /// used to clear actual position instead of previous in case of player reset
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
