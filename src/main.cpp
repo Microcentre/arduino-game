@@ -15,11 +15,7 @@ const uint8_t SCREEN_DELAY_MS = 20;
 const double DELTA = (double)SCREEN_DELAY_MS / 1000;
 
 IR *p_infrared;
-
-ISR(TIMER0_COMPA_vect)
-{
-    PORTD ^= (1 << PD6);
-}
+long total_timer_value;
 
 ISR(TIMER1_COMPB_vect)
 {
@@ -75,6 +71,7 @@ ISR(TIMER1_COMPA_vect)
         p_infrared->set_flag(IR::Flags::SENDING_START);
         p_infrared->start_blinking();
     }
+    total_timer_value += OCR1A;
 }
 
 ISR(INT0_vect)
@@ -89,9 +86,9 @@ ISR(INT0_vect)
             // measure the rest length
             // it's possible the timer was cleared since timer_start was set,
             // indicated by the counter being lower than the start value
-            if (TCNT1 < p_infrared->get_timer_start())
+            if (total_timer_value)
             {
-                timer_diff = (OCR1A - p_infrared->get_timer_start()) + TCNT1;
+                timer_diff = (total_timer_value - p_infrared->get_timer_start()) + TCNT1;
             }
             else
             {
@@ -103,8 +100,9 @@ ISR(INT0_vect)
                 // signal is START
                 p_infrared->set_received_bits(0);
                 p_infrared->set_input_buffer(0);
+                p_infrared->set_flag(IR::Flags::MESSAGE_STARTED);
             }
-            else
+            else if (p_infrared->get_flags() & IR::Flags::MESSAGE_STARTED)
             {
                 if (timer_diff <= ONE_DURATION + SIGNAL_DEVIATION && timer_diff >= ONE_DURATION - SIGNAL_DEVIATION)
                 {
@@ -121,6 +119,7 @@ ISR(INT0_vect)
                     // signal is junk
                     p_infrared->set_received_bits(0);
                     p_infrared->set_input_buffer(0);
+                    p_infrared->clear_flag(IR::Flags::MESSAGE_STARTED);
                 }
             }
 
@@ -129,6 +128,7 @@ ISR(INT0_vect)
                 p_infrared->set_received_bits(0);
                 // message is complete, interpret it
                 p_infrared->set_flag(IR::Flags::MESSAGE_RECEIVED);
+                p_infrared->clear_flag(IR::Flags::MESSAGE_STARTED);
             }
         }
         else
@@ -137,6 +137,7 @@ ISR(INT0_vect)
             // store the current timer value to measure the
             // signal length
             p_infrared->set_timer_start(TCNT1);
+            total_timer_value = 0;
         }
     }
 }
@@ -166,7 +167,7 @@ int main()
 
         _delay_ms(SCREEN_DELAY_MS);
 
-        p_infrared->send_data(0b10101011);
+        p_infrared->send_data(0b10101111);
         if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
         {
             p_infrared->interpret_data();
