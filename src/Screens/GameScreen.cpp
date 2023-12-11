@@ -33,7 +33,9 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour,
 GameScreen::~GameScreen()
 {
     delete this->player;
+    this->player = nullptr;
     delete this->score;
+    this->score = nullptr;
 }
 
 void GameScreen::update(const double &delta)
