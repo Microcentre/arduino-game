@@ -16,14 +16,13 @@ IR::IR()
     DDRD &= ~(1 << DD2); // set pin D2 (sensor) as input
 
     // setup timer 0, used for blinking the IR LED
-    TCCR0A |= (1 << WGM01);  // CTC
-    TIMSK0 |= (1 << OCIE0A); // interrupt on comp A
+    TCCR0A |= (1 << COM0A0)|(1 << WGM01);  // CTC
     OCR0A = BLINK_DURATION;
 
     // set up timer 1, used for setting and reading IR signal length
     OCR1A = PULSE_DURATION + START_DURATION; // set comp A to the largest real signal 
                                              // to ensure it does not trigger prematurely
-    
+                                             
     TCCR1B |= (1 << WGM12);                  // CTC
     TIMSK1 |= (1 << OCIE1A) | (1 << OCIE1B); // interrupt on comp A and B
     OCR1B = PULSE_DURATION;
@@ -120,7 +119,7 @@ void IR::send_data(uint8_t data)
     uint16_t to_send = 0;
 
     // if there's already data being sent, don't send new data
-    if ((get_flags() & IR::Flags::SENDING_MESSAGE) || get_flags() & IR::Flags::MESSAGE_PENDING)
+    if (get_flags() & IR::Flags::SENDING_MESSAGE || get_flags() & IR::Flags::MESSAGE_PENDING)
     {
         return;
     }
