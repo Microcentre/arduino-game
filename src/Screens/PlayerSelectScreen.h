@@ -2,10 +2,10 @@
 #define PLAYER_SELECT_SCREEN_H
 
 #include "Screen.h"
-#include "ObjectsContainer.h"
+#include "Player.h"
 #include "Display.h"
 
-class PlayerSelectScreen: public Screen, public ObjectsContainer
+class PlayerSelectScreen: public Screen
 {
 public:
     PlayerSelectScreen(Display *display, Joystick *joystick);
@@ -18,6 +18,10 @@ public:
     void on_joystick_changed() override;
 
 private:
+
+    Player *p1;
+    Player *p2;
+
     uint8_t left_selected;
 
     static const uint8_t TEXT_X = 43;
