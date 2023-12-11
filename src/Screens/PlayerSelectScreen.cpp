@@ -34,11 +34,15 @@ void PlayerSelectScreen::drawHud(const double &delta)
     {
         Screen::display->canvas.drawRect(SELECT_BOX_X_LEFT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_WHITE);
         Screen::display->canvas.drawRect(SELECT_BOX_X_RIGHT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_BLACK);
+        this->p1->player_colour = ILI9341_CYAN;
+        this->p2->player_colour = ILI9341_ORANGE;
     }
     else
     {
         Screen::display->canvas.drawRect(SELECT_BOX_X_LEFT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_BLACK);
         Screen::display->canvas.drawRect(SELECT_BOX_X_RIGHT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_WHITE);
+        this->p1->player_colour = ILI9341_ORANGE;
+        this->p2->player_colour = ILI9341_CYAN;
     }
 }
 
@@ -47,14 +51,10 @@ void PlayerSelectScreen::on_joystick_changed()
     if (left_selected && this->joystick->get_x_axis() > 200)
     {
         left_selected = false;
-        this->p1->player_colour = ILI9341_ORANGE;
-        this->p2->player_colour = ILI9341_CYAN;
     }
     else if (!left_selected && this->joystick->get_x_axis() < 70)
     {
         left_selected = true;
-        this->p1->player_colour = ILI9341_CYAN;
-        this->p2->player_colour = ILI9341_ORANGE;
     }
 
     if (this->joystick->is_z_pressed())
