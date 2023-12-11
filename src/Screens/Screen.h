@@ -14,6 +14,8 @@ public:
     // called whenever the state of the joystick changes, should be implemented in child classes
     virtual void on_joystick_changed() = 0;
 
+    bool ready_for_screen_switch = false;
+
 protected:
     /// @brief pointer to display property, used for drawing on the screen
     Display *display;

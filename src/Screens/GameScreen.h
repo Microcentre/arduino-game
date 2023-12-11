@@ -18,7 +18,7 @@ public:
     Score *score;
 
     GameScreen(Display *display, Joystick *joystick);
-    ~GameScreen();
+    virtual ~GameScreen();
 
     /// @brief checks nunchuck and updates all objects in vector array, called every frame
     /// @param delta seconds since last frame

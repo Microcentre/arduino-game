@@ -7,6 +7,7 @@
 #include "Display.h"
 #include "Screens/GameScreen.h"
 #include "Screens/PlayerSelectScreen.h"
+#include "Screens/ScreenHandler.h"
 
 // time to wait between each frame.
 // to minimise redraw flicker.
@@ -144,6 +145,7 @@ ISR(INT0_vect)
 
 void setup()
 {
+    Serial.begin(9600);
     p_infrared = new IR(); // created as pointer so the ISRs can access it
     sei();
 }
@@ -154,7 +156,7 @@ int main()
 
     Display display = Display();
     Joystick joystick = Joystick();
-    PlayerSelectScreen game = PlayerSelectScreen(&display, &joystick);
+    ScreenHandler game = ScreenHandler(&display, &joystick);
 
     // game loop
     while (1)

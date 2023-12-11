@@ -11,6 +11,15 @@ ObjectsContainer::ObjectsContainer(Display *display)
     this->objects = Vector<Object *>(objects_array);
 }
 
+ObjectsContainer::~ObjectsContainer()
+{
+    for (auto i = this->objects.begin(); i != this->objects.end(); ++i)
+    {
+        delete (*i);
+        (*i) = nullptr;
+    }
+}
+
 void ObjectsContainer::add_object(Object *object)
 {
     this->objects.push_back(object);

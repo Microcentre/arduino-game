@@ -19,8 +19,6 @@ GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, j
 
 GameScreen::~GameScreen()
 {
-    delete Screen::joystick;
-    delete Screen::display;
     delete this->player;
     delete this->score;
 }

@@ -4,14 +4,14 @@
 PlayerSelectScreen::PlayerSelectScreen(Display *display, Joystick *joystick) : Screen(display, joystick), ObjectsContainer(display)
 {
     // create player icons and selection icon
-    this->add_object(new Player(PLAYER_LEFT_X, PLAYER_Y, 0));
-    this->add_object(new Player(PLAYER_RIGHT_X, PLAYER_Y, 0));
+    // Player *p1 = new Player(PLAYER_LEFT_X, PLAYER_Y, 0);
+    // Player *p2 = new Player(PLAYER_RIGHT_X, PLAYER_Y, 0);
+    // this->add_object(p1);
+    // this->add_object(p2);
 }
 
 PlayerSelectScreen::~PlayerSelectScreen()
 {
-    delete Screen::joystick;
-    delete Screen::display;
 }
 
 void PlayerSelectScreen::update(const double &delta)
@@ -47,5 +47,6 @@ void PlayerSelectScreen::on_joystick_changed()
 
     if (this->joystick->is_z_pressed()) {
         // select this player
+        this->ready_for_screen_switch = true;
     }
 }

@@ -9,7 +9,7 @@ class PlayerSelectScreen: public Screen, public ObjectsContainer
 {
 public:
     PlayerSelectScreen(Display *display, Joystick *joystick);
-    ~PlayerSelectScreen();
+    virtual ~PlayerSelectScreen();
 
     void update(const double &delta) override;
 
