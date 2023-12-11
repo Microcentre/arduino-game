@@ -6,7 +6,7 @@ Player::Player() : Player(0, 0, 0)
 
 Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingObject(x_position, y_position, speed)
 {
-    this->facing_direction = 0;
+    this->facing_direction = M_PI;
 }
 
 void Player::update(const double &delta)
