@@ -53,6 +53,9 @@ public:
     double get_front_y_position();
     /// @brief 0: at this health game restarts
     const uint8_t GAME_OVER_HEALTH = 0;
+    
+    /// @brief player size from centre to corner, the TOTAL player radius would be 2*PLAYER_SIZE.
+    static constexpr uint8_t PLAYER_SIZE = 8;
 
 private:
     /// @brief in radians per second (so small numbers)
@@ -71,9 +74,6 @@ private:
     static constexpr double DECEL_RATE = 2.0;
     /// @brief Max pixels per second the player may go
     static constexpr double MAX_SPEED = 650;
-
-    /// @brief player size from centre to corner, the TOTAL player radius would be 2*PLAYER_SIZE.
-    static constexpr uint8_t PLAYER_SIZE = 8;
 
     /// @brief How pointy the front is. 1=normal (equilateral triangle)
     static constexpr double POINTINESS = 2.5;

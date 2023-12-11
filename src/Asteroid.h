@@ -3,7 +3,7 @@
 
 #include "MovingObject.h"
 
-const uint8_t ASTEROID_SIZE = 20;
+
 
 
 
@@ -32,6 +32,8 @@ public:
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 
     static const uint8_t SCORE_ASTEROID = 50;
+
+    static const uint8_t ASTEROID_SIZE = 20;
 };
 
 #endif
