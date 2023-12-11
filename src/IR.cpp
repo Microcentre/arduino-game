@@ -187,9 +187,9 @@ uint16_t IR::reverse_data(uint16_t data) {
 
     for (uint8_t i = 0; i < DATA_SIZE; i++)
     {
+        result <<= 1;
         result |= data & 0x01;
         data >>= 1;
-        result <<= 1;
     }
     return result;
     

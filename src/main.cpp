@@ -11,7 +11,7 @@
 // time to wait between each frame.
 // to minimise redraw flicker.
 // 50fps if each frame were to instantly generate.
-const uint8_t SCREEN_DELAY_MS = 20;
+const uint8_t SCREEN_DELAY_MS = 50;
 /// @brief approximate delta in seconds (time since last frame)
 const double DELTA = (double)SCREEN_DELAY_MS / 1000;
 
@@ -22,14 +22,6 @@ ISR(TIMER1_COMPB_vect)
 {
     if (p_infrared->get_flags() & IR::Flags::SENDING_MESSAGE)
     {
-        // stop bit is 1, so the output buffer will
-        // only be 0 if there is nothing left to send
-        if (p_infrared->get_output_buffer() == 0)
-        {
-            p_infrared->queue_next_message();
-            p_infrared->clear_flag(IR::Flags::SENDING_MESSAGE);
-            p_infrared->stop_blinking();
-        }
 
         // set the rest duration based on what is
         // currently being sent
@@ -61,14 +53,23 @@ ISR(TIMER1_COMPA_vect)
         else
         {
             // make room in the output buffer for the next bit
-            // by shifting it to the left once
+            // by shifting it to the right once
             p_infrared->shift_output_buffer();
+            // stop bit is 1, so the output buffer will
+            // only be 0 if there is nothing left to send
+            if (p_infrared->get_output_buffer() == 0)
+            {
+                p_infrared->queue_next_message();
+                // p_infrared->clear_flag(IR::Flags::SENDING_MESSAGE);
+                p_infrared->set_flag(IR::Flags::SENDING_START);
+                // p_infrared->stop_blinking();
+            }
         }
     }
     else if (p_infrared->get_flags() & IR::Flags::MESSAGE_PENDING)
     {
         // start sending a message on the next timer cycle
-        p_infrared->clear_flag(IR::Flags::MESSAGE_PENDING);
+        // p_infrared->clear_flag(IR::Flags::MESSAGE_PENDING);
         p_infrared->set_flag(IR::Flags::SENDING_MESSAGE);
         p_infrared->set_flag(IR::Flags::SENDING_START);
         p_infrared->start_blinking();
@@ -101,6 +102,8 @@ ISR(INT0_vect)
             {
                 // signal is START
                 p_infrared->set_received_bits(0);
+                p_infrared->write_data_to_buffer();
+
                 p_infrared->set_input_buffer(0);
                 p_infrared->set_flag(IR::Flags::MESSAGE_STARTED);
             }

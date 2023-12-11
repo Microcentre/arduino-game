@@ -68,12 +68,15 @@ void Player::updateFromIR(const double &delta, IR *infrared, Display *display)
     uint16_t y = infrared->interpret_data(IR::DataIndex::PLAYER_Y);
     uint16_t dir = infrared->interpret_data(IR::DataIndex::PLAYER_FACING_DIR);
     // only assign if data is valid
-    if (x)
+    if (x) {
         set_x_position((double)x);
+    }
     if (y)
         set_y_position((double)y);
-    if (dir)
+    if (dir) {
         facing_direction = (double)(infrared->interpret_data(IR::DataIndex::PLAYER_FACING_DIR)) / 100;
+    }
+    previous_facing_direction = facing_direction;
     this->undraw(display, this->get_previous_x_position(), this->get_previous_y_position());
 }
 
