@@ -43,6 +43,12 @@ public:
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 
+    /// @brief clear drawing at given position
+    /// @param display display to draw on
+    /// @param x_position X-position of drawing to clear
+    /// @param y_position Y-position of the drawing to clear
+    void undraw(Display *display, const uint16_t x_position, const uint16_t y_position,double actual_facing_direction);
+
     /// @brief -1 health, resets player to centre of screen and handles all hurtobservers
     void hurt(Display *display);
     /// @brief adds a new hurtobserver to the observer array
