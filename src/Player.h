@@ -80,7 +80,7 @@ private:
     /// @brief acceleration per frame holding the gas button
     static constexpr double ACCEL_RATE = 15.0;
 
-    HurtObserver *hurt_observers[2];
+    HurtObserver *hurt_observers[1];
     uint8_t hurt_observers_size = 0;
 
     /// @brief deceleration per frame when not holding the gas button

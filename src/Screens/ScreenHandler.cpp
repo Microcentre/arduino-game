@@ -10,6 +10,7 @@ ScreenHandler::ScreenHandler(Display *display, Joystick *joystick)
 
 void ScreenHandler::switch_screen()
 {
+    this->display->canvas.fillScreen(this->display->background_colour);
     if (this->current_screen == this->select_screen)
     {
         this->game_screen = new GameScreen(display, joystick, select_screen->p1->player_colour, select_screen->p2->player_colour);
@@ -24,7 +25,6 @@ void ScreenHandler::switch_screen()
         delete this->game_screen;
         this->game_screen = nullptr;
     }
-    this->display->canvas.fillScreen(this->display->background_colour);
 }
 
 void ScreenHandler::update(const double &delta)

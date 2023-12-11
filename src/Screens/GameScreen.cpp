@@ -1,7 +1,6 @@
 #include "GameScreen.h"
 #include "Bullet.h"
 #include "Asteroid.h"
-#include "ResetArduinoOnHurt.h"
 #include "ShowHealthOnSSD.h"
 
 GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick) 
@@ -25,10 +24,6 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour,
     // add health display observer to player
     ShowHealthOnSSD *h1 = new ShowHealthOnSSD(player);
     player->add_hurt_observer(h1);
-
-    // add game reset observer to player
-    ResetArduinoOnHurt *h2 = new ResetArduinoOnHurt();
-    player->add_hurt_observer(h2);
 
     // start first wave (won't work in main.cpp for some reason..)
     start_wave(1);
@@ -54,6 +49,11 @@ void GameScreen::update(const double &delta)
     this->bullet_container->update_objects(delta);
     this->asteroid_container->update_objects(delta);
 
+    if (this->player->health <= this->player->GAME_OVER_HEALTH)
+    {
+        this->ready_for_screen_switch = true;
+    }
+    
     // draw
     this->player->draw(this->display);
     this->score->draw(this->display);
