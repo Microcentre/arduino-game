@@ -70,6 +70,8 @@ public:
 
     uint16_t player_colour;
 
+    bool is_invincible = false;
+
 private:
     /// @brief in radians per second (so small numbers)
     static constexpr float TURN_SPEED = 0.25;
@@ -80,7 +82,7 @@ private:
     /// @brief acceleration per frame holding the gas button
     static constexpr double ACCEL_RATE = 15.0;
 
-    HurtObserver *hurt_observers[1];
+    HurtObserver *hurt_observers[2];
     uint8_t hurt_observers_size = 0;
 
     /// @brief deceleration per frame when not holding the gas button
@@ -94,6 +96,11 @@ private:
     /// @brief store previous facing_direction for undraw()
     double previous_facing_direction;
 
+    /// @brief the amount of time the player has been invincible for
+    uint8_t invincibility_timer = 0;
+
+    /// @brief the maximum amount of time the player is invincible for
+    static constexpr uint8_t INVINCIBILITY_TIME = 25;
 };
 
 #endif

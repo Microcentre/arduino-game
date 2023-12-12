@@ -11,6 +11,16 @@ Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingO
 
 void Player::update(const double &delta)
 {
+    if (is_invincible)
+    {
+        invincibility_timer++;
+        if (invincibility_timer >= INVINCIBILITY_TIME)
+        {
+            invincibility_timer = 0;
+            is_invincible = false;
+        }
+    }
+    
     MovingObject::update(delta);
     speed -= DECEL_RATE;
     if (speed < 0)
@@ -120,7 +130,9 @@ void Player::hurt(Display *display)
 
     // call all observers
     for (int i = 0; i < hurt_observers_size; ++i)
+    {
         hurt_observers[i]->update(this);
+    }
 }
 
 void Player::add_hurt_observer(Player::HurtObserver *observer)
