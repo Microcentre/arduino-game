@@ -35,7 +35,7 @@ public:
 
 private:
     /// @brief Whether the left player is selected.
-    uint8_t left_selected = false;
+    uint8_t left_selected = true;
 
     /// @brief The x position of the left player icon.
     static const uint8_t TEXT_X = 43;
