@@ -9,6 +9,7 @@
 #include "Screen.h"
 #include "ObjectsContainer.h"
 #include "Score.h"
+#include "Buzzer.h"
 
 class GameScreen : public Screen
 {
@@ -63,6 +64,8 @@ public:
 private:
     /// @brief max array size for asteroids and bullet containers
     static constexpr uint8_t MAX_AMOUNT_OF_OBJECTS = 15;
+
+    Buzzer buzzer =  Buzzer();
 };
 
 #endif

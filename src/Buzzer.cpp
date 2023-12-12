@@ -5,7 +5,6 @@ Buzzer::Buzzer()
     DDRD |= (1 << DD3);//set buzzer port as output
     
     TCCR2B |= (1 << CS21) | (1 << CS20);//1/32 prescaler
-    TCCR2B |= (1 << FOC2B);//force output compare B, enable PD3 interrupt pin
     
     TCCR2A |= (0 << WGM21); // CTC mode
 
@@ -13,14 +12,14 @@ Buzzer::Buzzer()
     OCR2B = 1;
 }
 
-void Buzzer::short_beep()
+void Buzzer::meduim_beep()
 {
     TCCR2A |= (1<<COM2B0);//toggle OC2B on compare match
     _delay_ms(200);
     TCCR2A &= ~(1<<COM2B0);//normal operation, OC2B disconnected.
 }
 
-void Buzzer::bullet_beep()
+void Buzzer::short_beep()
 {
     TCCR2A |= (1<<COM2B0);//toggle OC2B on compare match
     _delay_ms(25);

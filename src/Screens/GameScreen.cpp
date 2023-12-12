@@ -2,7 +2,6 @@
 #include "Bullet.h"
 #include "Asteroid.h"
 #include "ShowHealthOnSSD.h"
-#include "Buzzer.h"
 
 GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick) 
 {
@@ -128,8 +127,7 @@ void GameScreen::on_joystick_changed()
     {
         if (!(joystick->c_pressed_last_frame) && Bullet::bullet_amount < Bullet::MAX_BULLETS)
         {
-            Buzzer buzzer =  Buzzer();
-            buzzer.bullet_beep();
+            buzzer.short_beep();
             this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction, player->player_colour));
             Bullet::bullet_amount++;
         }
