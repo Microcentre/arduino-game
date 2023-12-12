@@ -26,6 +26,7 @@ void PlayerSelectScreen::update(const double &delta)
 
 void PlayerSelectScreen::drawHud(const double &delta)
 {
+    // displays the text and selection box
     Screen::display->canvas.setCursor(TEXT_X, TEXT_Y);
     Screen::display->canvas.setTextColor(ILI9341_WHITE);
     Screen::display->canvas.setTextSize(3);
