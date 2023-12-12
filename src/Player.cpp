@@ -3,11 +3,13 @@
 
 Player::Player() : Player(0, 0, 0)
 {
+    living_players++;
 }
 
 Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingObject(x_position, y_position, speed)
 {
     this->facing_direction = M_PI;
+    living_players++;
 }
 
 void Player::update(const double &delta)
@@ -83,6 +85,11 @@ void Player::update_from_ir(const double &delta, IR *infrared, Display *display)
     // only assign if data is valid
     update(delta);
     undraw(display, get_previous_x_position(), get_previous_y_position(), previous_facing_direction);
+}
+
+Player::~Player()
+{
+    living_players--;
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)

@@ -17,11 +17,11 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, IR *infrared, uint1
     this->bullet_container = new ObjectsContainer(this->display, bullet_vector);
 
     // create player
-    this->player = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
+    this->player = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 0); // start around the centre
     this->player->player_colour = p1_colour;
     this->player->wrap_around_display = true;
     // create player 2, processed through IR
-    this->player2 = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100);
+    this->player2 = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 0);
     this->player2->player_colour = p2_colour;
     this->player2->wrap_around_display = true;
 
@@ -36,8 +36,10 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, IR *infrared, uint1
 
 GameScreen::~GameScreen()
 {
-    delete this->player;
-    this->player = nullptr;
+    if (this->player) {
+        delete this->player;
+        this->player = nullptr;
+    }
     delete this->score;
     this->score = nullptr;
 }
@@ -77,7 +79,7 @@ void GameScreen::update(const double &delta)
         {
             if (Bullet::bullet_amount < Bullet::MAX_BULLETS)
             {
-                this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction, player->player_colour));
+                this->bullet_container->add_object(new Bullet(player2->get_x_position(), player2->get_y_position(), player2->facing_direction, player2->player_colour));
                 Bullet::bullet_amount++;
             }
         }
@@ -86,6 +88,15 @@ void GameScreen::update(const double &delta)
 
     if (this->player->health <= this->player->GAME_OVER_HEALTH)
     {
+        delete this->player;
+    }
+
+    if (this->player2->health <= this->player->GAME_OVER_HEALTH)
+    {
+        delete this->player2;
+    }
+
+    if (Player::living_players <= 0) {
         this->ready_for_screen_switch = true;
     }
 

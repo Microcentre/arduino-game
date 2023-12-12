@@ -16,6 +16,8 @@ public:
         virtual void update(Player *player) = 0;
     };
 
+    static uint8_t living_players;
+
     uint8_t health = 3;
 
     double facing_direction;
@@ -24,6 +26,7 @@ public:
 
     /// @param speed pixels per second
     Player(uint16_t x_position, uint16_t y_position, double speed);
+    ~Player();
 
     /// @param delta_s time since last frame in seconds
     void update(const double &delta) override;

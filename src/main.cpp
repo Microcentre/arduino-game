@@ -13,7 +13,7 @@
 // time to wait between each frame.
 // to minimise redraw flicker.
 // 50fps if each frame were to instantly generate.
-const uint8_t SCREEN_DELAY_MS = 50;
+const uint8_t SCREEN_DELAY_MS = 20;
 /// @brief approximate delta in seconds (time since last frame)
 const double DELTA = (double)SCREEN_DELAY_MS / 1000;
 
@@ -179,4 +179,3 @@ int main()
     }
     return (0);
 }
-    
