@@ -1,4 +1,5 @@
 #include "ScreenHandler.h"
+#include "Buzzer.h"
 
 ScreenHandler::ScreenHandler(Display *display, Joystick *joystick)
 {
@@ -10,9 +11,11 @@ ScreenHandler::ScreenHandler(Display *display, Joystick *joystick)
 
 void ScreenHandler::switch_screen()
 {
+    Buzzer buzzer = Buzzer();
     this->display->canvas.fillScreen(this->display->background_colour);
     if (this->current_screen == this->select_screen)
     {
+        buzzer.short_beep();
         this->game_screen = new GameScreen(display, joystick, select_screen->p1->player_colour, select_screen->p2->player_colour);
         this->current_screen = this->game_screen;
         delete this->select_screen;
