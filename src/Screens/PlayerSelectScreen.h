@@ -4,6 +4,7 @@
 #include "Screen.h"
 #include "Player.h"
 #include "Display.h"
+#include "Buzzer.h"
 
 class PlayerSelectScreen : public Screen
 {
@@ -66,6 +67,9 @@ private:
 
     /// @brief The y position of the player icons.
     static const uint8_t PLAYER_Y = SELECT_BOX_Y + (SELECT_BOX_SIZE / 2);
+
+    /// @brief buzzer property
+    Buzzer buzzer = Buzzer();
 };
 
 #endif
