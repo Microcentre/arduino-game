@@ -58,14 +58,15 @@ void GameScreen::update(const double &delta)
     this->asteroid_container->update_objects(delta);
 
     // handle infrared (send and receive)
-    this->infrared->send_data(IR::DataIndex::PLAYER_X, (uint16_t)this->player->get_x_position());
-    this->infrared->send_data(IR::DataIndex::PLAYER_Y, (uint16_t)this->player->get_y_position());
-    this->infrared->send_data(IR::DataIndex::PLAYER_FACING_DIR, (uint16_t)(this->player->facing_direction * 100));
+    Serial.println(player->facing_direction);
+    this->infrared->send_data(IR::DataIndex::PLAYER_X, (uint16_t)(this->player->get_x_position()));
+    this->infrared->send_data(IR::DataIndex::PLAYER_Y, (uint16_t)(this->player->get_y_position()));
+    this->infrared->send_data(IR::DataIndex::PLAYER_FACING_DIR, (uint16_t)((double)(this->player->facing_direction + M_PI) * 100.0));
     this->infrared->send_data(IR::DataIndex::EVT0, 0);
     this->infrared->send_data(IR::DataIndex::EVT1, 0);
 
     // process player 2
-    this->player2->updateFromIR(delta, this->infrared, this->display);
+    this->player2->update_from_ir(delta, this->infrared, this->display);
 
     // draw
     this->player->draw(this->display);

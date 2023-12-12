@@ -48,40 +48,58 @@ void Player::accelerate()
 void Player::rotate(const uint8_t rotation)
 {
     // normalise from [0..255] to [0..1]
+    double result_direction;
     double rotation_modifier = (double)rotation / this->MAX_JOYSTICK_AXIS;
     // scale to [0..2] and shift to [-1..1]
     rotation_modifier = (rotation_modifier * 2) - 1;
     // [-1..1] where -1=bottom, 0=centre, 1=top
     this->previous_facing_direction = this->facing_direction;
-    this->facing_direction -= rotation_modifier * this->TURN_SPEED;
+    result_direction = this->facing_direction - (rotation_modifier * this->TURN_SPEED);
+
+    // constrain to range [-pi..pi]
+    if (result_direction > M_PI)
+    {
+        this->facing_direction = M_PI * -1;
+    }
+    else if (result_direction < M_PI * -1)
+    {
+        this->facing_direction = M_PI;
+    }
+    else
+    {
+        this->facing_direction = result_direction;
+    }
 }
 
 void Player::draw(Display *display)
 {
     MovingObject::draw(display);
+    Serial.println("draw");
     this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, ILI9341_WHITE);
 }
 
-void Player::updateFromIR(const double &delta, IR *infrared, Display *display)
+void Player::update_from_ir(const double &delta, IR *infrared, Display *display)
 {
     uint16_t x = infrared->interpret_data(IR::DataIndex::PLAYER_X);
     uint16_t y = infrared->interpret_data(IR::DataIndex::PLAYER_Y);
     uint16_t dir = infrared->interpret_data(IR::DataIndex::PLAYER_FACING_DIR);
     // only assign if data is valid
-    if (x) {
+    previous_facing_direction = facing_direction;
+    if (x)
+    {
         set_x_position((double)x);
     }
     if (y)
         set_y_position((double)y);
-    if (dir) {
-        facing_direction = (double)(infrared->interpret_data(IR::DataIndex::PLAYER_FACING_DIR)) / 100;
+    if (dir)
+    {
+        facing_direction = (double)(((double)(infrared->interpret_data(IR::DataIndex::PLAYER_FACING_DIR)) / 100.0) - M_PI);
     }
-    previous_facing_direction = facing_direction;
-    this->undraw(display, this->get_previous_x_position(), this->get_previous_y_position());
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
+    Serial.println("undraw");
     this->draw(display, x_position, y_position, this->previous_facing_direction, display->background_colour);
 }
 
