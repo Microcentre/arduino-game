@@ -6,6 +6,8 @@ int Score::previous_score = 0;
 
 Score::Score(Display *display, double x_position, double y_position) : Object(x_position, y_position)
 {
+    score = 0;
+    previous_score = 0;
     display->canvas.setCursor(x_position, y_position);
     display->canvas.setTextSize(2);
 }

@@ -6,6 +6,8 @@
 #include "Joystick.h"
 #include "Display.h"
 #include "Screens/GameScreen.h"
+#include "Screens/PlayerSelectScreen.h"
+#include "Screens/ScreenHandler.h"
 
 // time to wait between each frame.
 // to minimise redraw flicker.
@@ -158,7 +160,7 @@ int main()
 
     Display display = Display();
     Joystick joystick = Joystick();
-    GameScreen game = GameScreen(&display, &joystick);
+    ScreenHandler game = ScreenHandler(&display, &joystick);
 
     // game loop
     while (1)

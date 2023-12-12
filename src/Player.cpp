@@ -6,7 +6,7 @@ Player::Player() : Player(0, 0, 0)
 
 Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingObject(x_position, y_position, speed)
 {
-    this->facing_direction = 0;
+    this->facing_direction = M_PI;
 }
 
 void Player::update(const double &delta)
@@ -59,7 +59,7 @@ void Player::rotate(const uint8_t rotation)
 void Player::draw(Display *display)
 {
     MovingObject::draw(display);
-    this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, ILI9341_WHITE);
+    this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, player_colour);
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
@@ -113,7 +113,7 @@ void Player::hurt(Display *display)
     health--;
 
     // reset player
-    undraw(display, this->get_x_position(), this->get_y_position(),this->facing_direction);
+    undraw(display, this->get_x_position(), this->get_y_position(), this->facing_direction);
     set_x_position(Display::WIDTH_PIXELS / 2);
     set_y_position(Display::HEIGHT_PIXELS / 2);
     speed = 0;

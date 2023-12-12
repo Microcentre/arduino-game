@@ -1,10 +1,9 @@
 #include "GameScreen.h"
 #include "Bullet.h"
 #include "Asteroid.h"
-#include "ResetArduinoOnHurt.h"
 #include "ShowHealthOnSSD.h"
 
-GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, joystick)
+GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick) 
 {
     // array of objects on the screen to be updated & rendered.
     // Vector<> is a custom library that IS dynamic,
@@ -19,15 +18,12 @@ GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, j
 
     // create player
     this->player = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
+    this->player->player_colour = p1_colour;
     this->player->wrap_around_display = true;
 
     // add health display observer to player
     ShowHealthOnSSD *h1 = new ShowHealthOnSSD(player);
     player->add_hurt_observer(h1);
-
-    // add game reset observer to player
-    ResetArduinoOnHurt *h2 = new ResetArduinoOnHurt();
-    player->add_hurt_observer(h2);
 
     // start first wave (won't work in main.cpp for some reason..)
     start_wave(1);
@@ -36,10 +32,10 @@ GameScreen::GameScreen(Display *display, Joystick *joystick) : Screen(display, j
 
 GameScreen::~GameScreen()
 {
-    delete Screen::joystick;
-    delete Screen::display;
     delete this->player;
+    this->player = nullptr;
     delete this->score;
+    this->score = nullptr;
 }
 
 void GameScreen::update(const double &delta)
@@ -55,6 +51,11 @@ void GameScreen::update(const double &delta)
     this->bullet_container->update_objects(delta);
     this->asteroid_container->update_objects(delta);
 
+    if (this->player->health <= this->player->GAME_OVER_HEALTH)
+    {
+        this->ready_for_screen_switch = true;
+    }
+    
     // draw
     this->player->draw(this->display);
     this->score->draw(this->display);
@@ -126,7 +127,7 @@ void GameScreen::on_joystick_changed()
     {
         if (!(joystick->c_pressed_last_frame) && Bullet::bullet_amount < Bullet::MAX_BULLETS)
         {
-            this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction));
+            this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction, player->player_colour));
             Bullet::bullet_amount++;
         }
         joystick->c_pressed_last_frame = true;
