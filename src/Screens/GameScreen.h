@@ -9,6 +9,7 @@
 #include "Screen.h"
 #include "ObjectsContainer.h"
 #include "Score.h"
+#include "Waves.h"
 
 class GameScreen : public Screen
 {
@@ -61,14 +62,10 @@ private:
     /// @brief max array size for asteroids and bullet containers
     static constexpr uint8_t MAX_AMOUNT_OF_OBJECTS = 15;
 
-    uint8_t current_wave;
+    Waves waves;
 
     /// @brief called when an asteroid is destroyed. starts a new wave
     void on_asteroid_destroyed();
-
-    /// @brief start wave by spawning asteroids
-    /// @param wave the wave number to start
-    void start_wave(uint8_t wave);
 };
 
 #endif

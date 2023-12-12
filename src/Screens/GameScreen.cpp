@@ -26,8 +26,7 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour,
 
     this->score = new Score(display, Score::X_POS_TEXT, Score::Y_POS_TEXT);
 
-    this->current_wave = 1;
-    start_wave(this->current_wave);
+    this->waves.start_new(display, asteroid_container);
 }
 
 GameScreen::~GameScreen()
@@ -61,6 +60,8 @@ void GameScreen::update(const double &delta)
     this->score->draw(this->display);
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
+
+    this->waves.update(display, delta);
 }
 
 void GameScreen::check_bullet_asteroid_collision()
@@ -109,7 +110,7 @@ void GameScreen::on_asteroid_destroyed()
 
     // start a new wave when no asteroids are left
     if (this->asteroid_container->get_size() <= 0)
-        start_wave(++this->current_wave);
+        this->waves.next();
 }
 
 void GameScreen::check_player_asteroid_collision()
@@ -174,21 +175,4 @@ bool GameScreen::player_asteroid_colliding(uint16_t x_player, uint16_t y_player,
     uint16_t x_distance = x_player - x_asteroid;
     uint16_t y_distance = y_player - y_asteroid;
     return (sq(x_distance) + sq(y_distance)) < sq(Asteroid::ASTEROID_SIZE + Player::PLAYER_SIZE);
-}
-
-void GameScreen::start_wave(uint8_t wave)
-{
-    for (uint8_t i = 0; i < wave; ++i)
-    {
-        uint16_t screen_width = Display::WIDTH_PIXELS;
-        uint8_t screen_height = Display::HEIGHT_PIXELS;
-        uint16_t random_x_position = (uint16_t)rand() % screen_width + 1;
-        uint8_t random_y_position = rand() % screen_height + 1;
-        uint8_t random_speed = rand() % 100 + 1;
-
-        uint16_t m_10_pi = M_PI * 10;
-        double random_direction = (rand() % m_10_pi) / 10;
-
-        this->asteroid_container->add_object(new Asteroid(random_x_position, random_y_position, random_speed, random_direction));
-    }
 }
