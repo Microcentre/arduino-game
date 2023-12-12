@@ -1,10 +1,9 @@
 #include "GameScreen.h"
 #include "Bullet.h"
 #include "Asteroid.h"
-#include "ResetArduinoOnHurt.h"
 #include "ShowHealthOnSSD.h"
 
-GameScreen::GameScreen(Display *display, Joystick *joystick, IR *infrared) : Screen(display, joystick, infrared)
+GameScreen::GameScreen(Display *display, Joystick *joystick, IR *infrared, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick, infrared)
 {
     // array of objects on the screen to be updated & rendered.
     // Vector<> is a custom library that IS dynamic,
@@ -19,18 +18,16 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, IR *infrared) : Scr
 
     // create player
     this->player = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
+    this->player->player_colour = p1_colour;
     this->player->wrap_around_display = true;
     // create player 2, processed through IR
     this->player2 = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100);
+    this->player2->player_colour = p2_colour;
     this->player2->wrap_around_display = true;
 
     // add health display observer to player
     ShowHealthOnSSD *h1 = new ShowHealthOnSSD(player);
     player->add_hurt_observer(h1);
-
-    // add game reset observer to player
-    ResetArduinoOnHurt *h2 = new ResetArduinoOnHurt();
-    player->add_hurt_observer(h2);
 
     // start first wave (won't work in main.cpp for some reason..)
     start_wave(1);
@@ -39,16 +36,17 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, IR *infrared) : Scr
 
 GameScreen::~GameScreen()
 {
-    delete Screen::joystick;
-    delete Screen::display;
     delete this->player;
+    this->player = nullptr;
     delete this->score;
+    this->score = nullptr;
 }
 
 void GameScreen::update(const double &delta)
 {
     // check for collision
     check_bullet_asteroid_collision();
+    check_player_asteroid_collision();
 
     // update
     Screen::update(delta);
@@ -58,7 +56,7 @@ void GameScreen::update(const double &delta)
     this->asteroid_container->update_objects(delta);
 
     // handle infrared (send and receive)
-    Serial.println(player->facing_direction);
+    // Serial.println(player->facing_direction);
     this->infrared->send_data(IR::DataIndex::PLAYER_X, (uint16_t)(this->player->get_x_position()));
     this->infrared->send_data(IR::DataIndex::PLAYER_Y, (uint16_t)(this->player->get_y_position()));
     this->infrared->send_data(IR::DataIndex::PLAYER_FACING_DIR, (uint16_t)((double)(this->player->facing_direction + M_PI) * 100.0));
@@ -68,6 +66,11 @@ void GameScreen::update(const double &delta)
     // process player 2
     this->player2->update_from_ir(delta, this->infrared, this->display);
 
+    if (this->player->health <= this->player->GAME_OVER_HEALTH)
+    {
+        this->ready_for_screen_switch = true;
+    }
+    
     // draw
     this->player->draw(this->display);
     this->player2->draw(this->display);
@@ -101,6 +104,31 @@ void GameScreen::check_bullet_asteroid_collision()
     }
 }
 
+void GameScreen::check_player_asteroid_collision()
+{
+    // calculate and store centered player x and y
+    uint16_t rear_player_x = this->player->get_x_position();
+    uint16_t front_player_x = this->player->get_front_x_position();
+    uint16_t centered_player_x = rear_player_x + ((front_player_x - rear_player_x)/2);
+
+    uint16_t rear_player_y = this->player->get_y_position();
+    uint16_t front_player_y = this->player->get_front_y_position();
+    uint16_t centered_player_y = rear_player_y + ((front_player_y - rear_player_y)/2);
+
+    for (uint8_t j = 0; j < this->asteroid_container->objects.size(); ++j)
+    {
+        // store asteroid x and y
+        uint16_t asteroid_x = this->asteroid_container->objects.at(j)->get_x_position();
+        uint16_t asteroid_y = this->asteroid_container->objects.at(j)->get_y_position();
+
+        // call player.hurt() if collided
+        if (player_asteroid_colliding(centered_player_x, centered_player_y, asteroid_x, asteroid_y))
+        {
+            this->player->hurt(this->display);
+        }
+    }
+}
+
 void GameScreen::on_joystick_changed()
 {
     this->player->rotate(this->joystick->get_x_axis());
@@ -115,7 +143,7 @@ void GameScreen::on_joystick_changed()
     {
         if (!(joystick->c_pressed_last_frame) && Bullet::bullet_amount < Bullet::MAX_BULLETS)
         {
-            this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction));
+            this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction, player->player_colour));
             Bullet::bullet_amount++;
         }
         joystick->c_pressed_last_frame = true;
@@ -130,7 +158,14 @@ bool GameScreen::bullet_asteroid_colliding(uint16_t x_bullet, uint16_t y_bullet,
 {
     uint16_t x_distance = x_bullet - x_asteroid;
     uint16_t y_distance = y_bullet - y_asteroid;
-    return (sq(x_distance) + sq(y_distance)) < sq(ASTEROID_SIZE);
+    return (sq(x_distance) + sq(y_distance)) < sq(Asteroid::ASTEROID_SIZE);
+}
+
+bool GameScreen::player_asteroid_colliding(uint16_t x_player, uint16_t y_player, uint16_t x_asteroid, uint16_t y_asteroid)
+{
+    uint16_t x_distance = x_player - x_asteroid;
+    uint16_t y_distance = y_player - y_asteroid;
+    return (sq(x_distance) + sq(y_distance)) < sq(Asteroid::ASTEROID_SIZE + Player::PLAYER_SIZE);
 }
 
 void GameScreen::start_wave(uint8_t wave)

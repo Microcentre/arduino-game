@@ -6,7 +6,7 @@ Player::Player() : Player(0, 0, 0)
 
 Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingObject(x_position, y_position, speed)
 {
-    this->facing_direction = 0;
+    this->facing_direction = M_PI;
 }
 
 void Player::update(const double &delta)
@@ -74,8 +74,7 @@ void Player::rotate(const uint8_t rotation)
 void Player::draw(Display *display)
 {
     MovingObject::draw(display);
-    Serial.println("draw");
-    this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, ILI9341_WHITE);
+    this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, player_colour);
 }
 
 void Player::update_from_ir(const double &delta, IR *infrared, Display *display)
@@ -95,12 +94,17 @@ void Player::update_from_ir(const double &delta, IR *infrared, Display *display)
     {
         facing_direction = (double)(((double)(infrared->interpret_data(IR::DataIndex::PLAYER_FACING_DIR)) / 100.0) - M_PI);
     }
+    undraw(display, get_previous_x_position(), get_previous_y_position(), previous_facing_direction);
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
-    Serial.println("undraw");
-    this->draw(display, x_position, y_position, this->previous_facing_direction, display->background_colour);
+    this->undraw(display,x_position,y_position,this->previous_facing_direction);
+}
+
+void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position, double actual_facing_direction)
+{
+    this->draw(display, x_position, y_position, actual_facing_direction, display->background_colour);
 }
 
 double Player::get_front_x_position()
@@ -144,7 +148,7 @@ void Player::hurt(Display *display)
     health--;
 
     // reset player
-    undraw(display, this->get_x_position(), this->get_y_position());
+    undraw(display, this->get_x_position(), this->get_y_position(), this->facing_direction);
     set_x_position(Display::WIDTH_PIXELS / 2);
     set_y_position(Display::HEIGHT_PIXELS / 2);
     speed = 0;

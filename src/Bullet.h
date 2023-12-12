@@ -6,7 +6,7 @@
 class Bullet : public MovingObject
 {
 public:
-    Bullet(int16_t x_position, int16_t y_position, double direction);
+    Bullet(int16_t x_position, int16_t y_position, double direction, uint16_t colour);
 
     /// @param delta_s time since last frame in seconds
     void update(const double &delta) override;
@@ -30,6 +30,9 @@ public:
     static const uint8_t MAX_BULLETS = 3;
 
 private:
+
+    uint16_t bullet_colour;
+
     const double SPEED = 1024;
 
     /// @brief How many frames it takes before the bullet despawns

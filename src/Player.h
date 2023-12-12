@@ -46,6 +46,13 @@ public:
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 
+    /// @brief clear drawing at given position, overloaded with actual facing direction
+    /// used to clear actual position instead of previous in case of player reset
+    /// @param display display to draw on
+    /// @param x_position X-position of drawing to clear
+    /// @param y_position Y-position of the drawing to clear
+    void undraw(Display *display, const uint16_t x_position, const uint16_t y_position,double actual_facing_direction);
+
     /// @brief -1 health, resets player to centre of screen and handles all hurtobservers
     void hurt(Display *display);
     /// @brief adds a new hurtobserver to the observer array
@@ -54,8 +61,17 @@ public:
     double get_front_x_position();
     /// @return the Y position of the front-point of the player
     double get_front_y_position();
+
+    /// @brief draws the player. used by draw() and undraw()
+    void draw(Display *display, const uint16_t x_position, const uint16_t y_position, double facing_direction, uint16_t colour);
+
     /// @brief 0: at this health game restarts
     const uint8_t GAME_OVER_HEALTH = 0;
+    
+    /// @brief player size from centre to corner, the TOTAL player radius would be 2*PLAYER_SIZE.
+    static constexpr uint8_t PLAYER_SIZE = 8;
+
+    uint16_t player_colour;
 
 private:
     /// @brief in radians per second (so small numbers)
@@ -67,7 +83,7 @@ private:
     /// @brief acceleration per frame holding the gas button
     static constexpr double ACCEL_RATE = 15.0;
 
-    HurtObserver *hurt_observers[2];
+    HurtObserver *hurt_observers[1];
     uint8_t hurt_observers_size = 0;
 
     /// @brief deceleration per frame when not holding the gas button
@@ -75,17 +91,12 @@ private:
     /// @brief Max pixels per second the player may go
     static constexpr double MAX_SPEED = 650;
 
-    /// @brief player size from centre to corner, the TOTAL player radius would be 2*PLAYER_SIZE.
-    static constexpr uint8_t PLAYER_SIZE = 8;
-
     /// @brief How pointy the front is. 1=normal (equilateral triangle)
     static constexpr double POINTINESS = 2.5;
 
     /// @brief store previous facing_direction for undraw()
     double previous_facing_direction;
 
-    /// @brief draws the player. used by draw() and undraw()
-    void draw(Display *display, const uint16_t x_position, const uint16_t y_position, double facing_direction, uint16_t colour);
 };
 
 #endif

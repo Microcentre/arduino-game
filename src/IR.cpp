@@ -154,8 +154,8 @@ void IR::send_data(uint8_t index, uint16_t data)
     to_send |= START_BIT;
     data_to_send[index] = to_send;
 
-    Serial.println(index);
-    Serial.println(to_send, BIN);
+    // Serial.println(index);
+    // Serial.println(to_send, BIN);
     set_flag(IR::Flags::MESSAGE_PENDING);
 }
 
