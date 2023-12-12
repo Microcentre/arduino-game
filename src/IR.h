@@ -3,6 +3,9 @@
 
 #include <avr/io.h>
 
+#include "Joystick.h"
+
+
 const uint16_t CARRIER_FREQUENCY = 38000;
 
 const uint8_t DATA_SIZE = 10;
@@ -21,6 +24,10 @@ const uint16_t START_DURATION = 54000; // 3.3750ms
 const uint16_t SIGNAL_DEVIATION = 2000;
 
 const uint8_t DATA_ARRAY_SIZE = 5;
+
+const uint16_t JOY_MASK_X_AXIS = 0b1111111100;
+const uint16_t JOY_MASK_Z_BUTTON = 0b0000000010;
+const uint16_t JOY_MASK_C_BUTTON = 0b0000000001;
 
 class IR
 {
@@ -70,6 +77,7 @@ public:
     void send_bit(uint8_t);
 
     void read_data();
+    void send_joystick(Joystick*);
     void send_data(uint8_t, uint16_t);
     uint16_t interpret_data(uint8_t);
     uint16_t reverse_data(uint16_t);

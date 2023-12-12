@@ -56,21 +56,39 @@ void GameScreen::update(const double &delta)
     this->asteroid_container->update_objects(delta);
 
     // handle infrared (send and receive)
-    // Serial.println(player->facing_direction);
-    this->infrared->send_data(IR::DataIndex::PLAYER_X, (uint16_t)(this->player->get_x_position()));
-    this->infrared->send_data(IR::DataIndex::PLAYER_Y, (uint16_t)(this->player->get_y_position()));
-    this->infrared->send_data(IR::DataIndex::PLAYER_FACING_DIR, (uint16_t)((double)(this->player->facing_direction + M_PI) * 100.0));
-    this->infrared->send_data(IR::DataIndex::EVT0, 0);
-    this->infrared->send_data(IR::DataIndex::EVT1, 0);
+    this->infrared->send_joystick(this->joystick);
 
     // process player 2
-    this->player2->update_from_ir(delta, this->infrared, this->display);
+
+    // player 2 joystick
+    uint16_t joystick2 = infrared->interpret_data(IR::DataIndex::PLAYER_X);
+    if (joystick2)
+    {
+        uint8_t joy2_x_axis = (joystick2 & JOY_MASK_X_AXIS) >> 2;
+        this->player->rotate(joy2_x_axis);
+        // Z = accelerate
+        if (joystick2 & (JOY_MASK_Z_BUTTON))
+        {
+            this->player->accelerate();
+        }
+
+        // C = shoot
+        if (joystick2 & JOY_MASK_C_BUTTON)
+        {
+            if (Bullet::bullet_amount < Bullet::MAX_BULLETS)
+            {
+                this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction, player->player_colour));
+                Bullet::bullet_amount++;
+            }
+        }
+    }
+    this->player2->update(delta);
 
     if (this->player->health <= this->player->GAME_OVER_HEALTH)
     {
         this->ready_for_screen_switch = true;
     }
-    
+
     // draw
     this->player->draw(this->display);
     this->player2->draw(this->display);
@@ -109,11 +127,11 @@ void GameScreen::check_player_asteroid_collision()
     // calculate and store centered player x and y
     uint16_t rear_player_x = this->player->get_x_position();
     uint16_t front_player_x = this->player->get_front_x_position();
-    uint16_t centered_player_x = rear_player_x + ((front_player_x - rear_player_x)/2);
+    uint16_t centered_player_x = rear_player_x + ((front_player_x - rear_player_x) / 2);
 
     uint16_t rear_player_y = this->player->get_y_position();
     uint16_t front_player_y = this->player->get_front_y_position();
-    uint16_t centered_player_y = rear_player_y + ((front_player_y - rear_player_y)/2);
+    uint16_t centered_player_y = rear_player_y + ((front_player_y - rear_player_y) / 2);
 
     for (uint8_t j = 0; j < this->asteroid_container->objects.size(); ++j)
     {

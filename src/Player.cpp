@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "IR.h"
 
 Player::Player() : Player(0, 0, 0)
 {
@@ -79,27 +80,14 @@ void Player::draw(Display *display)
 
 void Player::update_from_ir(const double &delta, IR *infrared, Display *display)
 {
-    uint16_t x = infrared->interpret_data(IR::DataIndex::PLAYER_X);
-    uint16_t y = infrared->interpret_data(IR::DataIndex::PLAYER_Y);
-    uint16_t dir = infrared->interpret_data(IR::DataIndex::PLAYER_FACING_DIR);
     // only assign if data is valid
-    previous_facing_direction = facing_direction;
-    if (x)
-    {
-        set_x_position((double)x);
-    }
-    if (y)
-        set_y_position((double)y);
-    if (dir)
-    {
-        facing_direction = (double)(((double)(infrared->interpret_data(IR::DataIndex::PLAYER_FACING_DIR)) / 100.0) - M_PI);
-    }
+    update(delta);
     undraw(display, get_previous_x_position(), get_previous_y_position(), previous_facing_direction);
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
-    this->undraw(display,x_position,y_position,this->previous_facing_direction);
+    this->undraw(display, x_position, y_position, this->previous_facing_direction);
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position, double actual_facing_direction)

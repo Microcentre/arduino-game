@@ -119,6 +119,17 @@ void IR::inc_received_bits()
     received_bits++;
 }
 
+void IR::send_joystick(Joystick *joystick)
+{
+    uint16_t data = 0;
+    data |= joystick->get_x_axis();
+    data <<= 1;
+    data |= joystick->is_z_pressed();
+    data <<= 1;
+    data |= joystick->is_c_first_pressed();
+    send_data(0, data);
+}
+
 void IR::send_data(uint8_t index, uint16_t data)
 {
     uint8_t set_bits = 0;
