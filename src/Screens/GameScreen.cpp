@@ -36,6 +36,10 @@ GameScreen::~GameScreen()
     this->player = nullptr;
     delete this->score;
     this->score = nullptr;
+    delete this->asteroid_container;
+    this->asteroid_container = nullptr;
+    delete this->bullet_container;
+    this->bullet_container = nullptr;
 }
 
 void GameScreen::update(const double &delta)
