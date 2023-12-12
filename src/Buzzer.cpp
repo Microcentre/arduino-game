@@ -1,4 +1,4 @@
-#include "Buzzer.h";
+#include "Buzzer.h"
 
 Buzzer::Buzzer(){
     DDRD |= (1 << DD3);

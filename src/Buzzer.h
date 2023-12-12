@@ -6,9 +6,9 @@
 
 class Buzzer{
     public:
-        /// @brief initializes portD for buzzer
+        /// @brief initializes portd for buzzer
         Buzzer();
-        /// @brief generates a short beep using buzzer port and delay
+        /// @brief generates a short beep using buzzer portd and delay
         void short_beep();
 };
 
