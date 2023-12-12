@@ -1,6 +1,6 @@
 #include "ObjectsContainer.h"
 
-ObjectsContainer::ObjectsContainer(Display *display, Vector<Object *>(objects_array))
+ObjectsContainer::ObjectsContainer(Display *display, Vector<Object *> objects_array)
 {
     this->display = display;
 
@@ -39,24 +39,32 @@ void ObjectsContainer::delete_object(Object *object)
 
 void ObjectsContainer::update_objects(const double &delta)
 {
-    for(uint8_t i=0; i<this->objects.size(); ++i)
+    auto i = this->objects.begin();
+    while (i != this->objects.end())
     {
-        Object* object = this->objects.at(i);
+        Object *object = (*i);
+
         // delete if marked for deletion
         if (object->marked_for_deletion)
         {
             this->delete_object(object);
-            break;
+            continue;
         }
 
         object->update(delta);
+        ++i;
     }
 }
 
 void ObjectsContainer::draw_objects(const double &delta)
 {
-    for(uint8_t i=0; i<this->objects.size(); ++i)
-        (this->objects.at(i))->draw(this->display);
+    for (auto i = objects.begin(); i != objects.end(); ++i)
+        (*i)->draw(this->display);
+}
+
+uint8_t ObjectsContainer::get_size()
+{
+    return this->objects.size();
 }
 
 uint8_t ObjectsContainer::find_object_index(Object *object)

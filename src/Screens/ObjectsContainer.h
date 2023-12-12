@@ -11,7 +11,7 @@ public:
     /// @brief Objects are drawn and updated every frame
     Vector<Object *> objects;
 
-    ObjectsContainer(Display *display, Vector<Object *>(objects_array));
+    ObjectsContainer(Display *display, Vector<Object *> objects_array);
     ~ObjectsContainer();
 
     /// @param object object to add to the list of objects that are updated&drawn every frame
@@ -27,6 +27,9 @@ public:
     /// @brief call draw() on all objects. is called every frame.
     /// @param delta seconds since last frame
     void draw_objects(const double &delta);
+
+    /// @return the amount of objects the ObjectContainer is holding
+    uint8_t get_size();
 
 private:
     Display *display;
