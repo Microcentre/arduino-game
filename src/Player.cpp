@@ -140,3 +140,7 @@ void Player::add_hurt_observer(Player::HurtObserver *observer)
     this->hurt_observers[hurt_observers_size] = observer;
     this->hurt_observers_size++;
 }
+
+Player::HurtObserver::~HurtObserver()
+{
+}

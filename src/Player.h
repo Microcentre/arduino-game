@@ -13,6 +13,7 @@ public:
     public:
         /// @brief executes observer behavior
         virtual void update(Player *player) = 0;
+        virtual ~HurtObserver();
     };
 
     uint8_t health = 3;
