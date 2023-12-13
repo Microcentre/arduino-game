@@ -10,6 +10,7 @@
 #include "ObjectsContainer.h"
 #include "Score.h"
 #include "Waves.h"
+#include "Buzzer.h"
 
 class GameScreen : public Screen
 {
@@ -66,6 +67,8 @@ private:
 
     /// @brief called when an asteroid is destroyed. starts a new wave
     void on_asteroid_destroyed();
+    
+    Buzzer buzzer =  Buzzer();
 };
 
 #endif

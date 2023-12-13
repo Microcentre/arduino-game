@@ -17,6 +17,7 @@ ObjectsContainer::~ObjectsContainer()
         delete (*i);
         (*i) = nullptr;
     }
+    this->objects.clear();
 }
 
 void ObjectsContainer::add_object(Object *object)
