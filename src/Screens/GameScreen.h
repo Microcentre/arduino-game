@@ -62,7 +62,7 @@ private:
     /// @brief max array size for asteroids and bullet containers
     static constexpr uint8_t MAX_AMOUNT_OF_OBJECTS = 15;
 
-    Waves waves;
+    Waves *waves;
 
     /// @brief called when an asteroid is destroyed. starts a new wave
     void on_asteroid_destroyed();

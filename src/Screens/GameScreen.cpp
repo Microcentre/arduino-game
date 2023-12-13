@@ -26,7 +26,8 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour,
 
     this->score = new Score(display, Score::X_POS_TEXT, Score::Y_POS_TEXT);
 
-    this->waves.start_new();
+    this->waves = new Waves(this->MAX_AMOUNT_OF_OBJECTS);
+    this->waves->start_new();
 }
 
 GameScreen::~GameScreen()
@@ -35,6 +36,7 @@ GameScreen::~GameScreen()
     this->player = nullptr;
     delete this->score;
     this->score = nullptr;
+    delete this->waves;
 }
 
 void GameScreen::update(const double &delta)
@@ -61,7 +63,7 @@ void GameScreen::update(const double &delta)
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
 
-    this->waves.update(display, delta, this->asteroid_container);
+    this->waves->update(display, delta, this->asteroid_container);
 }
 
 void GameScreen::check_bullet_asteroid_collision()
@@ -110,7 +112,7 @@ void GameScreen::on_asteroid_destroyed()
 
     // start a new wave when no asteroids are left
     if (this->asteroid_container->get_size() <= 0)
-        this->waves.next();
+        this->waves->next();
 }
 
 void GameScreen::check_player_asteroid_collision()

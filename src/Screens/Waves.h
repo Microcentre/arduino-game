@@ -17,7 +17,7 @@ public:
     /// @brief current wave
     uint8_t wave = 0;
 
-    Waves();
+    Waves(uint8_t max_asteroids);
 
     /// @brief should be called very frame
     /// @param delta_s time since last frame in seconds
@@ -49,6 +49,8 @@ private:
     Waves::DrawPhase draw_phase = Waves::DrawPhase::NONE;
     /// @brief how long the text will remain showing, in (delta) seconds
     double text_time_left = 0;
+
+    uint8_t max_asteroids;
 
     /// @brief Spawn asteroids depending on the current wave
     /// @param asteroid_container
