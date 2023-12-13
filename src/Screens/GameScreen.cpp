@@ -26,7 +26,7 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour,
 
     this->score = new Score(display, Score::X_POS_TEXT, Score::Y_POS_TEXT);
 
-    this->waves.start_new(display, asteroid_container);
+    this->waves.start_new();
 }
 
 GameScreen::~GameScreen()
@@ -61,7 +61,7 @@ void GameScreen::update(const double &delta)
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
 
-    this->waves.update(display, delta);
+    this->waves.update(display, delta, this->asteroid_container);
 }
 
 void GameScreen::check_bullet_asteroid_collision()

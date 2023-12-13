@@ -25,11 +25,10 @@ public:
     Display();
 
     /// @brief HELPER FUNCTION: draw text centered at a given position
-    /// @param display display to draw on
     /// @param text characters to display
     /// @param x_pos centered x position of text
     /// @param y_pos centered y position of text
-    void draw_centred_text(Display *display, const String &text, uint16_t x_pos, uint8_t y_pos);
+    void draw_centred_text(const String &text, uint16_t x_pos, uint8_t y_pos);
 };
 
 #endif
