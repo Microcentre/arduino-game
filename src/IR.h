@@ -25,7 +25,7 @@ const uint16_t SIGNAL_DEVIATION = 2000;
 
 const uint8_t DATA_ARRAY_SIZE = 5;
 
-const uint16_t JOY_MASK_X_AXIS = 0b1111111100;
+const uint16_t JOY_MASK_X_AXIS = 0b0011111111;
 const uint16_t JOY_MASK_Z_BUTTON = 0b1000000000;
 const uint16_t JOY_MASK_C_BUTTON = 0b0100000000;
 
