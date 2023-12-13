@@ -2,8 +2,7 @@
 #include "Bullet.h"
 #include "Asteroid.h"
 
-
-GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick) 
+GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick)
 {
     // array of objects on the screen to be updated & rendered.
     // Vector<> is a custom library that IS dynamic,
@@ -12,7 +11,6 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour,
     Object *bullet_array[MAX_AMOUNT_OF_OBJECTS];
     Vector<Object *> asteroid_vector = Vector<Object *>(asteroid_array);
     Vector<Object *> bullet_vector = Vector<Object *>(bullet_array);
-
     this->asteroid_container = new ObjectsContainer(this->display, asteroid_vector);
     this->bullet_container = new ObjectsContainer(this->display, bullet_vector);
 
@@ -29,9 +27,10 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour,
     this->h2 = new InvincibilityFrames();
     player->add_hurt_observer(h2);
 
-    // start first wave (won't work in main.cpp for some reason..)
-    start_wave(1);
     this->score = new Score(display, Score::X_POS_TEXT, Score::Y_POS_TEXT);
+
+    this->waves = new Waves(this->MAX_AMOUNT_OF_OBJECTS);
+    this->waves->start_new();
 }
 
 GameScreen::~GameScreen()
@@ -40,6 +39,8 @@ GameScreen::~GameScreen()
     this->player = nullptr;
     delete this->score;
     this->score = nullptr;
+    delete this->waves;
+    this->waves = nullptr;
     delete this->asteroid_container;
     this->asteroid_container = nullptr;
     delete this->bullet_container;
@@ -67,37 +68,63 @@ void GameScreen::update(const double &delta)
     {
         this->ready_for_screen_switch = true;
     }
-    
+
     // draw
     this->player->draw(this->display);
     this->score->draw(this->display);
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
+
+    this->waves->update(display, delta, this->asteroid_container);
 }
 
 void GameScreen::check_bullet_asteroid_collision()
 {
-    for (uint8_t i = 0; i < this->bullet_container->objects.size(); ++i)
+    // for each bullet, check if it collides with any asteroid
+    auto i = this->bullet_container->objects.begin();
+    while (i != this->bullet_container->objects.end())
     {
-        // store bullet x and y
-        uint16_t bullet_x = this->bullet_container->objects.at(i)->get_x_position();
-        uint16_t bullet_y = this->bullet_container->objects.at(i)->get_y_position();
+        bool deleted = false;
+        Object *bullet = (*i);
+        uint16_t bullet_x_position = bullet->get_x_position();
+        uint8_t bullet_y_position = bullet->get_y_position();
 
-        for (uint8_t j = 0; j < this->asteroid_container->objects.size(); ++j)
+        auto j = this->asteroid_container->objects.begin();
+        while (j != this->asteroid_container->objects.end())
         {
-            // store asteroid x and y
-            uint16_t asteroid_x = this->asteroid_container->objects.at(j)->get_x_position();
-            uint16_t asteroid_y = this->asteroid_container->objects.at(j)->get_y_position();
+            Object *asteroid = (*j);
+            uint16_t asteroid_x_position = asteroid->get_x_position();
+            uint8_t asteroid_y_position = asteroid->get_y_position();
 
-            // mark colliding bullet and asteroid for deletion
-            if (bullet_asteroid_colliding(bullet_x, bullet_y, asteroid_x, asteroid_y))
+            // if a bullet is hitting an asteroid
+            if (bullet_asteroid_colliding(bullet_x_position, bullet_y_position, asteroid_x_position, asteroid_y_position))
             {
-                this->bullet_container->objects.at(i)->marked_for_deletion = true;
-                this->asteroid_container->objects.at(j)->marked_for_deletion = true;
-                this->score->add_score(Asteroid::SCORE_ASTEROID);
+                deleted = true;
+                // delete both bullet and asteroid
+                this->bullet_container->delete_object(bullet);
+                this->asteroid_container->delete_object(asteroid);
+
+                this->on_asteroid_destroyed();
             }
+            // only increment if didn't delete asteroid
+            else
+                ++j;
         }
+
+        // only increment if bullet wasn't deleted
+        if (!deleted)
+            ++i;
     }
+}
+
+void GameScreen::on_asteroid_destroyed()
+{
+    // add score
+    this->score->add_score(Asteroid::SCORE_ASTEROID);
+
+    // start a new wave when no asteroids are left
+    if (this->asteroid_container->get_size() <= 0)
+        this->waves->next();
 }
 
 void GameScreen::check_player_asteroid_collision()
@@ -105,11 +132,11 @@ void GameScreen::check_player_asteroid_collision()
     // calculate and store centered player x and y
     uint16_t rear_player_x = this->player->get_x_position();
     uint16_t front_player_x = this->player->get_front_x_position();
-    uint16_t centered_player_x = rear_player_x + ((front_player_x - rear_player_x)/2);
+    uint16_t centered_player_x = rear_player_x + ((front_player_x - rear_player_x) / 2);
 
     uint16_t rear_player_y = this->player->get_y_position();
     uint16_t front_player_y = this->player->get_front_y_position();
-    uint16_t centered_player_y = rear_player_y + ((front_player_y - rear_player_y)/2);
+    uint16_t centered_player_y = rear_player_y + ((front_player_y - rear_player_y) / 2);
 
     for (uint8_t j = 0; j < this->asteroid_container->objects.size(); ++j)
     {
@@ -163,19 +190,4 @@ bool GameScreen::player_asteroid_colliding(uint16_t x_player, uint16_t y_player,
     uint16_t x_distance = x_player - x_asteroid;
     uint16_t y_distance = y_player - y_asteroid;
     return (sq(x_distance) + sq(y_distance)) < sq(Asteroid::ASTEROID_SIZE + Player::PLAYER_SIZE);
-}
-
-void GameScreen::start_wave(uint8_t wave)
-{
-    switch (wave)
-    {
-    case 1:
-        this->asteroid_container->add_object(new Asteroid(50, 00, 40, 0));
-        this->asteroid_container->add_object(new Asteroid(150, 50, 80, M_PI));
-        this->asteroid_container->add_object(new Asteroid(200, 100, 100, 1));
-        this->asteroid_container->add_object(new Asteroid(250, 150, 150, 4));
-        break;
-    default:
-        break;
-    }
 }
