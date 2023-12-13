@@ -26,6 +26,5 @@ void Display::draw_centred_text(const String &text, uint16_t x_pos, uint8_t y_po
     auto new_y_pos = y_pos - (height / 2);
     this->canvas.setCursor(new_x_pos, new_y_pos);
 
-    // print 😎
     this->canvas.print(text);
 }
