@@ -11,6 +11,8 @@
 #include "Score.h"
 #include "Waves.h"
 #include "Buzzer.h"
+#include "ShowHealthOnSSD.h"
+#include "InvincibilityFrames.h"
 
 class GameScreen : public Screen
 {
@@ -20,6 +22,9 @@ public:
     ObjectsContainer *asteroid_container;
     ObjectsContainer *bullet_container;
     Score *score;
+
+    ShowHealthOnSSD *h1;
+    InvincibilityFrames *h2;    
 
     GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour);
     virtual ~GameScreen();

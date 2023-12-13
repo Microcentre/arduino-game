@@ -13,6 +13,7 @@ public:
     public:
         /// @brief executes observer behavior
         virtual void update(Player *player) = 0;
+        virtual ~HurtObserver();
     };
 
     uint8_t health = 3;
@@ -48,7 +49,7 @@ public:
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
-    void undraw(Display *display, const uint16_t x_position, const uint16_t y_position,double actual_facing_direction);
+    void undraw(Display *display, const uint16_t x_position, const uint16_t y_position, double actual_facing_direction);
 
     /// @brief -1 health, resets player to centre of screen and handles all hurtobservers
     void hurt(Display *display);
@@ -64,11 +65,13 @@ public:
 
     /// @brief 0: at this health game restarts
     const uint8_t GAME_OVER_HEALTH = 0;
-    
+
     /// @brief player size from centre to corner, the TOTAL player radius would be 2*PLAYER_SIZE.
     static constexpr uint8_t PLAYER_SIZE = 8;
 
     uint16_t player_colour;
+
+    bool is_invincible = false;
 
 private:
     /// @brief in radians per second (so small numbers)
@@ -80,7 +83,10 @@ private:
     /// @brief acceleration per frame holding the gas button
     static constexpr double ACCEL_RATE = 15.0;
 
-    HurtObserver *hurt_observers[1];
+    /// @brief array of hurtobservers. Hurtobservers are called when player is hurt.
+    /// @brief They include showing health on 7-segment display and handling invincibility of player
+    HurtObserver *hurt_observers[2];
+
     uint8_t hurt_observers_size = 0;
 
     /// @brief deceleration per frame when not holding the gas button
@@ -94,6 +100,11 @@ private:
     /// @brief store previous facing_direction for undraw()
     double previous_facing_direction;
 
+    /// @brief the amount of time the player has been invincible for
+    uint8_t invincibility_timer = 0;
+
+    /// @brief the maximum amount of time the player is invincible for
+    static constexpr uint8_t INVINCIBILITY_TIME = 25;
 };
 
 #endif
