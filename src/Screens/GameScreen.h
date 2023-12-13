@@ -24,7 +24,7 @@ public:
     Score *score;
 
     ShowHealthOnSSD *h1;
-    InvincibilityFrames *h2;    
+    InvincibilityFrames *h2;
 
     GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour);
     virtual ~GameScreen();
@@ -72,8 +72,8 @@ private:
 
     /// @brief called when an asteroid is destroyed. starts a new wave
     void on_asteroid_destroyed();
-    
-    Buzzer buzzer =  Buzzer();
+
+    Buzzer buzzer = Buzzer();
 };
 
 #endif

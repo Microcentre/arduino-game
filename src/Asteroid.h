@@ -3,10 +3,6 @@
 
 #include "MovingObject.h"
 
-
-
-
-
 class Asteroid : public MovingObject
 {
 public:

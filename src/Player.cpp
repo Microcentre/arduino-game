@@ -20,7 +20,7 @@ void Player::update(const double &delta)
             is_invincible = false;
         }
     }
-    
+
     MovingObject::update(delta);
     speed -= DECEL_RATE;
     if (speed < 0)
@@ -74,7 +74,7 @@ void Player::draw(Display *display)
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
-    this->undraw(display,x_position,y_position,this->previous_facing_direction);
+    this->undraw(display, x_position, y_position, this->previous_facing_direction);
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position, double actual_facing_direction)
