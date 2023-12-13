@@ -2,7 +2,6 @@
 #include "Bullet.h"
 #include "Asteroid.h"
 
-
 GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick)
 {
     // array of objects on the screen to be updated & rendered.
@@ -41,6 +40,7 @@ GameScreen::~GameScreen()
     delete this->score;
     this->score = nullptr;
     delete this->waves;
+    this->waves = nullptr;
     delete this->asteroid_container;
     this->asteroid_container = nullptr;
     delete this->bullet_container;
