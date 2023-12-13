@@ -13,11 +13,11 @@ IR::IR()
     current_send_index = 0;
 
     // clear send/receive arrays
-    for (uint8_t i = 0; i < DATA_ARRAY_SIZE; i++)
-    {
-        received_data[i] = 0;
-        data_to_send[i] = 0;
-    }
+    // for (uint8_t i = 0; i < DATA_ARRAY_SIZE; i++)
+    // {
+        received_data[0] = 0;
+        data_to_send[0] = 0;
+    // }
     
 
     DDRD |= (1 << DD6); // set pin D6 (LED) as output
@@ -137,10 +137,10 @@ void IR::send_data(uint8_t index, uint16_t data)
     uint16_t to_send = 0;
 
     // if there's already data being sent, don't send new data
-    // if (get_flags() & IR::Flags::SENDING_MESSAGE || get_flags() & IR::Flags::MESSAGE_PENDING)
-    // {
-    //     return;
-    // }
+    if (get_flags() & IR::Flags::SENDING_MESSAGE || get_flags() & IR::Flags::MESSAGE_PENDING)
+    {
+        return;
+    }
     
     // check how many bits in the data are set to 1
     for (uint8_t i = 0; i < DATA_SIZE; i++)
@@ -164,9 +164,8 @@ void IR::send_data(uint8_t index, uint16_t data)
     to_send <<= 1;
     to_send |= START_BIT;
     data_to_send[index] = to_send;
+    Serial.println(to_send, BIN);
 
-    Serial.print("SEND: ");
-    Serial.println(data, BIN);
     set_flag(IR::Flags::MESSAGE_PENDING);
 }
 
@@ -186,8 +185,8 @@ uint16_t IR::interpret_data(uint8_t index)
         }
     }
     // are stop bit and start bit set, and does the parity match?
-    Serial.print("RECEIVE: ");
-    Serial.println(input, BIN);
+    // Serial.print("RECEIVE: ");
+    // Serial.println(data, BIN);
     clear_flag(IR::Flags::MESSAGE_RECEIVED);
     if (input & 0x01 && input >> (MESSAGE_SIZE - 1) && set_bits % 2 == parity_bit)
     {

@@ -64,6 +64,7 @@ void GameScreen::update(const double &delta)
 
     // player 2 joystick
     uint16_t joystick2 = infrared->interpret_data(0);
+    Serial.println(joystick2, BIN);
     if (joystick2)
     {
         uint8_t joy2_x_axis = (joystick2 & JOY_MASK_X_AXIS) >> 2;
