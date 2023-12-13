@@ -98,8 +98,8 @@ private:
     uint16_t timer_start;
     uint8_t received_bits;
     volatile uint8_t flags;
-    uint16_t received_data[DATA_ARRAY_SIZE];
-    uint16_t data_to_send[DATA_ARRAY_SIZE];
+    uint16_t received_data[1];
+    uint16_t data_to_send[1];
     uint8_t current_send_index;
     uint8_t current_read_index;
 };

@@ -63,15 +63,15 @@ void GameScreen::update(const double &delta)
     // process player 2
 
     // player 2 joystick
-    uint16_t joystick2 = infrared->interpret_data(IR::DataIndex::PLAYER_X);
+    uint16_t joystick2 = infrared->interpret_data(0);
     if (joystick2)
     {
         uint8_t joy2_x_axis = (joystick2 & JOY_MASK_X_AXIS) >> 2;
-        this->player->rotate(joy2_x_axis);
+        this->player2->rotate(joy2_x_axis);
         // Z = accelerate
         if (joystick2 & (JOY_MASK_Z_BUTTON))
         {
-            this->player->accelerate();
+            this->player2->accelerate();
         }
 
         // C = shoot

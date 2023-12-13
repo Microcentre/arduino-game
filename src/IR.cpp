@@ -165,8 +165,7 @@ void IR::send_data(uint8_t index, uint16_t data)
     to_send |= START_BIT;
     data_to_send[index] = to_send;
 
-    // Serial.println(index);
-    // Serial.println(to_send, BIN);
+    Serial.println(data, BIN);
     set_flag(IR::Flags::MESSAGE_PENDING);
 }
 
@@ -237,18 +236,10 @@ void IR::set_received_data(uint8_t index, uint16_t value)
 
 void IR::queue_next_message()
 {
-    current_send_index++;
-    if (current_send_index > DATA_ARRAY_SIZE) {
-        current_send_index = 0;
-    }
-    output_buffer = data_to_send[current_send_index];
+    output_buffer = data_to_send[0];
 }
 
 void IR::write_data_to_buffer()
 {
-    current_read_index++;
-    if (current_read_index > DATA_ARRAY_SIZE) {
-        current_read_index = 0;
-    }
-    received_data[current_read_index] = input_buffer;
+    received_data[0] = input_buffer;
 }

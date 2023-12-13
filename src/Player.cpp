@@ -1,6 +1,8 @@
 #include "Player.h"
 #include "IR.h"
 
+uint8_t Player::living_players = 0;
+
 Player::Player() : Player(0, 0, 0)
 {
     living_players++;
