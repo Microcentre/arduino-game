@@ -1,7 +1,7 @@
 #include "GameScreen.h"
 #include "Bullet.h"
 #include "Asteroid.h"
-#include "ShowHealthOnSSD.h"
+
 
 GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick) 
 {
@@ -22,8 +22,12 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour,
     this->player->wrap_around_display = true;
 
     // add health display observer to player
-    ShowHealthOnSSD *h1 = new ShowHealthOnSSD(player);
+    this->h1 = new ShowHealthOnSSD(player);
     player->add_hurt_observer(h1);
+
+    // add invincibility frames observer to player
+    this->h2 = new InvincibilityFrames();
+    player->add_hurt_observer(h2);
 
     // start first wave (won't work in main.cpp for some reason..)
     start_wave(1);
@@ -40,6 +44,10 @@ GameScreen::~GameScreen()
     this->asteroid_container = nullptr;
     delete this->bullet_container;
     this->bullet_container = nullptr;
+    delete this->h1;
+    this->h1 = nullptr;
+    delete this->h2;
+    this->h2 = nullptr;
 }
 
 void GameScreen::update(const double &delta)
@@ -110,7 +118,7 @@ void GameScreen::check_player_asteroid_collision()
         uint16_t asteroid_y = this->asteroid_container->objects.at(j)->get_y_position();
 
         // call player.hurt() if collided
-        if (player_asteroid_colliding(centered_player_x, centered_player_y, asteroid_x, asteroid_y))
+        if (player_asteroid_colliding(centered_player_x, centered_player_y, asteroid_x, asteroid_y) && !this->player->is_invincible)
         {
             this->player->hurt(this->display);
         }
