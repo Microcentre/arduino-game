@@ -165,6 +165,7 @@ void IR::send_data(uint8_t index, uint16_t data)
     to_send |= START_BIT;
     data_to_send[index] = to_send;
 
+    Serial.print("SEND: ");
     Serial.println(data, BIN);
     set_flag(IR::Flags::MESSAGE_PENDING);
 }
@@ -185,10 +186,13 @@ uint16_t IR::interpret_data(uint8_t index)
         }
     }
     // are stop bit and start bit set, and does the parity match?
+    Serial.print("RECEIVE: ");
+    Serial.println(input, BIN);
     clear_flag(IR::Flags::MESSAGE_RECEIVED);
     if (input & 0x01 && input >> (MESSAGE_SIZE - 1) && set_bits % 2 == parity_bit)
     {
         // valid data
+
         return reverse_data(data);
     } else {
         return 0;

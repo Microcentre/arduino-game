@@ -62,16 +62,16 @@ ISR(TIMER1_COMPA_vect)
             if (p_infrared->get_output_buffer() == 0)
             {
                 p_infrared->queue_next_message();
-                // p_infrared->clear_flag(IR::Flags::SENDING_MESSAGE);
+                p_infrared->clear_flag(IR::Flags::SENDING_MESSAGE);
                 p_infrared->set_flag(IR::Flags::SENDING_START);
-                // p_infrared->stop_blinking();
+                p_infrared->stop_blinking();
             }
         }
     }
     else if (p_infrared->get_flags() & IR::Flags::MESSAGE_PENDING)
     {
         // start sending a message on the next timer cycle
-        // p_infrared->clear_flag(IR::Flags::MESSAGE_PENDING);
+        p_infrared->clear_flag(IR::Flags::MESSAGE_PENDING);
         p_infrared->set_flag(IR::Flags::SENDING_MESSAGE);
         p_infrared->set_flag(IR::Flags::SENDING_START);
         p_infrared->start_blinking();
