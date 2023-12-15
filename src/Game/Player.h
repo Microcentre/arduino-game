@@ -73,6 +73,8 @@ public:
 
     bool is_invincible = false;
 
+    bool is_blinking = false;
+
 private:
     /// @brief in radians per second (so small numbers)
     static constexpr float TURN_SPEED = 0.25;

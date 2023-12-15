@@ -69,7 +69,15 @@ void Player::rotate(const uint8_t rotation)
 void Player::draw(Display *display)
 {
     MovingObject::draw(display);
-    this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, player_colour);
+    is_blinking = (uint16_t)(this->invincibility_timer * 10) % 6;
+    if (is_blinking)
+    {
+        this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, display->background_colour);
+    }
+    else
+    {
+        this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, this->player_colour);
+    }
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
