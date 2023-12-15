@@ -105,7 +105,7 @@ void GameScreen::check_bullet_asteroid_collision()
                 this->asteroid_container->delete_object(asteroid);
 
                 this->on_asteroid_destroyed();
-                break; // if bullet has already hit 1 asteroid, break out of asteroid checking loop for this bullet, prevents game chrash
+                break; // if bullet has already hit 1 asteroid, break out of asteroid checking loop for this bullet, prevents game crash
             }
             // only increment if didn't delete asteroid
             else
