@@ -1,5 +1,4 @@
 #include "PlayerSelectScreen.h"
-#include "Player.h"
 
 PlayerSelectScreen::PlayerSelectScreen(Display *display, Joystick *joystick) : Screen(display, joystick)
 {

@@ -2,7 +2,7 @@
 #define PLAYER_H
 
 #include "stdint.h"
-#include "MovingObject.h"
+#include "../Objects/MovingObject.h"
 
 class Player : public MovingObject
 {

@@ -1,7 +1,7 @@
 #ifndef SHOWHEALTHONSSD_H
 #define SHOWHEALTHONSSD_H
 
-#include "Player.h"
+#include "../Game/Player.h"
 
 /// @brief executes display behavior to show current health of own player
 class ShowHealthOnSSD : public Player::HurtObserver

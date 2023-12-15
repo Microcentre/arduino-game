@@ -1,8 +1,8 @@
 #ifndef WAVES_H
 #define WAVES_H
 
-#include "ObjectsContainer.h"
-#include "Display.h"
+#include "../Objects/ObjectsContainer.h"
+#include "../Hardware/Display.h"
 #include "Asteroid.h"
 
 /// @brief handles waves of asteroids

@@ -1,10 +1,10 @@
 #ifndef PLAYER_SELECT_SCREEN_H
 #define PLAYER_SELECT_SCREEN_H
 
-#include "Screen.h"
-#include "Player.h"
-#include "Display.h"
-#include "Buzzer.h"
+#include "../Screen.h"
+#include "../Game/Player.h"
+#include "../Hardware/Display.h"
+#include "../Hardware/Buzzer.h"
 
 class PlayerSelectScreen : public Screen
 {
