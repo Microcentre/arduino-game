@@ -30,7 +30,6 @@ public:
     static const uint8_t MAX_BULLETS = 3;
 
 private:
-
     uint16_t bullet_colour;
 
     const double SPEED = 1024;

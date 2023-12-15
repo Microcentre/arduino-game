@@ -11,17 +11,17 @@ IR::IR()
     received_bits = 0;
     received_data[0] = 0;
 
-    DDRD |= (1 << DD6); // set pin D6 (LED) as output
+    DDRD |= (1 << DD6);  // set pin D6 (LED) as output
     DDRD &= ~(1 << DD2); // set pin D2 (sensor) as input
 
     // setup timer 0, used for blinking the IR LED
-    TCCR0A |= (1 << COM0A0)|(1 << WGM01);  // CTC
+    TCCR0A |= (1 << COM0A0) | (1 << WGM01); // CTC
     OCR0A = BLINK_DURATION;
 
     // set up timer 1, used for setting and reading IR signal length
-    OCR1A = PULSE_DURATION + START_DURATION; // set comp A to the largest real signal 
+    OCR1A = PULSE_DURATION + START_DURATION; // set comp A to the largest real signal
                                              // to ensure it does not trigger prematurely
-                                             
+
     TCCR1B |= (1 << WGM12);                  // CTC
     TIMSK1 |= (1 << OCIE1A) | (1 << OCIE1B); // interrupt on comp A and B
     OCR1B = PULSE_DURATION;
@@ -122,7 +122,7 @@ void IR::send_data(uint8_t data)
     {
         return;
     }
-    
+
     // check how many bits in the data are set to 1
     for (uint8_t i = 0; i < DATA_SIZE; i++)
     {
@@ -133,7 +133,6 @@ void IR::send_data(uint8_t data)
     }
     parity_bit = set_bits % 2; // 0 if even, 1 if uneven,
                                // so the full data including parity bit should always be even
-
 
     // set stop bit, parity bit, data bits and start bit
     // in that order, because they're sent LSB-first

@@ -51,18 +51,18 @@ void PlayerSelectScreen::on_joystick_changed()
 {
     if (left_selected && this->joystick->get_x_axis() > 200)
     {
-        buzzer.short_beep(); 
+        buzzer.short_beep();
         left_selected = false;
     }
     else if (!left_selected && this->joystick->get_x_axis() < 70)
     {
-        buzzer.short_beep(); 
+        buzzer.short_beep();
         left_selected = true;
     }
 
     if (this->joystick->is_z_pressed())
     {
-        buzzer.meduim_beep();
+        buzzer.medium_beep();
         // select this player
         this->ready_for_screen_switch = true;
     }
