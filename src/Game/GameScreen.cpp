@@ -20,12 +20,12 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour,
     this->player->wrap_around_display = true;
 
     // add health display observer to player
-    this->h1 = new ShowHealthOnSSD(player);
-    player->add_hurt_observer(h1);
+    this->show_health = new ShowHealthOnSSD(player);
+    player->add_hurt_observer(show_health);
 
     // add invincibility frames observer to player
-    this->h2 = new InvincibilityFrames();
-    player->add_hurt_observer(h2);
+    this->invincibility = new InvincibilityFrames();
+    player->add_hurt_observer(invincibility);
 
     this->score = new Score(display, Score::X_POS_TEXT, Score::Y_POS_TEXT);
 
@@ -45,10 +45,10 @@ GameScreen::~GameScreen()
     this->asteroid_container = nullptr;
     delete this->bullet_container;
     this->bullet_container = nullptr;
-    delete this->h1;
-    this->h1 = nullptr;
-    delete this->h2;
-    this->h2 = nullptr;
+    delete this->show_health;
+    this->show_health = nullptr;
+    delete this->invincibility;
+    this->invincibility = nullptr;
 }
 
 void GameScreen::update(const double &delta)
@@ -77,9 +77,9 @@ void GameScreen::update(const double &delta)
 
     if (this->waves->draw_phase == Waves::DrawPhase::SPAWN_ASTEROIDS)
     {
-        player->is_invincible = true;
+        this->invincibility->update(this->player);
     }
-    
+
     this->waves->update(display, delta, this->asteroid_container);
 }
 
