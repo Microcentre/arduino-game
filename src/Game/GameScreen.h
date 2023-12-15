@@ -2,16 +2,16 @@
 #define GAMESCREEN_H
 
 #include <Vector.h>
-#include "Joystick.h"
-#include "Display.h"
+#include "../Hardware/Joystick.h"
+#include "../Hardware/Display.h"
 #include "Player.h"
-#include "Object.h"
+#include "../Objects/Object.h"
 #include "Screen.h"
-#include "ObjectsContainer.h"
-#include "Score.h"
+#include "../Objects/ObjectsContainer.h"
+#include "../Highscore/Score.h"
 #include "Waves.h"
-#include "Buzzer.h"
-#include "ShowHealthOnSSD.h"
+#include "../Hardware/Buzzer.h"
+#include "../Hardware/ShowHealthOnSSD.h"
 #include "InvincibilityFrames.h"
 
 class GameScreen : public Screen

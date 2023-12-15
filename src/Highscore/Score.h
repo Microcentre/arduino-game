@@ -2,7 +2,7 @@
 #define SCORE_H
 
 #include "stdint.h"
-#include "Object.h"
+#include "../Objects/Object.h"
 
 class Score : public Object
 {

@@ -3,7 +3,7 @@
 
 #include <Vector.h>
 #include "Object.h"
-#include "Display.h"
+#include "../Hardware/Display.h"
 
 class ObjectsContainer
 {

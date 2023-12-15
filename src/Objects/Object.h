@@ -2,7 +2,7 @@
 #define OBJECT_H
 
 #include "stdint.h"
-#include "Display.h"
+#include "../Hardware/Display.h"
 
 class Object
 {

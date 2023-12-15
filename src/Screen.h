@@ -1,8 +1,8 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#include "Display.h"
-#include "Joystick.h"
+#include "Hardware/Display.h"
+#include "Hardware/Joystick.h"
 
 class Screen
 {

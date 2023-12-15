@@ -1,7 +1,7 @@
 #ifndef ASTEROID_H
 #define ASTEROID_H
 
-#include "MovingObject.h"
+#include "../Objects/MovingObject.h"
 
 class Asteroid : public MovingObject
 {

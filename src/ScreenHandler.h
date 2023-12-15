@@ -1,8 +1,8 @@
 #ifndef SCREENHANDLER_H
 #define SCREENHANDLER_H
 
-#include "PlayerSelectScreen.h"
-#include "GameScreen.h"
+#include "PlayerSelect/PlayerSelectScreen.h"
+#include "Game/GameScreen.h"
 
 class ScreenHandler
 {

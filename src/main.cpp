@@ -2,12 +2,12 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#include "IR.h"
-#include "Joystick.h"
-#include "Display.h"
-#include "Screens/GameScreen.h"
-#include "Screens/PlayerSelectScreen.h"
-#include "Screens/ScreenHandler.h"
+#include "Hardware/IR.h"
+#include "Hardware/Joystick.h"
+#include "Hardware/Display.h"
+#include "Game/GameScreen.h"
+#include "PlayerSelect/PlayerSelectScreen.h"
+#include "ScreenHandler.h"
 
 // time to wait between each frame.
 // to minimise redraw flicker.
