@@ -75,6 +75,11 @@ void GameScreen::update(const double &delta)
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
 
+    if (this->waves->draw_phase == Waves::DrawPhase::SPAWN_ASTEROIDS)
+    {
+        player->is_invincible = true;
+    }
+    
     this->waves->update(display, delta, this->asteroid_container);
 }
 
