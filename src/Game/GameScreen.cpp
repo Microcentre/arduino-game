@@ -35,12 +35,6 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour,
 
 GameScreen::~GameScreen()
 {
-    delete this->player;
-    this->player = nullptr;
-    delete this->score;
-    this->score = nullptr;
-    delete this->waves;
-    this->waves = nullptr;
     delete this->asteroid_container;
     this->asteroid_container = nullptr;
     delete this->bullet_container;
@@ -49,6 +43,12 @@ GameScreen::~GameScreen()
     this->show_health = nullptr;
     delete this->invincibility;
     this->invincibility = nullptr;
+    delete this->player;
+    this->player = nullptr;
+    delete this->score;
+    this->score = nullptr;
+    delete this->waves;
+    this->waves = nullptr;
 }
 
 void GameScreen::update(const double &delta)
