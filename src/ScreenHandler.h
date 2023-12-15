@@ -12,6 +12,8 @@ public:
     /// @param joystick the joystick to read input from.
     ScreenHandler(Display *display, Joystick *joystick);
 
+    ~ScreenHandler();
+
     /// @brief Switches the screen between the player select screen and the game screen.
     void switch_screen();
 
