@@ -75,13 +75,13 @@ void GameScreen::update(const double &delta)
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
 
+    this->waves->update(display, delta, this->asteroid_container);
+
     // checks if the wave is about to start spawning asteroids and if so, makes the player invincible
     if (this->waves->draw_phase == Waves::DrawPhase::SPAWN_ASTEROIDS)
     {
         this->invincibility->update(this->player);
     }
-
-    this->waves->update(display, delta, this->asteroid_container);
 }
 
 void GameScreen::check_bullet_asteroid_collision()

@@ -14,10 +14,9 @@ void Player::update(const double &delta)
     // check if invincible and if so, check if invincibility time is over, resets invincibility if so
     if (is_invincible)
     {
-        invincibility_timer++;
-        if (invincibility_timer >= INVINCIBILITY_TIME)
+        invincibility_timer -= delta;
+        if (invincibility_timer <= 0)
         {
-            invincibility_timer = 0;
             is_invincible = false;
         }
     }
@@ -71,7 +70,7 @@ void Player::draw(Display *display)
 {
     MovingObject::draw(display);
     // checks if the player is blinking, if so, change between drawing player with the player colour and with the background colour
-    is_blinking = (uint16_t)(this->invincibility_timer * 10) % 6;
+    is_blinking = (uint16_t)(this->invincibility_timer * 10) % 8;
     if (is_blinking)
     {
         this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, display->background_colour);
