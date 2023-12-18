@@ -7,7 +7,7 @@ Waves::Waves(uint8_t max_asteroids)
 
 void Waves::start_new()
 {
-    this->wave = 1;
+    this->wave = 6;
     this->draw_phase = Waves::DrawPhase::ASTEROID_WARNING;
 }
 
@@ -70,9 +70,58 @@ void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
         random_x_position = (uint16_t)rand() % Display::WIDTH_PIXELS + 1;
         random_y_position = rand() % Display::HEIGHT_PIXELS + 1;
 
+        if (random_x_position < (Display::WIDTH_PIXELS / 2)) // if x in left half of screen
+        {
+            if (random_y_position < (Display::HEIGHT_PIXELS / 2)) // if y in top half of screen
+            {
+                random_y_position = 0;
+            }
+            else // if y in bottom top of screen
+            {
+                random_x_position = 0;
+            }
+        }
+        else // if x in right half of screen
+        {
+            if (random_y_position < (Display::HEIGHT_PIXELS / 2)) // if y in bottom half of screen
+            {
+                random_y_position = Display::HEIGHT_PIXELS;
+            }
+            else // if y in bottom top of screen
+            {
+                random_x_position = Display::WIDTH_PIXELS;
+            }
+        }
+
         // random direction
-        uint16_t m_10_pi = M_PI * 10;
+        uint16_t m_10_pi = (M_PI * 10) / 4;
         double random_direction = (rand() % m_10_pi) / 10;
+
+        if (random_x_position == 0)
+        {
+            random_direction += 1.5;
+        }
+        else if (random_y_position == 0)
+        {
+            random_direction += 3;
+        }
+        else if (random_x_position == Display::WIDTH_PIXELS)
+        {
+            random_direction += 4.5;
+        }
+        else if (random_y_position == Display::HEIGHT_PIXELS)
+        {
+            random_direction += 5;
+        }
+
+        // if (random_direction >= 0.0 && random_direction <= 0.5 && // 0
+        //     random_direction >= 1.0 && random_direction <= 2.0 && // 1.57
+        //     random_direction >= 2.7 && random_direction <= 3.3 && // 3.14
+        //     random_direction >= 4.7 && random_direction <= 5.3 && // 4.71
+        //     random_direction >= 6.0 && random_direction <= 6.28)  // 6.28
+        // {
+        //     random_direction += 0.5;
+        // }
 
         // random speed
         // if there's multiple asteroids it's okay if some of them stand still
