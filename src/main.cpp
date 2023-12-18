@@ -72,6 +72,7 @@ ISR(TIMER1_COMPA_vect)
         p_infrared->clear_flag(IR::Flags::MESSAGE_PENDING);
         p_infrared->set_flag(IR::Flags::SENDING_MESSAGE);
         p_infrared->set_flag(IR::Flags::SENDING_START);
+        p_infrared->load_message_into_output_buffer();
         p_infrared->start_blinking();
     }
     total_timer_value += OCR1A;

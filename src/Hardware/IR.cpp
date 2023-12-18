@@ -143,7 +143,7 @@ void IR::send_data(uint32_t data)
     to_send |= data;
     to_send <<= 1;
     to_send |= START_BIT;
-    output_buffer = to_send;
+    data_to_send = to_send;
     set_flag(IR::Flags::MESSAGE_PENDING);
 }
 
@@ -215,6 +215,11 @@ void IR::clear_flag(uint8_t flag)
 void IR::set_received_message_to_input_buffer()
 {
     received_message = input_buffer;
+}
+
+void IR::load_message_into_output_buffer()
+{
+    output_buffer = data_to_send;
 }
 
 uint32_t IR::get_received_data()

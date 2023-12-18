@@ -77,6 +77,7 @@ public:
     void clear_flag(uint8_t);
 
     void set_received_message_to_input_buffer();
+    void load_message_into_output_buffer();
 
     uint32_t get_received_data();
     void set_received_data(uint32_t);
@@ -89,6 +90,7 @@ private:
     volatile uint8_t flags;
     uint32_t received_message;
     uint32_t received_data;
+    uint32_t data_to_send;
 };
 
 #endif
