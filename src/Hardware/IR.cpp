@@ -1,5 +1,4 @@
 #include <avr/interrupt.h>
-#include <HardwareSerial.h>
 
 #include "IR.h"
 

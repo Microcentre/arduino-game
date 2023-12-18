@@ -1,7 +1,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <HardwareSerial.h>
 
 #include "Hardware/IR.h"
 #include "Hardware/Joystick.h"
@@ -150,7 +149,6 @@ ISR(INT0_vect)
 void setup()
 {
     Wire.begin();
-    Serial.begin(9600);
     p_infrared = new IR(); // created as pointer so the ISRs can access it
     sei();
 }
