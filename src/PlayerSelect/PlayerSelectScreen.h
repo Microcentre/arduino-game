@@ -18,7 +18,7 @@ public:
     /// @brief Creates the player select screen with the player icons and selection box.
     /// @param display the display to draw to.
     /// @param joystick the joystick to read input from.
-    PlayerSelectScreen(Display *display, Joystick *joystick);
+    PlayerSelectScreen(Display *display, Joystick *joystick, IR *infrared);
 
     virtual ~PlayerSelectScreen();
 

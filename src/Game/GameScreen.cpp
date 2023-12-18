@@ -2,7 +2,7 @@
 #include "Bullet.h"
 #include "Asteroid.h"
 
-GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick)
+GameScreen::GameScreen(Display *display, Joystick *joystick, IR *infrared, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick, infrared)
 {
     // array of objects on the screen to be updated & rendered.
     // Vector<> is a custom library that IS dynamic,
@@ -18,6 +18,10 @@ GameScreen::GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour,
     this->player = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 100); // start around the centre
     this->player->player_colour = p1_colour;
     this->player->wrap_around_display = true;
+
+    this->player2 = new Player(Display::WIDTH_PIXELS / 2, Display::HEIGHT_PIXELS / 2, 0);
+    this->player2->player_colour = p2_colour;
+    this->player2->wrap_around_display = true;
 
     // add health display observer to player
     this->h1 = new ShowHealthOnSSD(player);
@@ -64,13 +68,27 @@ void GameScreen::update(const double &delta)
     this->bullet_container->update_objects(delta);
     this->asteroid_container->update_objects(delta);
 
+    // handle IR
+
+    // convert direction to uint16_t:
+    // - add PI to make it always positive
+    // - multiply by 100 so decimals can be safely truncated
+    // - shift right to save 1 bit at the cost of accuracy
+    // - reverse these steps on receive
+
+    uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
+    this->infrared->send_player_data((uint16_t)this->player->get_x_position(), (uint8_t)this->player->get_y_position(), send_dir, 0);
+
     if (this->player->health <= this->player->GAME_OVER_HEALTH)
     {
         this->ready_for_screen_switch = true;
     }
 
+    this->process_player_2();
+
     // draw
     this->player->draw(this->display);
+    this->player2->draw(this->display);
     this->score->draw(this->display);
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
@@ -126,6 +144,21 @@ void GameScreen::on_asteroid_destroyed()
     // start a new wave when no asteroids are left
     if (this->asteroid_container->get_size() <= 0)
         this->waves->next();
+}
+
+void GameScreen::process_player_2()
+{
+    this->infrared->interpret_data();
+    uint32_t p2_data = this->infrared->get_received_data();
+
+    uint16_t pos_x = p2_data & (DATA_POS_X_MASK) >> 20;
+    uint16_t pos_y = p2_data & (DATA_POS_Y_MASK) >> 12;
+    uint16_t dir = p2_data & (DATA_DIR_MASK) >> 3;
+    // convert sent direction back to double
+    double facing_dir = ((double)(dir << 1) / 100) - M_PI;
+    this->player2->set_x_position(pos_x);
+    this->player2->set_y_position(pos_y);
+    this->player2->facing_direction = facing_dir;
 }
 
 void GameScreen::check_player_asteroid_collision()

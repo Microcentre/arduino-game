@@ -1,10 +1,22 @@
+#ifndef IR_H
+#define IR_H
 #include <avr/io.h>
 
 const uint16_t CARRIER_FREQUENCY = 38000;
 
-const uint8_t MESSAGE_SIZE = 11;
+const uint8_t DATA_SIZE = 29;
+const uint8_t MESSAGE_SIZE = DATA_SIZE + 3;
+const uint8_t DATA_POS_X_SIZE = 9;
+const uint8_t DATA_POS_Y_SIZE = 8;
+const uint8_t DATA_DIR_SIZE = 9;
+const uint8_t DATA_FLAGS_SIZE = 3;
+
 const uint8_t PARITY_MASK = 0x02;
-const uint16_t DATA_MASK = 0b01111111100;
+const uint32_t RECEIVE_DATA_MASK = 0b01111111111111111111111111111100;
+const uint32_t DATA_POS_X_MASK = 0b00011111111100000000000000000000;
+const uint32_t DATA_POS_Y_MASK = 0b00000000000011111111000000000000;
+const uint32_t DATA_DIR_MASK = 0b00000000000000000000111111111000;
+
 const uint8_t START_BIT = 1;
 const uint8_t STOP_BIT = 1;
 
@@ -54,21 +66,29 @@ public:
     void send_bit(uint8_t);
 
     void read_data();
-    void send_data(uint8_t);
+    void send_data(uint32_t);
+    void send_player_data(uint16_t, uint8_t, uint16_t, uint8_t);
     void interpret_data();
+
+    uint32_t reverse_data(uint32_t);
 
     uint8_t get_flags();
     void set_flag(uint8_t);
     void clear_flag(uint8_t);
 
-    uint8_t *get_received_data();
-    void set_received_data(uint8_t, uint8_t);
+    void set_received_message_to_input_buffer();
+
+    uint32_t get_received_data();
+    void set_received_data(uint32_t);
 
 private:
-    uint16_t input_buffer;
-    uint16_t output_buffer;
+    uint32_t input_buffer;
+    uint32_t output_buffer;
     uint16_t timer_start;
     uint8_t received_bits;
     volatile uint8_t flags;
-    uint8_t received_data[];
+    uint32_t received_message;
+    uint32_t received_data;
 };
+
+#endif

@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <HardwareSerial.h>
 
 #include "Hardware/IR.h"
 #include "Hardware/Joystick.h"
@@ -129,6 +130,7 @@ ISR(INT0_vect)
             {
                 p_infrared->set_received_bits(0);
                 // message is complete, interpret it
+                p_infrared->set_received_message_to_input_buffer();
                 p_infrared->set_flag(IR::Flags::MESSAGE_RECEIVED);
                 p_infrared->clear_flag(IR::Flags::MESSAGE_STARTED);
             }
@@ -147,6 +149,7 @@ ISR(INT0_vect)
 void setup()
 {
     Wire.begin();
+    Serial.begin(9600);
     p_infrared = new IR(); // created as pointer so the ISRs can access it
     sei();
 }
@@ -160,7 +163,7 @@ int main()
 
     Display display = Display();
     Joystick joystick = Joystick();
-    ScreenHandler game = ScreenHandler(&display, &joystick);
+    ScreenHandler game = ScreenHandler(&display, &joystick, p_infrared);
 
     // game loop
     while (1)
@@ -169,7 +172,6 @@ int main()
 
         _delay_ms(SCREEN_DELAY_MS);
 
-        p_infrared->send_data(0b10101111);
         if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
         {
             p_infrared->interpret_data();

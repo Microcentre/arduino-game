@@ -63,7 +63,22 @@ void Player::rotate(const uint8_t rotation)
     rotation_modifier = (rotation_modifier * 2) - 1;
     // [-1..1] where -1=bottom, 0=centre, 1=top
     this->previous_facing_direction = this->facing_direction;
-    this->facing_direction -= rotation_modifier * this->TURN_SPEED;
+    // this->facing_direction -= rotation_modifier * this->TURN_SPEED;
+    double result_direction = this->facing_direction - (rotation_modifier * this->TURN_SPEED);
+
+    // constrain to range [-pi..pi]
+    if (result_direction > M_PI)
+    {
+        this->facing_direction = M_PI * -1;
+    }
+    else if (result_direction < M_PI * -1)
+    {
+        this->facing_direction = M_PI;
+    }
+    else
+    {
+        this->facing_direction = result_direction;
+    }
 }
 
 void Player::draw(Display *display)
