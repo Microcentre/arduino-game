@@ -8,7 +8,6 @@
 #include "Game/GameScreen.h"
 #include "PlayerSelect/PlayerSelectScreen.h"
 #include "ScreenHandler.h"
-#include "HardwareSerial.h"
 
 // time to wait between each frame.
 // to minimise redraw flicker.
@@ -147,7 +146,6 @@ ISR(INT0_vect)
 
 void setup()
 {
-    Serial.begin(9600);
     Wire.begin();
     p_infrared = new IR(); // created as pointer so the ISRs can access it
     sei();

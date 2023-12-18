@@ -26,7 +26,7 @@ void ScreenHandler::switch_screen()
     this->display->canvas.fillScreen(this->display->background_colour);
     if (this->current_screen == this->select_screen)
     {
-        this->game_screen = new GameScreen(display, joystick, select_screen->p1->player_colour, select_screen->p2->player_colour);
+        this->game_screen = new GameScreen(display, joystick, this->select_screen->p1->player_colour, this->select_screen->p2->player_colour);
         this->current_screen = this->game_screen;
 
         delete this->select_screen;
@@ -34,8 +34,7 @@ void ScreenHandler::switch_screen()
     }
     else if (this->current_screen == this->game_screen)
     {
-        auto current_score = this->game_screen->score->score;
-        scores->insert(current_score);
+        this->scores->insert(this->game_screen->score->score);
 
         this->highscore_screen = new HighscoreScreen(display, joystick, scores);
         this->current_screen = this->highscore_screen;
@@ -45,11 +44,11 @@ void ScreenHandler::switch_screen()
     }
     else if (this->current_screen == this->highscore_screen)
     {
-        this->select_screen = new PlayerSelectScreen(display, joystick);
-        this->current_screen = this->select_screen;
-        
         delete this->highscore_screen;
         this->highscore_screen = nullptr;
+
+        this->select_screen = new PlayerSelectScreen(display, joystick);
+        this->current_screen = this->select_screen;
     }
 }
 
