@@ -1,6 +1,6 @@
 #include "HighscoreScreen.h"
 
-HighscoreScreen::HighscoreScreen(Display *display, Joystick *joystick, ScoreList *scores) : Screen(display, joystick)
+HighscoreScreen::HighscoreScreen(Display *display, Joystick *joystick, IR *infrared, ScoreList *scores) : Screen(display, joystick, infrared)
 {
     this->scores = scores;
 }

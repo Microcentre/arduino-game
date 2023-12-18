@@ -10,7 +10,7 @@ class HighscoreScreen : public Screen
 {
 
 public:
-    HighscoreScreen(Display *display, Joystick *joystick, ScoreList *scores);
+    HighscoreScreen(Display *display, Joystick *joystick, IR *infrared, ScoreList *scores);
 
     virtual ~HighscoreScreen();
 
