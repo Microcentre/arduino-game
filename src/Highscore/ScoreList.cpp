@@ -14,8 +14,6 @@ ScoreList::Node::Node(uint16_t data)
 
 ScoreList::Node::~Node()
 {
-    delete this->next;
-    this->next = nullptr;
 }
 
 void ScoreList::insert(uint16_t data)
@@ -76,6 +74,7 @@ void ScoreList::deleteLastNode()
     // Delete the last node
     delete temp->next;
     temp->next = nullptr;
+    
     this->size--;
 }
 

@@ -36,19 +36,19 @@ void ScreenHandler::switch_screen()
     {
         this->scores->insert(this->game_screen->score->score);
 
-        this->highscore_screen = new HighscoreScreen(display, joystick, scores);
-        this->current_screen = this->highscore_screen;
-
         delete this->game_screen;
         this->game_screen = nullptr;
+
+        this->highscore_screen = new HighscoreScreen(display, joystick, scores);
+        this->current_screen = this->highscore_screen;
     }
     else if (this->current_screen == this->highscore_screen)
     {
-        delete this->highscore_screen;
-        this->highscore_screen = nullptr;
-
         this->select_screen = new PlayerSelectScreen(display, joystick);
         this->current_screen = this->select_screen;
+
+        delete this->highscore_screen;
+        this->highscore_screen = nullptr;
     }
 }
 
