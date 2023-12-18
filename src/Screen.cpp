@@ -1,9 +1,10 @@
 #include "Screen.h"
 
-Screen::Screen(Display *display, Joystick *joystick)
+Screen::Screen(Display *display, Joystick *joystick, IR *infrared)
 {
     this->display = display;
     this->joystick = joystick;
+    this->infrared = infrared;
 }
 
 void Screen::update(const double &delta)

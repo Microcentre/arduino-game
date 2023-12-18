@@ -18,6 +18,7 @@ public:
 
     uint8_t health = 3;
 
+    /// @brief [-1..1] where -1=bottom, 0=centre, 1=top
     double facing_direction;
 
     Player();

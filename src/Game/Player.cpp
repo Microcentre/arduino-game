@@ -61,9 +61,22 @@ void Player::rotate(const uint8_t rotation)
     double rotation_modifier = (double)rotation / this->MAX_JOYSTICK_AXIS;
     // scale to [0..2] and shift to [-1..1]
     rotation_modifier = (rotation_modifier * 2) - 1;
-    // [-1..1] where -1=bottom, 0=centre, 1=top
-    this->previous_facing_direction = this->facing_direction;
-    this->facing_direction -= rotation_modifier * this->TURN_SPEED;
+    // this->facing_direction -= rotation_modifier * this->TURN_SPEED;
+    double result_direction = this->facing_direction - (rotation_modifier * this->TURN_SPEED);
+
+    // constrain to range [-pi..pi]
+    if (result_direction > M_PI)
+    {
+        this->facing_direction = M_PI * -1;
+    }
+    else if (result_direction < M_PI * -1)
+    {
+        this->facing_direction = M_PI;
+    }
+    else
+    {
+        this->facing_direction = result_direction;
+    }
 }
 
 void Player::draw(Display *display)
@@ -80,6 +93,7 @@ void Player::draw(Display *display)
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
     this->undraw(display, x_position, y_position, this->previous_facing_direction);
+    this->previous_facing_direction = this->facing_direction;
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position, double actual_facing_direction)
