@@ -11,12 +11,12 @@ Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingO
 
 void Player::update(const double &delta)
 {
+    // check if invincible and if so, check if invincibility time is over, resets invincibility if so
     if (is_invincible)
     {
-        invincibility_timer++;
-        if (invincibility_timer >= INVINCIBILITY_TIME)
+        invincibility_timer -= delta;
+        if (invincibility_timer <= 0)
         {
-            invincibility_timer = 0;
             is_invincible = false;
         }
     }
@@ -69,7 +69,12 @@ void Player::rotate(const uint8_t rotation)
 void Player::draw(Display *display)
 {
     MovingObject::draw(display);
-    this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, player_colour);
+    // checks if the player is blinking, if not, draw player with the player colour
+    is_blinking = (uint16_t)(this->invincibility_timer * 10) % 8;
+    if (!is_blinking)
+    {
+        this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, this->player_colour);
+    }
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)

@@ -17,9 +17,9 @@ public:
 
     void add_score(uint8_t amount);
 
-    static int score;
+    static uint16_t score;
 
-    static int previous_score;
+    static uint16_t previous_score;
 
     static const uint8_t X_POS_TEXT = 0;
 

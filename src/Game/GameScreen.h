@@ -23,8 +23,8 @@ public:
     ObjectsContainer *bullet_container;
     Score *score;
 
-    ShowHealthOnSSD *h1;
-    InvincibilityFrames *h2;
+    ShowHealthOnSSD *show_health;
+    InvincibilityFrames *invincibility;
 
     GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour);
     virtual ~GameScreen();

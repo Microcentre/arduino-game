@@ -73,6 +73,14 @@ public:
 
     bool is_invincible = false;
 
+    bool is_blinking = false;
+
+    /// @brief the amount of time the player has been invincible for
+    uint8_t invincibility_timer = 0;
+
+    /// @brief the maximum amount of time the player is invincible for
+    static constexpr uint8_t INVINCIBILITY_TIME = 35;
+
 private:
     /// @brief in radians per second (so small numbers)
     static constexpr float TURN_SPEED = 0.25;
@@ -99,12 +107,6 @@ private:
 
     /// @brief store previous facing_direction for undraw()
     double previous_facing_direction;
-
-    /// @brief the amount of time the player has been invincible for
-    uint8_t invincibility_timer = 0;
-
-    /// @brief the maximum amount of time the player is invincible for
-    static constexpr uint8_t INVINCIBILITY_TIME = 25;
 };
 
 #endif
