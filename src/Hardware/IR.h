@@ -66,17 +66,24 @@ public:
     void send_bit(uint8_t);
 
     void read_data();
+    /// @brief queue up a message with some data to send
+    /// @param data to send
     void send_data(uint32_t);
     void send_player_data(uint16_t, uint8_t, uint16_t, uint8_t);
     void interpret_data();
 
+    /// @brief de data wordt LSB eerst verstuurd, waardoor de LSB op de MSB plek komt, dus keer het bericht om
+    /// @param data to be reversed
+    /// @return reversed data
     uint32_t reverse_data(uint32_t);
 
     uint8_t get_flags();
     void set_flag(uint8_t);
     void clear_flag(uint8_t);
 
+    /// @brief a full message has been received, so save it
     void set_received_message_to_input_buffer();
+    /// @brief set the current "data_to_send" to the IR output buffer for sending
     void load_message_into_output_buffer();
 
     uint32_t get_received_data();
