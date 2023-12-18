@@ -148,12 +148,11 @@ void GameScreen::on_asteroid_destroyed()
 
 void GameScreen::process_player_2()
 {
-    this->infrared->interpret_data();
     uint32_t p2_data = this->infrared->get_received_data();
 
-    uint16_t pos_x = p2_data & (DATA_POS_X_MASK) >> 20;
-    uint16_t pos_y = p2_data & (DATA_POS_Y_MASK) >> 12;
-    uint16_t dir = p2_data & (DATA_DIR_MASK) >> 3;
+    uint16_t pos_x = (p2_data & (DATA_POS_X_MASK)) >> 20;
+    uint16_t pos_y = (p2_data & (DATA_POS_Y_MASK)) >> 12;
+    uint16_t dir = (p2_data & (DATA_DIR_MASK)) >> 3;
     // convert sent direction back to double
     double facing_dir = ((double)(dir << 1) / 100) - M_PI;
     this->player2->set_x_position(pos_x);
