@@ -148,7 +148,6 @@ void GameScreen::on_asteroid_destroyed()
 
 void GameScreen::process_player_2()
 {
-    this->infrared->interpret_data();
     uint32_t p2_data = this->infrared->get_received_data();
 
     uint16_t pos_x = p2_data & (DATA_POS_X_MASK) >> 20;

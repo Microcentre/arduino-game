@@ -11,6 +11,7 @@ IR::IR()
     timer_start = 0;
     received_bits = 0;
     received_data = 0;
+    received_message = 0;
 
     DDRD |= (1 << DD6);  // set pin D6 (LED) as output
     DDRD &= ~(1 << DD2); // set pin D2 (sensor) as input
