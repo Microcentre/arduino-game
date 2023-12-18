@@ -7,7 +7,7 @@ HighscoreScreen::HighscoreScreen(Display *display, Joystick *joystick, IR *infra
 
 HighscoreScreen::~HighscoreScreen()
 {
-    //Do NOT delete scores* reference!
+    // Do NOT delete scores* reference!
 }
 
 void HighscoreScreen::update(const double &delta)
@@ -46,7 +46,15 @@ void HighscoreScreen::on_joystick_changed()
 {
     if (joystick->is_z_pressed())
     {
-        buzzer.medium_beep(); // play sound
-        ready_for_screen_switch = true; // switch screen
+        if (joystick->is_z_first_pressed())
+        {
+            buzzer.medium_beep();           // play sound
+            ready_for_screen_switch = true; // switch screen
+            joystick->z_pressed_last_frame = true;
+        }
+    }
+    else
+    {
+        joystick->z_pressed_last_frame = false;
     }
 }
