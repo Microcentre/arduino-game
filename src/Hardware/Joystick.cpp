@@ -53,3 +53,8 @@ bool Joystick::is_z_pressed()
 {
     return Nunchuk.state.z_button;
 }
+
+bool Joystick::is_z_first_pressed()
+{
+    return is_z_pressed() && !(z_pressed_last_frame);
+}

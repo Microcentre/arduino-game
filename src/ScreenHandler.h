@@ -3,6 +3,7 @@
 
 #include "PlayerSelect/PlayerSelectScreen.h"
 #include "Game/GameScreen.h"
+#include "Highscore/HighscoreScreen.h"
 
 class ScreenHandler
 {
@@ -32,7 +33,11 @@ private:
 
     PlayerSelectScreen *select_screen;
 
+    HighscoreScreen *highscore_screen;
+
     Screen *current_screen;
+
+    ScoreList *scores;
 };
 
 #endif
