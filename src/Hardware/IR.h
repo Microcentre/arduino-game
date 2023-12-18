@@ -72,7 +72,7 @@ public:
     void send_player_data(uint16_t, uint8_t, uint16_t, uint8_t);
     void interpret_data();
 
-    /// @brief de data wordt LSB eerst verstuurd, waardoor de LSB op de MSB plek komt, dus keer het bericht om
+    /// @brief the data is sent LSB first, which means the LSB ends up as the MSB on receiving, reverse the message to correct this
     /// @param data to be reversed
     /// @return reversed data
     uint32_t reverse_data(uint32_t);
