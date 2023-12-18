@@ -71,11 +71,7 @@ void Player::draw(Display *display)
     MovingObject::draw(display);
     // checks if the player is blinking, if so, change between drawing player with the player colour and with the background colour
     is_blinking = (uint16_t)(this->invincibility_timer * 10) % 8;
-    if (is_blinking)
-    {
-        this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, display->background_colour);
-    }
-    else
+    if (!is_blinking)
     {
         this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, this->player_colour);
     }
