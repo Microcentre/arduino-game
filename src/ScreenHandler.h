@@ -11,7 +11,7 @@ public:
     /// @brief Handles the current screen and switching between screens. Defaults to the player select screen.
     /// @param display the display to draw to.
     /// @param joystick the joystick to read input from.
-    ScreenHandler(Display *display, Joystick *joystick);
+    ScreenHandler(Display *display, Joystick *joystick, IR *infrared);
 
     ~ScreenHandler();
 
@@ -26,6 +26,8 @@ private:
     Display *display;
 
     Joystick *joystick;
+
+    IR *infrared;
 
     GameScreen *game_screen;
 

@@ -71,6 +71,7 @@ ISR(TIMER1_COMPA_vect)
         p_infrared->clear_flag(IR::Flags::MESSAGE_PENDING);
         p_infrared->set_flag(IR::Flags::SENDING_MESSAGE);
         p_infrared->set_flag(IR::Flags::SENDING_START);
+        p_infrared->load_message_into_output_buffer();
         p_infrared->start_blinking();
     }
     total_timer_value += OCR1A;
@@ -129,6 +130,7 @@ ISR(INT0_vect)
             {
                 p_infrared->set_received_bits(0);
                 // message is complete, interpret it
+                p_infrared->set_received_message_to_input_buffer();
                 p_infrared->set_flag(IR::Flags::MESSAGE_RECEIVED);
                 p_infrared->clear_flag(IR::Flags::MESSAGE_STARTED);
             }
@@ -160,7 +162,7 @@ int main()
 
     Display display = Display();
     Joystick joystick = Joystick();
-    ScreenHandler game = ScreenHandler(&display, &joystick);
+    ScreenHandler game = ScreenHandler(&display, &joystick, p_infrared);
 
     // game loop
     while (1)
@@ -169,7 +171,6 @@ int main()
 
         _delay_ms(SCREEN_DELAY_MS);
 
-        p_infrared->send_data(0b10101111);
         if (p_infrared->get_flags() & IR::Flags::MESSAGE_RECEIVED)
         {
             p_infrared->interpret_data();

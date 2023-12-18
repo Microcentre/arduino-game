@@ -39,17 +39,17 @@ void MovingObject::update(const double &delta)
 
 void MovingObject::draw(Display *display)
 {
-    this->undraw(display, this->previous_x_position, this->previous_y_position);
+    this->undraw(display, this->previous_draw_position_x, this->previous_draw_position_y);
+    this->previous_draw_position_x = this->get_x_position();
+    this->previous_draw_position_y = this->get_y_position();
 }
 
 void MovingObject::set_x_position(const double position)
 {
-    this->previous_x_position = this->get_x_position();
     Object::set_x_position(position);
 }
 
 void MovingObject::set_y_position(const double position)
 {
-    this->previous_y_position = this->get_y_position();
     Object::set_y_position(position);
 }

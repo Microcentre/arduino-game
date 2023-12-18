@@ -18,15 +18,16 @@ class GameScreen : public Screen
 {
 public:
     Player *player;
+    Player *player2;
 
     ObjectsContainer *asteroid_container;
     ObjectsContainer *bullet_container;
     Score *score;
 
-    ShowHealthOnSSD *h1;
-    InvincibilityFrames *h2;
+    ShowHealthOnSSD *show_health;
+    InvincibilityFrames *invincibility;
 
-    GameScreen(Display *display, Joystick *joystick, uint16_t p1_colour, uint16_t p2_colour);
+    GameScreen(Display *display, Joystick *joystick, IR *infrared, uint16_t p1_colour, uint16_t p2_colour);
     virtual ~GameScreen();
 
     /// @brief checks nunchuck and updates all objects in vector array, called every frame
@@ -72,6 +73,9 @@ private:
 
     /// @brief called when an asteroid is destroyed. starts a new wave
     void on_asteroid_destroyed();
+
+    /// @brief update the other player using received infrared data
+    void process_player_2();
 
     Buzzer buzzer = Buzzer();
 };

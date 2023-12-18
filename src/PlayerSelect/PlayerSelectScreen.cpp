@@ -1,6 +1,6 @@
 #include "PlayerSelectScreen.h"
 
-PlayerSelectScreen::PlayerSelectScreen(Display *display, Joystick *joystick) : Screen(display, joystick)
+PlayerSelectScreen::PlayerSelectScreen(Display *display, Joystick *joystick, IR *infrared) : Screen(display, joystick, infrared)
 {
     // create player icons and selection icon
     this->p1 = new Player(PLAYER_LEFT_X, PLAYER_Y, 0);
