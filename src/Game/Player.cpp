@@ -69,7 +69,7 @@ void Player::rotate(const uint8_t rotation)
 void Player::draw(Display *display)
 {
     MovingObject::draw(display);
-    // checks if the player is blinking, if so, change between drawing player with the player colour and with the background colour
+    // checks if the player is blinking, if not, draw player with the player colour
     is_blinking = (uint16_t)(this->invincibility_timer * 10) % 8;
     if (!is_blinking)
     {
