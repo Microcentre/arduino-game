@@ -29,7 +29,7 @@ public:
 
     static const uint8_t SCORE_ASTEROID = 50;
 
-    static const uint8_t ASTEROID_SIZE = 20;
+    static const uint8_t ASTEROID_SIZE = 18;
 };
 
 #endif
