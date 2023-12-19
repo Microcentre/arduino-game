@@ -6,9 +6,9 @@
 class GameData
 {
 public:
-    uint16_t pos_x;
-    uint8_t pos_y;
-    uint16_t dir;
+    uint16_t player_x_position;
+    uint8_t player_y_position;
+    uint16_t player_facing_direction;
     uint8_t flags;
 };
 

@@ -156,14 +156,10 @@ void GameScreen::process_player_2()
 {
     uint32_t p2_data = this->infrared->get_received_data();
 
-    uint16_t pos_x = (p2_data & (DATA_POS_X_MASK)) >> 20;
-    uint16_t pos_y = (p2_data & (DATA_POS_Y_MASK)) >> 12;
-    uint16_t dir = (p2_data & (DATA_DIR_MASK)) >> 3;
-    // convert sent direction back to double
-    double facing_dir = ((double)(dir << 1) / 100) - M_PI;
-    this->player2->set_x_position(pos_x);
-    this->player2->set_y_position(pos_y);
-    this->player2->facing_direction = facing_dir;
+    GameData gamedata = IREndec::decode_game(p2_data);
+    this->player2->set_x_position(gamedata.player_x_position);
+    this->player2->set_y_position(gamedata.player_y_position);
+    this->player2->facing_direction = gamedata.player_facing_direction;
 }
 
 void GameScreen::check_player_asteroid_collision()
