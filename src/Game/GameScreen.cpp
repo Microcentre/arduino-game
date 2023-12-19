@@ -77,8 +77,17 @@ void GameScreen::update(const double &delta)
     // - reverse these steps on receive
 
     uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
-    uint32_t game_data = IREndec::encode_game((uint16_t)this->player->get_x_position(), (uint8_t)this->player->get_y_position(), send_dir, 0);
+    uint32_t game_data = IREndec::encode_game(
+        (uint16_t)this->player->get_x_position(),
+        (uint8_t)this->player->get_y_position(),
+        send_dir,
+        this->wave_ended,
+        false, // player death is communicated in the high score screen. so here the player is always considered alive
+        this->shot_bullet);
     this->infrared->send_data(game_data);
+    // set back to default (false)
+    this->shot_bullet = false;
+    this->wave_ended = false;
 
     if (this->player->health <= this->player->GAME_OVER_HEALTH)
     {
@@ -149,7 +158,10 @@ void GameScreen::on_asteroid_destroyed()
 
     // start a new wave when no asteroids are left
     if (this->asteroid_container->get_size() <= 0)
+    {
         this->waves->next();
+        this->wave_ended = true;
+    }
 }
 
 void GameScreen::process_player_2()
@@ -204,6 +216,7 @@ void GameScreen::on_joystick_changed()
             buzzer.short_beep();
             this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction, player->player_colour));
             Bullet::bullet_amount++;
+            this->shot_bullet = true;
         }
         joystick->c_pressed_last_frame = true;
     }

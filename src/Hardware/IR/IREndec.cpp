@@ -1,15 +1,27 @@
 #include "IREndec.h"
 
-uint32_t IREndec::encode_game(uint16_t pos_x, uint8_t pos_y, uint16_t dir, uint8_t flags)
+/// @param wave_ended wave has ended because all asteroids are destroyed
+/// @param player_died game has ended because 0 lives are left
+uint32_t IREndec::encode_game(uint16_t player_x_position, uint8_t player_y_position, uint16_t player_direction, bool player_shot_bullet, bool player_died, bool wave_ended)
 {
     uint32_t data = 0;
-    data |= pos_x;
+    data |= player_x_position;
+
     data <<= DATA_POS_Y_SIZE;
-    data |= pos_y;
+    data |= player_y_position;
+
     data <<= DATA_DIR_SIZE;
-    data |= dir;
-    data <<= DATA_FLAGS_SIZE;
-    data |= flags;
+    data |= player_direction;
+
+    data <<= DATA_WAVE_END_MASK;
+    data |= wave_ended;
+
+    data <<= DATA_PLAYER_DEATH_MASK;
+    data |= player_died;
+
+    data <<= DATA_SHOT_BULLET_MASK;
+    data |= player_shot_bullet;
+
     return data;
 }
 
@@ -24,4 +36,9 @@ GameData IREndec::decode_game(uint32_t data)
     gamedata.player_facing_direction = ((double)(dir << 1) / 100) - M_PI;
 
     return gamedata;
+}
+
+uint32_t IREndec::encode_game_ended()
+{
+    return encode_game(0, 0, 0, false, true, false);
 }

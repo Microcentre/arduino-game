@@ -79,6 +79,14 @@ private:
     void process_player_2();
 
     Buzzer buzzer = Buzzer();
+
+    /// @brief if the player just shot a bullet
+    /// used to sync with other player.
+    bool shot_bullet = false;
+
+    /// @brief if the wave just ended.
+    /// used to send to sync with other player.
+    bool wave_ended = false;
 };
 
 #endif

@@ -32,7 +32,7 @@ private:
 
     const uint8_t TITLE_SIZE = 4;
 
-    const uint8_t SCORES_SIZE = 2;  
+    const uint8_t SCORES_SIZE = 2;
 
     const uint8_t CONTINUE_TEXT_SIZE = 1;
 
@@ -50,6 +50,9 @@ private:
 
     /// @brief buzzer property
     Buzzer buzzer = Buzzer();
+
+    /// @brief use infrared to tell the other player you died
+    void communicate_game_ended();
 };
 
 #endif
