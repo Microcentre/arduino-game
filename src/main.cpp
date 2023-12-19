@@ -8,6 +8,7 @@
 #include "Game/GameScreen.h"
 #include "PlayerSelect/PlayerSelectScreen.h"
 #include "ScreenHandler.h"
+#include "Hardware/Brightness.h"
 
 // time to wait between each frame.
 // to minimise redraw flicker.
@@ -146,6 +147,13 @@ ISR(INT0_vect)
     }
 }
 
+ISR(ADC_vect)
+{
+    // ADC conversion complete
+    // read the value and set the brightness
+    OCR2B = ADCH;
+}
+
 void setup()
 {
     Wire.begin();
@@ -163,6 +171,7 @@ int main()
     Display display = Display();
     Joystick joystick = Joystick();
     ScreenHandler game = ScreenHandler(&display, &joystick, p_infrared);
+    Brightness brightness = Brightness();
 
     // game loop
     while (1)
