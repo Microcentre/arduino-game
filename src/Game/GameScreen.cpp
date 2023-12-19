@@ -84,7 +84,8 @@ void GameScreen::update(const double &delta)
         this->ready_for_screen_switch = true;
     }
 
-    // draw
+    // process and draw player 2
+    // but not during wave transitions
     if (!this->waves->is_drawing())
     {
         this->process_player_2();
@@ -94,6 +95,7 @@ void GameScreen::update(const double &delta)
     {
         this->player2->undraw(this->display, this->player2->get_x_position(), this->player2->get_y_position());
     }
+    // draw everything else
     this->player->draw(this->display);
     this->score->draw(this->display);
     this->asteroid_container->draw_objects(delta);
