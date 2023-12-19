@@ -61,7 +61,6 @@ void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
 
     // every 2 waves, the max speed increases by 50
     uint16_t max_asteroid_speed = ((this->wave / 2) + 1) * 50;
-    uint8_t min_asteroid_speed = 35;
 
     uint16_t random_x_position;
     uint8_t random_y_position;
@@ -96,37 +95,34 @@ void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
             }
         }
 
-        // * pi by 10 to store in uint8t, divide by for to create a cone of direction
-        uint8_t m_10_pi_div_4 = (M_PI * 10) / 4;
-
         // store random value within 0.0 and 1/4 of pi (1.57)
-        double random_direction = (rand() % m_10_pi_div_4) / 10;
+        double random_direction = (rand() % M_10_PI_DIV_4) / 10;
 
         // check which edge of the screen the asteroid was placed,
         // point cone of direction accordingly
         if (random_x_position == 0)
         {
-            random_direction += 0.785; // 1/4 of pi
+            random_direction += ONE_FOURTH_OF_PI; // 0.785, 1/4 of pi
         }
         else if (random_y_position == 0)
         {
-            random_direction += 2.335; // 3/4 of pi
+            random_direction += THREE_FOURTH_OF_PI; // 2.335, 3/4 of pi
         }
         else if (random_x_position == Display::WIDTH_PIXELS)
         {
-            random_direction += 3.925; // 5/4 of pi
+            random_direction += FIVE_FOUTH_OF_PI; // 3.925, 5/4 of pi
         }
         else if (random_y_position == Display::HEIGHT_PIXELS)
         {
             // in order to point cone in top direction, the direction has to be between 0.0 - 0.785 or 5.495 - 6.28
-            if (random_direction > 0.785) // 1/4 of pi
+            if (random_direction > ONE_FOURTH_OF_PI) // 0.785, 1/4 of pi
             {
-                random_direction += 5.495; // 7/4 of pi
+                random_direction += SEVEN_FOURTH_OF_PI; // 5.495, 7/4 of pi
             }
         }
 
         // random speed with min and max
-        random_speed = min_asteroid_speed + rand() % (max_asteroid_speed - min_asteroid_speed + 1);
+        random_speed = MIN_ASTEROID_SPEED + rand() % (max_asteroid_speed - MIN_ASTEROID_SPEED + 1);
 
         // spawn asteroid and add to container
         asteroid_container->add_object(new Asteroid(random_x_position, random_y_position, random_speed, random_direction));

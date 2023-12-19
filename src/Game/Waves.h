@@ -45,6 +45,24 @@ private:
     /// @brief time (in delta seconds) to show text before dissapearing
     const double TEXT_TIME = 2;
 
+    // multiply PI by 10, divide by four
+    const uint8_t M_10_PI_DIV_4 = (M_PI * 10) / 4;
+
+    /// @brief 1/4 of PI
+    const double ONE_FOURTH_OF_PI = 0.785;
+
+    /// @brief 3/4 of PI
+    const double THREE_FOURTH_OF_PI = 2.335;
+
+    /// @brief 5/4 of PI
+    const double FIVE_FOUTH_OF_PI = 3.925;
+
+    /// @brief 7/4 of PI
+    const double SEVEN_FOURTH_OF_PI = 5.495;
+
+    /// @brief minimal asteroid speed
+    const uint8_t MIN_ASTEROID_SPEED = 35;
+
     /// @brief what to draw right now
     Waves::DrawPhase draw_phase = Waves::DrawPhase::NONE;
     /// @brief how long the text will remain showing, in (delta) seconds
