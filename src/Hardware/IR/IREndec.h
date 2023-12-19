@@ -23,6 +23,10 @@ private:
     static const uint8_t DATA_POS_Y_SIZE = 8;
     static const uint8_t DATA_DIR_SIZE = 9;
 
+    static const uint8_t DATA_SHOT_BULLET_SIZE = 1;
+    static const uint8_t DATA_PLAYER_DEATH_SIZE = 1;
+    static const uint8_t DATA_WAVE_END_SIZE = 1;
+
     static const uint32_t DATA_SHOT_BULLET_MASK = 0b10000000000000000000000000000000;
     static const uint32_t DATA_PLAYER_DEATH_MASK = 0b01000000000000000000000000000000;
     static const uint32_t DATA_WAVE_END_MASK = 0b00100000000000000000000000000000;

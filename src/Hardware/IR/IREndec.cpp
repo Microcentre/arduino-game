@@ -13,13 +13,13 @@ uint32_t IREndec::encode_game(uint16_t player_x_position, uint8_t player_y_posit
     data <<= DATA_DIR_SIZE;
     data |= player_direction;
 
-    data <<= DATA_WAVE_END_MASK;
+    data <<= DATA_WAVE_END_SIZE;
     data |= wave_ended;
 
-    data <<= DATA_PLAYER_DEATH_MASK;
+    data <<= DATA_PLAYER_DEATH_SIZE;
     data |= player_died;
 
-    data <<= DATA_SHOT_BULLET_MASK;
+    data <<= DATA_SHOT_BULLET_SIZE;
     data |= player_shot_bullet;
 
     return data;
