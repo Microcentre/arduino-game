@@ -26,21 +26,26 @@ void PlayerSelectScreen::update(const double &delta)
 void PlayerSelectScreen::drawHud(const double &delta)
 {
     // displays the text and selection box
-    Screen::display->canvas.setCursor(TEXT_X, TEXT_Y);
-    Screen::display->canvas.setTextColor(ILI9341_WHITE);
-    Screen::display->canvas.setTextSize(3);
-    Screen::display->canvas.print("SELECT PLAYER");
+    display->canvas.setTextSize(5);
+    display->canvas.setTextWrap(false);
+    display->canvas.setTextColor(TITLE_COLOUR);
+    display->draw_centred_text("\'ROIDS", SCREEN_CENTRE_X_POS, TITLE_Y);
+
+    display->canvas.setTextSize(2);
+    display->canvas.setTextColor(TEXT_COLOUR);
+    display->draw_centred_text("SELECT SHIP", SCREEN_CENTRE_X_POS, SELECT_PLAYER_TEXT_Y);
+
     if (left_selected)
     {
-        Screen::display->canvas.drawRect(SELECT_BOX_X_LEFT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_WHITE);
-        Screen::display->canvas.drawRect(SELECT_BOX_X_RIGHT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_BLACK);
+        display->canvas.drawRect(SELECT_BOX_X_LEFT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_WHITE);
+        display->canvas.drawRect(SELECT_BOX_X_RIGHT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_BLACK);
         this->p1->player_colour = ILI9341_CYAN;
         this->p2->player_colour = ILI9341_ORANGE;
     }
     else
     {
-        Screen::display->canvas.drawRect(SELECT_BOX_X_LEFT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_BLACK);
-        Screen::display->canvas.drawRect(SELECT_BOX_X_RIGHT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_WHITE);
+        display->canvas.drawRect(SELECT_BOX_X_LEFT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_BLACK);
+        display->canvas.drawRect(SELECT_BOX_X_RIGHT, SELECT_BOX_Y, SELECT_BOX_SIZE, SELECT_BOX_SIZE, ILI9341_WHITE);
         this->p1->player_colour = ILI9341_ORANGE;
         this->p2->player_colour = ILI9341_CYAN;
     }

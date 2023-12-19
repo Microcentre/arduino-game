@@ -38,11 +38,17 @@ private:
     /// @brief Whether the left player is selected.
     uint8_t left_selected = true;
 
-    /// @brief The x position of the left player icon.
-    static const uint8_t TEXT_X = 43;
+    /// @brief the centre x position of the text
+    const uint8_t SCREEN_CENTRE_X_POS = Display::WIDTH_PIXELS / 2;
+
+    const uint16_t TITLE_COLOUR = ILI9341_WHITE;
 
     /// @brief The y position of the text.
-    static const uint8_t TEXT_Y = 40;
+    static const uint8_t TITLE_Y = 30;
+
+    const uint16_t TEXT_COLOUR = ILI9341_GREEN;
+
+    const uint8_t SELECT_PLAYER_TEXT_Y = 80;
 
     /// @brief The size of the selection box.
     static const uint8_t SELECT_BOX_SIZE = 100;
