@@ -84,11 +84,17 @@ void GameScreen::update(const double &delta)
         this->ready_for_screen_switch = true;
     }
 
-    this->process_player_2();
-
     // draw
+    if (!this->waves->is_drawing())
+    {
+        this->process_player_2();
+        this->player2->draw(this->display);
+    }
+    else
+    {
+        this->player2->undraw(this->display, this->player2->get_x_position(), this->player2->get_y_position());
+    }
     this->player->draw(this->display);
-    this->player2->draw(this->display);
     this->score->draw(this->display);
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
