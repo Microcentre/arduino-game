@@ -13,6 +13,7 @@
 #include "../Hardware/Buzzer.h"
 #include "../Hardware/ShowHealthOnSSD.h"
 #include "InvincibilityFrames.h"
+#include "Hardware/IR/IREndec.h"
 
 class GameScreen : public Screen
 {

@@ -77,7 +77,8 @@ void GameScreen::update(const double &delta)
     // - reverse these steps on receive
 
     uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
-    this->infrared->send_player_data((uint16_t)this->player->get_x_position(), (uint8_t)this->player->get_y_position(), send_dir, 0);
+    uint32_t game_data = IREndec::encode_game((uint16_t)this->player->get_x_position(), (uint8_t)this->player->get_y_position(), send_dir, 0);
+    this->infrared->send_data(game_data);
 
     if (this->player->health <= this->player->GAME_OVER_HEALTH)
     {

@@ -6,10 +6,6 @@ const uint16_t CARRIER_FREQUENCY = 38000;
 
 const uint8_t DATA_SIZE = 29;
 const uint8_t MESSAGE_SIZE = DATA_SIZE + 3;
-const uint8_t DATA_POS_X_SIZE = 9;
-const uint8_t DATA_POS_Y_SIZE = 8;
-const uint8_t DATA_DIR_SIZE = 9;
-const uint8_t DATA_FLAGS_SIZE = 3;
 
 const uint8_t PARITY_MASK = 0x02;
 const uint32_t RECEIVE_DATA_MASK = 0b01111111111111111111111111111100;
@@ -69,7 +65,6 @@ public:
     /// @brief queue up a message with some data to send
     /// @param data to send
     void send_data(uint32_t);
-    void send_player_data(uint16_t, uint8_t, uint16_t, uint8_t);
     void interpret_data();
 
     /// @brief the data is sent LSB first, which means the LSB ends up as the MSB on receiving, reverse the message to correct this
