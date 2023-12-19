@@ -7,7 +7,7 @@ Waves::Waves(uint8_t max_asteroids)
 
 void Waves::start_new()
 {
-    this->wave = 6;
+    this->wave = 1;
     this->draw_phase = Waves::DrawPhase::ASTEROID_WARNING;
 }
 
@@ -60,16 +60,19 @@ void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
         amount_of_asteroids = this->max_asteroids;
 
     // every 2 waves, the max speed increases by 50
-    uint8_t max_asteroid_speed = ((this->wave / 2) + 1) * 50;
+    uint16_t max_asteroid_speed = ((this->wave / 2) + 1) * 50;
+    uint8_t min_asteroid_speed = 15;
 
     uint16_t random_x_position;
     uint8_t random_y_position;
     uint8_t random_speed;
     for (uint8_t i = 0; i < amount_of_asteroids; ++i)
     {
+        // randomize positions
         random_x_position = (uint16_t)rand() % Display::WIDTH_PIXELS + 1;
         random_y_position = rand() % Display::HEIGHT_PIXELS + 1;
 
+        // ensures asteroids always spawn in corners of screen
         if (random_x_position < (Display::WIDTH_PIXELS / 2)) // if x in left half of screen
         {
             if (random_y_position < (Display::HEIGHT_PIXELS / 2)) // if y in top half of screen
@@ -93,44 +96,39 @@ void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
             }
         }
 
-        // random direction
-        uint16_t m_10_pi = (M_PI * 10) / 4;
-        double random_direction = (rand() % m_10_pi) / 10;
+        // * pi by 10 to store in uint8t, divide by for to create a cone of direction
+        uint8_t m_10_pi_div_4 = (M_PI * 10) / 4;
 
+        // store random value within 0.0 and 1/4 of pi (1.57)
+        double random_direction = (rand() % m_10_pi_div_4) / 10;
+
+        // check which edge of the screen the asteroid was placed,
+        // point cone of direction accordingly
         if (random_x_position == 0)
         {
-            random_direction += 1.5;
+            random_direction += 0.942; // 1/4 of pi
         }
         else if (random_y_position == 0)
         {
-            random_direction += 3;
+            random_direction += 2.512; // 3/4 of pi
         }
         else if (random_x_position == Display::WIDTH_PIXELS)
         {
-            random_direction += 4.5;
+            random_direction += 4.082; // 5/4 of pi
         }
         else if (random_y_position == Display::HEIGHT_PIXELS)
         {
-            random_direction += 5;
+            // in order to point cone in top direction, the direction has to be between 0.0 - 0.942 or 5.652 - 6.28
+            if (random_direction > 0.942) // 1/4 of pi
+            {
+                random_direction += 5.652; // 7/4 of pi
+            }
         }
 
-        // if (random_direction >= 0.0 && random_direction <= 0.5 && // 0
-        //     random_direction >= 1.0 && random_direction <= 2.0 && // 1.57
-        //     random_direction >= 2.7 && random_direction <= 3.3 && // 3.14
-        //     random_direction >= 4.7 && random_direction <= 5.3 && // 4.71
-        //     random_direction >= 6.0 && random_direction <= 6.28)  // 6.28
-        // {
-        //     random_direction += 0.5;
-        // }
+        // random speed with min and max
+        random_speed = min_asteroid_speed + rand() % (max_asteroid_speed - min_asteroid_speed + 1);
 
-        // random speed
-        // if there's multiple asteroids it's okay if some of them stand still
-        // if there's only a few, it's more fun if they all move
-        if (amount_of_asteroids > 3)
-            random_speed = rand() % max_asteroid_speed; // random 0-max_asteroid_speed (ex 0-100)
-        else
-            random_speed = rand() % max_asteroid_speed / 2 + max_asteroid_speed / 2; // random max_asteroid_speed/2-max_asteroid_speed (ex 50-100)
-
+        // spawn asteroid and add to container
         asteroid_container->add_object(new Asteroid(random_x_position, random_y_position, random_speed, random_direction));
     }
 }
