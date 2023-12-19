@@ -61,7 +61,7 @@ void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
 
     // every 2 waves, the max speed increases by 50
     uint16_t max_asteroid_speed = ((this->wave / 2) + 1) * 50;
-    uint8_t min_asteroid_speed = 15;
+    uint8_t min_asteroid_speed = 35;
 
     uint16_t random_x_position;
     uint8_t random_y_position;
@@ -106,22 +106,22 @@ void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
         // point cone of direction accordingly
         if (random_x_position == 0)
         {
-            random_direction += 0.942; // 1/4 of pi
+            random_direction += 0.785; // 1/4 of pi
         }
         else if (random_y_position == 0)
         {
-            random_direction += 2.512; // 3/4 of pi
+            random_direction += 2.335; // 3/4 of pi
         }
         else if (random_x_position == Display::WIDTH_PIXELS)
         {
-            random_direction += 4.082; // 5/4 of pi
+            random_direction += 3.925; // 5/4 of pi
         }
         else if (random_y_position == Display::HEIGHT_PIXELS)
         {
-            // in order to point cone in top direction, the direction has to be between 0.0 - 0.942 or 5.652 - 6.28
-            if (random_direction > 0.942) // 1/4 of pi
+            // in order to point cone in top direction, the direction has to be between 0.0 - 0.785 or 5.495 - 6.28
+            if (random_direction > 0.785) // 1/4 of pi
             {
-                random_direction += 5.652; // 7/4 of pi
+                random_direction += 5.495; // 7/4 of pi
             }
         }
 
