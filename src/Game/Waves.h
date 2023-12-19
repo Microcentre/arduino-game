@@ -66,8 +66,6 @@ private:
     /// @brief minimal asteroid speed
     const uint8_t MIN_ASTEROID_SPEED = 35;
 
-    /// @brief what to draw right now
-    Waves::DrawPhase draw_phase = Waves::DrawPhase::NONE;
     /// @brief how long the text will remain showing, in (delta) seconds
     double text_time_left = 0;
 
