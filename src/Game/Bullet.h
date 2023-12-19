@@ -23,7 +23,7 @@ public:
 
     virtual ~Bullet();
 
-    int frames_alive = 0;
+    uint8_t frames_alive = 0;
 
     static uint8_t bullet_amount;
 

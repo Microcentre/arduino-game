@@ -1,8 +1,8 @@
 #include "Score.h"
 
-int Score::score = 0;
+uint16_t Score::score = 0;
 
-int Score::previous_score = 0;
+uint16_t Score::previous_score = 0;
 
 Score::Score(Display *display, double x_position, double y_position) : Object(x_position, y_position)
 {

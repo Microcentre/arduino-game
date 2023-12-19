@@ -36,8 +36,8 @@ public:
 private:
     // drawing a moving object requires undrawing the old drawing.
     // draw() calls undraw() with the below variables before drawing the object
-    uint16_t previous_x_position;
-    uint16_t previous_y_position;
+    uint16_t previous_draw_position_x;
+    uint16_t previous_draw_position_y;
 };
 
 #endif

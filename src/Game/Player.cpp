@@ -11,12 +11,12 @@ Player::Player(uint16_t x_position, uint16_t y_position, double speed) : MovingO
 
 void Player::update(const double &delta)
 {
+    // check if invincible and if so, check if invincibility time is over, resets invincibility if so
     if (is_invincible)
     {
-        invincibility_timer++;
-        if (invincibility_timer >= INVINCIBILITY_TIME)
+        invincibility_timer -= delta;
+        if (invincibility_timer <= 0)
         {
-            invincibility_timer = 0;
             is_invincible = false;
         }
     }
@@ -61,20 +61,39 @@ void Player::rotate(const uint8_t rotation)
     double rotation_modifier = (double)rotation / this->MAX_JOYSTICK_AXIS;
     // scale to [0..2] and shift to [-1..1]
     rotation_modifier = (rotation_modifier * 2) - 1;
-    // [-1..1] where -1=bottom, 0=centre, 1=top
-    this->previous_facing_direction = this->facing_direction;
-    this->facing_direction -= rotation_modifier * this->TURN_SPEED;
+    // this->facing_direction -= rotation_modifier * this->TURN_SPEED;
+    double result_direction = this->facing_direction - (rotation_modifier * this->TURN_SPEED);
+
+    // constrain to range [-pi..pi]
+    if (result_direction > M_PI)
+    {
+        this->facing_direction = M_PI * -1;
+    }
+    else if (result_direction < M_PI * -1)
+    {
+        this->facing_direction = M_PI;
+    }
+    else
+    {
+        this->facing_direction = result_direction;
+    }
 }
 
 void Player::draw(Display *display)
 {
     MovingObject::draw(display);
-    this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, player_colour);
+    // checks if the player is blinking, if not, draw player with the player colour
+    is_blinking = (uint16_t)(this->invincibility_timer * 10) % 8;
+    if (!is_blinking)
+    {
+        this->draw(display, this->get_x_position(), this->get_y_position(), this->facing_direction, this->player_colour);
+    }
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
     this->undraw(display, x_position, y_position, this->previous_facing_direction);
+    this->previous_facing_direction = this->facing_direction;
 }
 
 void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position, double actual_facing_direction)

@@ -32,7 +32,6 @@ public:
     /// @return if this class is still busy drawing the text
     bool is_drawing();
 
-private:
     enum DrawPhase
     {
         NONE,
@@ -42,6 +41,10 @@ private:
         SPAWN_ASTEROIDS
     };
 
+    /// @brief what to draw right now
+    Waves::DrawPhase draw_phase = Waves::DrawPhase::NONE;
+
+private:
     /// @brief time (in delta seconds) to show text before dissapearing
     const double TEXT_TIME = 2;
 

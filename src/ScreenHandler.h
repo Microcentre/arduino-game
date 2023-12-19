@@ -3,6 +3,7 @@
 
 #include "PlayerSelect/PlayerSelectScreen.h"
 #include "Game/GameScreen.h"
+#include "Highscore/HighscoreScreen.h"
 
 class ScreenHandler
 {
@@ -10,7 +11,7 @@ public:
     /// @brief Handles the current screen and switching between screens. Defaults to the player select screen.
     /// @param display the display to draw to.
     /// @param joystick the joystick to read input from.
-    ScreenHandler(Display *display, Joystick *joystick);
+    ScreenHandler(Display *display, Joystick *joystick, IR *infrared);
 
     ~ScreenHandler();
 
@@ -26,11 +27,17 @@ private:
 
     Joystick *joystick;
 
+    IR *infrared;
+
     GameScreen *game_screen;
 
     PlayerSelectScreen *select_screen;
 
+    HighscoreScreen *highscore_screen;
+
     Screen *current_screen;
+
+    ScoreList *scores;
 };
 
 #endif
