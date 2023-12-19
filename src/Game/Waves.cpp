@@ -29,7 +29,7 @@ bool Waves::is_spawning_asteroids()
 void Waves::update(Display *display, const double &delta_s, ObjectsContainer *asteroids_container)
 {
     // if not drawing, do nothing
-    if (this->draw_phase == 0)
+    if (this->draw_phase == DrawPhase::NONE)
         return;
 
     // go to next phase when ready
