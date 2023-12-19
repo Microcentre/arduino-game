@@ -32,6 +32,10 @@ public:
     /// @return if this class is still busy drawing the text
     bool is_drawing();
 
+    /// @return if in the phase of drawing asteroids
+    bool is_spawning_asteroids();
+
+private:
     enum DrawPhase
     {
         NONE,
@@ -41,10 +45,6 @@ public:
         SPAWN_ASTEROIDS
     };
 
-    /// @brief what to draw right now
-    Waves::DrawPhase draw_phase = Waves::DrawPhase::NONE;
-
-private:
     /// @brief time (in delta seconds) to show text before dissapearing
     const double TEXT_TIME = 2;
 
@@ -52,6 +52,9 @@ private:
     double text_time_left = 0;
 
     uint8_t max_asteroids;
+
+    /// @brief what to draw right now
+    Waves::DrawPhase draw_phase = Waves::DrawPhase::NONE;
 
     /// @brief Spawn asteroids depending on the current wave
     /// @param asteroid_container
