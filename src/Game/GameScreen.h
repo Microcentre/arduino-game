@@ -63,7 +63,7 @@ public:
     /// @param x_asteroid x-coordinate of center of asteroid
     /// @param y_asteroid y-coordinate of center of asteroid
     /// @return returns true if radius of player is within radius of asteroid
-    bool player_asteroid_colliding(uint16_t x_player, uint16_t y_player, uint16_t x_asteroid, uint16_t y_asteroid);
+    bool player_asteroid_colliding(int32_t x_player, int32_t y_player, uint16_t x_asteroid, uint16_t y_asteroid);
 
 private:
     /// @brief max array size for asteroids and bullet containers
