@@ -197,6 +197,7 @@ void GameScreen::process_player_2()
     // fix by removing all asteroids and forcing next wave start.
     if (game_data.wave_ended && !this->asteroid_container->objects.empty())
     {
+        this->score->add_score(this->asteroid_container->objects.size() * 50);
         this->asteroid_container->undraw_objects();
         this->asteroid_container->objects.clear();
         this->waves->next();
