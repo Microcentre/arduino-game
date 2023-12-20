@@ -8,6 +8,7 @@
 #include "Game/GameScreen.h"
 #include "PlayerSelect/PlayerSelectScreen.h"
 #include "ScreenHandler.h"
+#include "Hardware/Brightness.h"
 
 // time to wait between each frame.
 // to minimise redraw flicker.
@@ -15,6 +16,10 @@
 const uint8_t SCREEN_DELAY_MS = 20;
 /// @brief approximate delta in seconds (time since last frame)
 const double DELTA = (double)SCREEN_DELAY_MS / 1000;
+
+volatile uint8_t brightness_interrupt_counter = 0; // counts the number of interrupts executed by timer 2, resets at 255
+
+const uint8_t COUNTER_MAX = 255; // maximum value of the counter
 
 IR *p_infrared;
 long total_timer_value;
@@ -146,6 +151,35 @@ ISR(INT0_vect)
     }
 }
 
+ISR(ADC_vect)
+{
+    // ADC conversion complete
+    // read the value and set the brightness
+    OCR2A = ADCH;
+}
+
+ISR(TIMER2_COMPA_vect)
+{
+    // this interrupt is used to update the display brightness
+
+    brightness_interrupt_counter++;
+    // so long as the counter is less than the compare value, turn on the LED. The higher the compare value, the longer the LED is on for
+    // the lower the compare value, the shorter the LED is on for
+    if (brightness_interrupt_counter > OCR2A)
+    {
+        PORTD &= ~(1 << PORTD5); // turn off pin 5
+    }
+    else
+    {
+        PORTD |= (1 << PORTD5); // turn on pin 5
+    }
+
+    if (brightness_interrupt_counter >= COUNTER_MAX)
+    {
+        brightness_interrupt_counter = 0; // reset counter
+    }
+}
+
 void setup()
 {
     Wire.begin();
@@ -163,6 +197,7 @@ int main()
     Display display = Display();
     Joystick joystick = Joystick();
     ScreenHandler game = ScreenHandler(&display, &joystick, p_infrared);
+    Brightness brightness = Brightness();
 
     // game loop
     while (1)
