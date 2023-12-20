@@ -17,7 +17,9 @@ const uint8_t SCREEN_DELAY_MS = 20;
 /// @brief approximate delta in seconds (time since last frame)
 const double DELTA = (double)SCREEN_DELAY_MS / 1000;
 
-volatile uint8_t counter = 0;
+volatile uint8_t brightness_interrupt_counter = 0; // counts the number of interrupts executed by timer 2, resets at 255
+
+const uint8_t COUNTER_MAX = 255; // maximum value of the counter
 
 IR *p_infrared;
 long total_timer_value;
@@ -159,11 +161,11 @@ ISR(ADC_vect)
 ISR(TIMER2_COMPA_vect)
 {
     // this interrupt is used to update the display brightness
-    // it is triggered every 1/32 of a second
-    // the brightness is set by the ADC interrupt
 
-    counter++;
-    if (counter > OCR2A)
+    brightness_interrupt_counter++;
+    // so long as the counter is less than the compare value, turn on the LED. The higher the compare value, the longer the LED is on for
+    // the lower the compare value, the shorter the LED is on for
+    if (brightness_interrupt_counter > OCR2A)
     {
         PORTD &= ~(1 << PORTD5); // turn off pin 5
     }
@@ -172,9 +174,9 @@ ISR(TIMER2_COMPA_vect)
         PORTD |= (1 << PORTD5); // turn on pin 5
     }
 
-    if (counter >= 255)
+    if (brightness_interrupt_counter >= COUNTER_MAX)
     {
-        counter = 0; // reset counter
+        brightness_interrupt_counter = 0; // reset counter
     }
 }
 

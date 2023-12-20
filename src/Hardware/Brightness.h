@@ -8,7 +8,7 @@ public:
 
     void init_timer_2();
 
-    void init_ADC();
+    void init_adc();
 
 private:
 };

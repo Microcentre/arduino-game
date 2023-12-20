@@ -1,11 +1,11 @@
 #include "Brightness.h"
 #include <avr/io.h>
 
-#define ALLADCPINS ((1 << MUX0) | (1 << MUX1) | (1 << MUX2) | (1 << MUX3))
+#define ALL_ADC_PINS ((1 << MUX0) | (1 << MUX1) | (1 << MUX2) | (1 << MUX3))
 
 Brightness::Brightness()
 {
-    init_ADC();
+    init_adc();
     init_timer_2();
 }
 
@@ -20,9 +20,9 @@ void Brightness::init_timer_2()
     TIMSK2 |= (1 << OCIE2A); // enable interrupt
 }
 
-void Brightness::init_ADC()
+void Brightness::init_adc()
 {
-    ADMUX &= ~ALLADCPINS;                                    // input channel port A0 for LDR
+    ADMUX &= ~ALL_ADC_PINS;                                  // input channel port A0 for LDR
     ADMUX |= (1 << REFS0);                                   // reference voltage on AVCC
     ADCSRB &= ~((1 << ADTS0) | (1 << ADTS1) | (1 << ADTS2)); // freerunning mode
     ADCSRA |= ((1 << ADPS0) | (1 << ADPS1) | (1 << ADPS2));  // prescaler 128
@@ -30,5 +30,5 @@ void Brightness::init_ADC()
     ADCSRA |= (1 << ADEN);                                   // enable ADC
     ADCSRA |= (1 << ADSC);                                   // start first ADC conversion
     ADCSRA |= (1 << ADIE);                                   // enable interrupt
-    ADMUX |= (1 << ADLAR);                                   // ADC left adjust
+    ADMUX |= (1 << ADLAR);                                   // ADC left adjust to be able to read 8-bit value from ADCH, because result from potmeter is 8-bit anyways
 }
