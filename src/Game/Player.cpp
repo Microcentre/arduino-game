@@ -82,6 +82,7 @@ void Player::rotate(const uint8_t rotation)
 void Player::draw(Display *display)
 {
     MovingObject::draw(display);
+    this->previous_draw_facing_direction = this->facing_direction;
     // checks if the player is blinking, if not, draw player with the player colour
     is_blinking = (uint16_t)(this->invincibility_timer * 10) % 8;
     if (!is_blinking)
@@ -90,15 +91,19 @@ void Player::draw(Display *display)
     }
 }
 
-void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
+void Player::undraw(Display *display)
 {
-    this->undraw(display, x_position, y_position, this->previous_facing_direction);
-    this->previous_facing_direction = this->facing_direction;
+    this->undraw(display, this->previous_draw_position_x, this->previous_draw_position_y, this->previous_draw_facing_direction);
 }
 
-void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position, double actual_facing_direction)
+void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
-    this->draw(display, x_position, y_position, actual_facing_direction, display->background_colour);
+    this->undraw(display, x_position, y_position, this->previous_draw_facing_direction);
+}
+
+void Player::undraw(Display *display, const uint16_t x_position, const uint16_t y_position, double facing_direction)
+{
+    this->draw(display, x_position, y_position, facing_direction, display->background_colour);
 }
 
 double Player::get_front_x_position()
@@ -140,12 +145,15 @@ void Player::draw(Display *display, const uint16_t x_position, const uint16_t y_
 void Player::hurt(Display *display)
 {
     health--;
+    undraw(display, this->get_x_position(), this->get_y_position(), this->facing_direction);
 
     // reset player
-    undraw(display, this->get_x_position(), this->get_y_position(), this->facing_direction);
-    set_x_position(Display::WIDTH_PIXELS / 2);
-    set_y_position(Display::HEIGHT_PIXELS / 2);
-    speed = 0;
+    if (health > this->GAME_OVER_HEALTH)
+    {
+        set_x_position(Display::WIDTH_PIXELS / 2);
+        set_y_position(Display::HEIGHT_PIXELS / 2);
+        speed = 0;
+    }
 
     // call all observers
     for (int i = 0; i < hurt_observers_size; ++i)

@@ -42,6 +42,9 @@ public:
     /// @param display display to draw on
     void draw(Display *display) override;
 
+    /// @brief call undraw() using previous_drawing_position variables
+    void undraw(Display *display) override;
+
     /// @brief clear drawing at given position
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
@@ -110,7 +113,7 @@ private:
     static constexpr double POINTINESS = 2.5;
 
     /// @brief store previous facing_direction for undraw()
-    double previous_facing_direction;
+    double previous_draw_facing_direction;
 };
 
 #endif

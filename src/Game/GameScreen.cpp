@@ -100,7 +100,8 @@ void GameScreen::update(const double &delta)
     if (player2->active)
     {
         this->process_player_2();
-        this->player2->draw(this->display);
+        if (player2->active)
+            this->player2->draw(this->display);
     }
 
     // draw
@@ -181,7 +182,7 @@ void GameScreen::process_player_2()
     // if other player died, undraw once
     if (game_data.player_died)
     {
-        this->player2->undraw(this->display, this->player2->get_x_position(), this->player2->get_y_position());
+        this->player2->undraw(this->display);
         this->player2->active = false;
         return;
     }

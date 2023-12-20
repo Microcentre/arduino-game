@@ -40,7 +40,7 @@ public:
     /// @brief set y_position and update previous_y_position
     void set_y_position(const double position) override;
 
-private:
+protected:
     // drawing a moving object requires undrawing the old drawing.
     // draw() calls undraw() with the below variables before drawing the object
     uint16_t previous_draw_position_x;
