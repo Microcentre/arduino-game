@@ -30,5 +30,5 @@ void Brightness::init_adc()
     ADCSRA |= (1 << ADEN);                                   // enable ADC
     ADCSRA |= (1 << ADSC);                                   // start first ADC conversion
     ADCSRA |= (1 << ADIE);                                   // enable interrupt
-    ADMUX |= (1 << ADLAR);                                   // ADC left adjust to be able to read 8-bit value from ADCH, because result from potmeter is 8-bit anyways
+    ADMUX |= (1 << ADLAR);                                   // ADC left adjust to be able to read the high 8-bits from ADCH and ignore the low 2-bits from ADCL for they are noise
 }
