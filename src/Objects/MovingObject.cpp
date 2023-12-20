@@ -44,6 +44,11 @@ void MovingObject::draw(Display *display)
     this->previous_draw_position_y = this->get_y_position();
 }
 
+void MovingObject::undraw(Display *display)
+{
+    this->undraw(display, this->previous_draw_position_x, this->previous_draw_position_y);
+}
+
 void MovingObject::set_x_position(const double position)
 {
     Object::set_x_position(position);

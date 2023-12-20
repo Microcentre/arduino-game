@@ -102,8 +102,8 @@ void GameScreen::update(const double &delta)
     // draw
     this->player->draw(this->display);
     this->score->draw(this->display);
-    this->asteroid_container->draw_objects(delta);
-    this->bullet_container->draw_objects(delta);
+    this->asteroid_container->draw_objects();
+    this->bullet_container->draw_objects();
 
     this->waves->update(display, delta, this->asteroid_container);
 
@@ -195,9 +195,10 @@ void GameScreen::process_player_2()
     // if wave_ended was given, but we still have asteroids on our side
     // there's a sync issue!
     // fix by removing all asteroids and forcing next wave start.
-    if (game_data.wave_ended && this->asteroid_container->objects.empty())
+    if (game_data.wave_ended && !this->asteroid_container->objects.empty())
     {
-        this->asteroid_container->objects.clear(); // remove all asteroids (fix possible sync issue)
+        this->asteroid_container->undraw_objects();
+        this->asteroid_container->objects.clear();
         this->waves->next();
     }
 }

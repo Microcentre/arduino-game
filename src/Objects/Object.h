@@ -35,7 +35,7 @@ public:
 
     /// @brief Undraw at current position
     /// @param display display to draw on
-    void undraw(Display *display);
+    virtual void undraw(Display *display);
 
 private:
     double x_position;

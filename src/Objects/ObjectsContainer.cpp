@@ -57,10 +57,16 @@ void ObjectsContainer::update_objects(const double &delta)
     }
 }
 
-void ObjectsContainer::draw_objects(const double &delta)
+void ObjectsContainer::draw_objects()
 {
     for (auto i = objects.begin(); i != objects.end(); ++i)
         (*i)->draw(this->display);
+}
+
+void ObjectsContainer::undraw_objects()
+{
+    for (auto i = objects.begin(); i != objects.end(); ++i)
+        (*i)->undraw(this->display);
 }
 
 uint8_t ObjectsContainer::get_size()

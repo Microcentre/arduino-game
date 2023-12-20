@@ -25,8 +25,10 @@ public:
     void update_objects(const double &delta);
 
     /// @brief call draw() on all objects. is called every frame.
-    /// @param delta seconds since last frame
-    void draw_objects(const double &delta);
+    void draw_objects();
+
+    /// @brief call undraw() on all objects
+    void undraw_objects();
 
     /// @return the amount of objects the ObjectContainer is holding
     uint8_t get_size();

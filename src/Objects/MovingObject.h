@@ -23,6 +23,13 @@ public:
     /// @param display display to draw on
     void draw(Display *display) override;
 
+    /// @brief All objects inheriting MovingObject must implement an undraw()
+    /// repeated from Object to avoid errors.
+    virtual void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) = 0;
+
+    /// @brief call undraw() using previous_drawing_position variables
+    void undraw(Display *display) override;
+
     /// @brief moves object. When inheriting call MovingObject::update() last
     /// @param delta_s time since last frame in seconds
     void update(const double &delta) override;
