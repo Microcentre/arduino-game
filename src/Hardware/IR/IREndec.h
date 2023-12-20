@@ -14,26 +14,32 @@ public:
     /// @param player_died game has ended because 0 lives are left
     /// @return encoded 32 bit message containing all given data
     static uint32_t encode_game(uint16_t player_x_position, uint8_t player_y_position, uint16_t player_direction, bool wave_ended, bool player_died, bool player_shot_bullet);
-    static GameData decode_game(uint32_t data);
     static uint32_t encode_game_ended();
+    static GameData decode_game(uint32_t data);
     // uint32_t encode_asteroid();
     // uint32_t encode_ship_select();
 private:
-    static const uint8_t DATA_POS_X_SIZE = 9;
-    static const uint8_t DATA_POS_Y_SIZE = 8;
-    static const uint8_t DATA_DIR_SIZE = 9;
+    static const uint8_t X_POSITION_BIT_SIZE = 9;
+    static const uint8_t Y_POSITION_BIT_SIZE = 8;
+    static const uint8_t FACING_DIRECTION_BIT_SIZE = 9;
+    static const uint8_t WAVE_END_BIT_SIZE = 1;
+    static const uint8_t PLAYER_DEATH_BIT_SIZE = 1;
+    static const uint8_t SHOT_BULLET_BIT_SIZE = 1;
 
-    static const uint8_t DATA_SHOT_BULLET_SIZE = 1;
-    static const uint8_t DATA_PLAYER_DEATH_SIZE = 1;
-    static const uint8_t DATA_WAVE_END_SIZE = 1;
+    // once data is received, how many bits to shift back to get the data
+    static const uint8_t SHOT_BULLET_SHIFT_OFFSET = 0;
+    static const uint8_t PLAYER_DEATH_SHIFT_OFFSET = SHOT_BULLET_BIT_SIZE;
+    static const uint8_t WAVE_END_SHIFT_OFFSET = PLAYER_DEATH_BIT_SIZE + PLAYER_DEATH_SHIFT_OFFSET;
+    static const uint8_t FACING_DIRECTION_SHIFT_OFFSET = WAVE_END_BIT_SIZE + WAVE_END_SHIFT_OFFSET;
+    static const uint8_t POSITION_Y_SHIFT_OFFSET = FACING_DIRECTION_BIT_SIZE + FACING_DIRECTION_SHIFT_OFFSET;
+    static const uint8_t POSITION_X_SHIFT_OFFSET = Y_POSITION_BIT_SIZE + POSITION_Y_SHIFT_OFFSET;
 
-    static const uint32_t DATA_SHOT_BULLET_MASK = 0b10000000000000000000000000000000;
-    static const uint32_t DATA_PLAYER_DEATH_MASK = 0b01000000000000000000000000000000;
-    static const uint32_t DATA_WAVE_END_MASK = 0b00100000000000000000000000000000;
-
-    static const uint32_t DATA_POS_X_MASK = 0b00011111111100000000000000000000;
-    static const uint32_t DATA_POS_Y_MASK = 0b00000000000011111111000000000000;
-    static const uint32_t DATA_DIR_MASK = 0b00000000000000000000111111111000;
+    static const uint32_t POSITION_X_MASK = 0b00011111111100000000000000000000;
+    static const uint32_t POSITION_Y_MASK = 0b00000000000011111111000000000000;
+    static const uint32_t FACING_DIRECTION_MASK = 0b00000000000000000000111111111000;
+    static const uint32_t WAVE_END_MASK = 0b00000000000000000000000000000100;
+    static const uint32_t PLAYER_DEATH_MASK = 0b00000000000000000000000000000010;
+    static const uint32_t SHOT_BULLET_MASK = 0b00000000000000000000000000000001;
 };
 
 #endif

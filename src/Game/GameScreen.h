@@ -10,6 +10,7 @@
 #include "../Objects/ObjectsContainer.h"
 #include "../Highscore/Score.h"
 #include "Waves.h"
+#include "Bullet.h"
 #include "../Hardware/Buzzer.h"
 #include "../Hardware/ShowHealthOnSSD.h"
 #include "InvincibilityFrames.h"
@@ -70,6 +71,7 @@ private:
     /// @brief max array size for asteroids and bullet containers
     static constexpr uint8_t MAX_AMOUNT_OF_OBJECTS = 15;
 
+    Buzzer buzzer = Buzzer();
     Waves *waves;
 
     /// @brief called when an asteroid is destroyed. starts a new wave
@@ -78,7 +80,7 @@ private:
     /// @brief update the other player using received infrared data
     void process_player_2();
 
-    Buzzer buzzer = Buzzer();
+    void spawn_bullet(Bullet *bullet);
 
     /// @brief if the player just shot a bullet
     /// used to sync with other player.

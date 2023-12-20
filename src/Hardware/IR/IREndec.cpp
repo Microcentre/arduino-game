@@ -2,24 +2,24 @@
 
 /// @param wave_ended wave has ended because all asteroids are destroyed
 /// @param player_died game has ended because 0 lives are left
-uint32_t IREndec::encode_game(uint16_t player_x_position, uint8_t player_y_position, uint16_t player_direction, bool player_shot_bullet, bool player_died, bool wave_ended)
+uint32_t IREndec::encode_game(uint16_t player_x_position, uint8_t player_y_position, uint16_t player_direction, bool wave_ended, bool player_died, bool player_shot_bullet)
 {
     uint32_t data = 0;
     data |= player_x_position;
 
-    data <<= DATA_POS_Y_SIZE;
+    data <<= Y_POSITION_BIT_SIZE;
     data |= player_y_position;
 
-    data <<= DATA_DIR_SIZE;
+    data <<= FACING_DIRECTION_BIT_SIZE;
     data |= player_direction;
 
-    data <<= DATA_WAVE_END_SIZE;
+    data <<= WAVE_END_BIT_SIZE;
     data |= wave_ended;
 
-    data <<= DATA_PLAYER_DEATH_SIZE;
+    data <<= PLAYER_DEATH_BIT_SIZE;
     data |= player_died;
 
-    data <<= DATA_SHOT_BULLET_SIZE;
+    data <<= SHOT_BULLET_BIT_SIZE;
     data |= player_shot_bullet;
 
     return data;
@@ -29,12 +29,16 @@ GameData IREndec::decode_game(uint32_t data)
 {
     GameData gamedata;
 
-    gamedata.player_x_position = (data & (DATA_POS_X_MASK)) >> 20;
-    gamedata.player_y_position = (data & (DATA_POS_Y_MASK)) >> 12;
-    uint16_t dir = (data & (DATA_DIR_MASK)) >> 3;
-    // convert sent direction back to double
-    gamedata.player_facing_direction = ((double)(dir << 1) / 100) - M_PI;
+    gamedata.player_x_position = (data & POSITION_X_MASK) >> POSITION_X_SHIFT_OFFSET;
+    gamedata.player_y_position = (data & POSITION_Y_MASK) >> POSITION_Y_SHIFT_OFFSET;
 
+    uint16_t facing_direction = (data & FACING_DIRECTION_MASK) >> FACING_DIRECTION_SHIFT_OFFSET;
+    // convert sent direction back to double
+    gamedata.player_facing_direction = ((double)(facing_direction << 1) / 100) - M_PI;
+
+    gamedata.wave_ended = (data & WAVE_END_MASK) >> WAVE_END_SHIFT_OFFSET;
+    gamedata.player_died = (data & PLAYER_DEATH_MASK) >> PLAYER_DEATH_SHIFT_OFFSET;
+    gamedata.player_shot_bullet = (data & SHOT_BULLET_MASK) >> SHOT_BULLET_SHIFT_OFFSET;
     return gamedata;
 }
 

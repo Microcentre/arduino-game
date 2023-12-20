@@ -21,6 +21,9 @@ public:
     /// @brief [-1..1] where -1=bottom, 0=centre, 1=top
     double facing_direction;
 
+    /// @brief if false, player is not updated or drawn
+    bool active = true;
+
     Player();
 
     /// @param speed pixels per second

@@ -79,7 +79,6 @@ public:
     void load_message_into_output_buffer();
 
     uint32_t get_received_data();
-    void set_received_data(uint32_t);
 
 private:
     uint32_t input_buffer;

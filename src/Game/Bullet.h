@@ -6,6 +6,8 @@
 class Bullet : public MovingObject
 {
 public:
+    bool shot_by_player1 = false;
+
     Bullet(int16_t x_position, int16_t y_position, double direction, uint16_t colour);
 
     /// @param delta_s time since last frame in seconds

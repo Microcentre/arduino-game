@@ -1,5 +1,4 @@
 #include "GameScreen.h"
-#include "Bullet.h"
 #include "Asteroid.h"
 
 GameScreen::GameScreen(Display *display, Joystick *joystick, IR *infrared, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick, infrared)
@@ -94,11 +93,14 @@ void GameScreen::update(const double &delta)
         this->ready_for_screen_switch = true;
     }
 
-    this->process_player_2();
+    if (player2->active)
+    {
+        this->process_player_2();
+        this->player2->draw(this->display);
+    }
 
     // draw
     this->player->draw(this->display);
-    this->player2->draw(this->display);
     this->score->draw(this->display);
     this->asteroid_container->draw_objects(delta);
     this->bullet_container->draw_objects(delta);
@@ -167,11 +169,37 @@ void GameScreen::on_asteroid_destroyed()
 void GameScreen::process_player_2()
 {
     uint32_t p2_data = this->infrared->get_received_data();
+    if (p2_data == 0)
+        return;
 
-    GameData gamedata = IREndec::decode_game(p2_data);
-    this->player2->set_x_position(gamedata.player_x_position);
-    this->player2->set_y_position(gamedata.player_y_position);
-    this->player2->facing_direction = gamedata.player_facing_direction;
+    GameData game_data = IREndec::decode_game(p2_data);
+
+    // if other player died, undraw once
+    if (game_data.player_died)
+    {
+        this->player2->undraw(this->display, this->player2->get_x_position(), this->player2->get_y_position());
+        this->player2->active = false;
+        return;
+    }
+
+    this->player2->set_x_position(game_data.player_x_position);
+    this->player2->set_y_position(game_data.player_y_position);
+    this->player2->facing_direction = game_data.player_facing_direction;
+
+    if (game_data.player_shot_bullet)
+    {
+        Bullet *bullet = new Bullet(this->player2->get_x_position(), this->player2->get_y_position(), this->player2->facing_direction, this->player2->player_colour);
+        this->bullet_container->add_object(bullet);
+    }
+
+    // if wave_ended was given, but we still have asteroids on our side
+    // there's a sync issue!
+    // fix by removing all asteroids and forcing next wave start.
+    if (game_data.wave_ended && this->asteroid_container->objects.empty())
+    {
+        this->asteroid_container->objects.clear(); // remove all asteroids (fix possible sync issue)
+        this->waves->next();
+    }
 }
 
 void GameScreen::check_player_asteroid_collision()
@@ -192,10 +220,8 @@ void GameScreen::check_player_asteroid_collision()
         uint16_t asteroid_y = this->asteroid_container->objects.at(j)->get_y_position();
 
         // call player.hurt() if collided
-        if (player_asteroid_colliding(centered_player_x, centered_player_y, asteroid_x, asteroid_y) && !this->player->is_invincible)
-        {
+        if (!this->player->is_invincible && player_asteroid_colliding(centered_player_x, centered_player_y, asteroid_x, asteroid_y))
             this->player->hurt(this->display);
-        }
     }
 }
 
@@ -211,12 +237,15 @@ void GameScreen::on_joystick_changed()
     // C = shoot
     if (joystick->is_c_pressed())
     {
-        if (!(joystick->c_pressed_last_frame) && Bullet::bullet_amount < Bullet::MAX_BULLETS)
+        if (!joystick->c_pressed_last_frame && Bullet::bullet_amount < Bullet::MAX_BULLETS)
         {
             buzzer.short_beep();
-            this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction, player->player_colour));
             Bullet::bullet_amount++;
             this->shot_bullet = true;
+
+            Bullet *bullet = new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction, player->player_colour);
+            bullet->shot_by_player1 = true;
+            this->bullet_container->add_object(bullet);
         }
         joystick->c_pressed_last_frame = true;
     }

@@ -211,10 +211,7 @@ void IR::load_message_into_output_buffer()
 
 uint32_t IR::get_received_data()
 {
-    return received_data;
-}
-
-void IR::set_received_data(uint32_t value)
-{
-    received_data = value;
+    uint32_t data = this->received_data;
+    received_data = 0;
+    return data;
 }
