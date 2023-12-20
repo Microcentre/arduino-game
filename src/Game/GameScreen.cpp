@@ -75,6 +75,11 @@ void GameScreen::update(const double &delta)
     // - shift right to save 1 bit at the cost of accuracy
     // - reverse these steps on receive
 
+    // SPAWNING_ASTEROIDS is the final phase of the Wave switch
+    // which is when we stop communicating the wave switch.
+    if (this->waves->is_spawning_asteroids())
+        this->wave_ended = false;
+
     uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
     uint32_t game_data = IREndec::encode_game(
         (uint16_t)this->player->get_x_position(),
@@ -86,7 +91,6 @@ void GameScreen::update(const double &delta)
     this->infrared->send_data(game_data);
     // set back to default (false)
     this->shot_bullet = false;
-    this->wave_ended = false;
 
     if (this->player->health <= this->player->GAME_OVER_HEALTH)
     {
@@ -195,7 +199,9 @@ void GameScreen::process_player_2()
     // if wave_ended was given, but we still have asteroids on our side
     // there's a sync issue!
     // fix by removing all asteroids and forcing next wave start.
-    if (game_data.wave_ended && !this->asteroid_container->objects.empty())
+    if (
+        game_data.wave_ended && !this->waves->is_drawing() // already busy switching wave
+        && !this->asteroid_container->objects.empty())     // asteroids remaining = sync issue
     {
         this->score->add_score(this->asteroid_container->objects.size() * 50);
         this->asteroid_container->undraw_objects();
