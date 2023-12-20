@@ -17,6 +17,8 @@ const uint8_t SCREEN_DELAY_MS = 20;
 /// @brief approximate delta in seconds (time since last frame)
 const double DELTA = (double)SCREEN_DELAY_MS / 1000;
 
+volatile uint8_t counter = 0;
+
 IR *p_infrared;
 long total_timer_value;
 
@@ -151,7 +153,29 @@ ISR(ADC_vect)
 {
     // ADC conversion complete
     // read the value and set the brightness
-    OCR2B = ADCH;
+    OCR2A = ADCH;
+}
+
+ISR(TIMER2_COMPA_vect)
+{
+    // this interrupt is used to update the display brightness
+    // it is triggered every 1/32 of a second
+    // the brightness is set by the ADC interrupt
+
+    counter++;
+    if (counter > OCR2A)
+    {
+        PORTD &= ~(1 << PORTD5); // turn off pin 5
+    }
+    else
+    {
+        PORTD |= (1 << PORTD5); // turn on pin 5
+    }
+
+    if (counter >= 255)
+    {
+        counter = 0; // reset counter
+    }
 }
 
 void setup()

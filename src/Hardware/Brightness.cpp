@@ -11,24 +11,17 @@ Brightness::Brightness()
 
 void Brightness::init_timer_2()
 {
-    // Set up pin 5 for PWM output
-    DDRD |= (1 << DDD5);
+    DDRD |= (1 << DDD5); // set pin 5 as output
 
-    // Set fast PWM mode
-    TCCR2A |= (1 << WGM21) | (1 << WGM20);
+    TCCR2B |= (1 << CS21); // 1/8 prescaler
 
-    // Set OC2A on compare match, clear OC2A at BOTTOM (non-inverting mode)
-    TCCR2A |= (1 << COM2A1) | (1 << COM2A0);
+    TCCR2A |= (0 << WGM21); // CTC mode
 
-    // Set prescaler to 32 and start the timer
-    TCCR2B |= (1 << CS21) | (1 << CS20);
-
-    OCR2A = 124;
+    TIMSK2 |= (1 << OCIE2A); // enable interrupt
 }
 
 void Brightness::init_ADC()
 {
-    // initialize ADC
     ADMUX &= ~ALLADCPINS;                                    // input channel port A0 for LDR
     ADMUX |= (1 << REFS0);                                   // reference voltage on AVCC
     ADCSRB &= ~((1 << ADTS0) | (1 << ADTS1) | (1 << ADTS2)); // freerunning mode
