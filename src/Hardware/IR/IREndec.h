@@ -38,8 +38,12 @@ private:
     static const uint32_t POSITION_Y_MASK = 0b00000000000011111111000000000000;
     static const uint32_t FACING_DIRECTION_MASK = 0b00000000000000000000111111111000;
     static const uint32_t WAVE_END_MASK = 0b00000000000000000000000000000100;
-    static const uint32_t PLAYER_DEATH_MASK = 0b00000000000000000000000000000010;
     static const uint32_t SHOT_BULLET_MASK = 0b00000000000000000000000000000001;
+
+    /// @brief unique data byte that's send when a player dies
+    /// This is a random unique byte that must exactly match, to ensure that the player died.
+    /// Most importantly is that the second MSB is 1, because this should always be 0 when the player is alive.
+    static const uint32_t PLAYER_DEATH_DATA = 0b00000111000111000111000111000111;
 };
 
 #endif

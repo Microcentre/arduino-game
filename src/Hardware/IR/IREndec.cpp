@@ -37,12 +37,12 @@ GameData IREndec::decode_game(uint32_t data)
     gamedata.player_facing_direction = ((double)(facing_direction << 1) / 100) - M_PI;
 
     gamedata.wave_ended = (data & WAVE_END_MASK) >> WAVE_END_SHIFT_OFFSET;
-    gamedata.player_died = (data & PLAYER_DEATH_MASK) >> PLAYER_DEATH_SHIFT_OFFSET;
+    gamedata.player_died = (data == PLAYER_DEATH_DATA);
     gamedata.player_shot_bullet = (data & SHOT_BULLET_MASK) >> SHOT_BULLET_SHIFT_OFFSET;
     return gamedata;
 }
 
 uint32_t IREndec::encode_game_ended()
 {
-    return encode_game(0, 0, 0, false, true, false);
+    return PLAYER_DEATH_DATA;
 }
