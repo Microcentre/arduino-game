@@ -35,7 +35,7 @@ GameData IREndec::decode_game(uint32_t data)
     // because switching_wave and player_died use the entire byte
     // the rest of the data wont have to be set
     if (gamedata.switching_wave || gamedata.player_died)
-        return;
+        return gamedata;
 
     gamedata.player_x_position = (data & POSITION_X_MASK) >> POSITION_X_SHIFT_OFFSET;
     gamedata.player_y_position = (data & POSITION_Y_MASK) >> POSITION_Y_SHIFT_OFFSET;
