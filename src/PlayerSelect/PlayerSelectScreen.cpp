@@ -19,7 +19,7 @@ PlayerSelectScreen::~PlayerSelectScreen()
 
 void PlayerSelectScreen::update(const double &delta)
 {
-    if (display->ts.touched())
+    if (display->touchscreen.touched())
     {
         if (!pressed_last_frame)
         {
@@ -87,7 +87,7 @@ void PlayerSelectScreen::on_joystick_changed()
 void PlayerSelectScreen::on_screen_touched()
 {
     // check if the player has touched the left or right side of the screen
-    TS_Point touch_point = display->ts.getPoint();
+    TS_Point touch_point = display->touchscreen.getPoint();
 
     // x and y are swapped to match the screen orientation
     uint16_t touch_point_x = Display::WIDTH_PIXELS - touch_point.y; // invert x to account for rotation

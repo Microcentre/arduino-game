@@ -21,7 +21,7 @@ public:
     Adafruit_ILI9341 canvas = Adafruit_ILI9341(TFT_CS, TFT_DC);
 
     /// @brief library used for reading touch input
-    Adafruit_FT6206 ts = Adafruit_FT6206();
+    Adafruit_FT6206 touchscreen = Adafruit_FT6206();
 
     /// @brief use constants prefixed with "ILI9341_", ex "ILI9341_BLACK"
     uint16_t background_colour;
