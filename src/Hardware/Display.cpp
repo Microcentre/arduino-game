@@ -11,6 +11,9 @@ Display::Display()
     // colour entire screen black
     this->background_colour = ILI9341_BLACK;
     this->canvas.fillScreen(this->background_colour);
+
+    // set up touch screen
+    ts.begin();
 }
 
 void Display::draw_centred_text(const String &text, uint16_t x_pos, uint8_t y_pos)

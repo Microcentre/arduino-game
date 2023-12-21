@@ -2,6 +2,7 @@
 #define DISPLAY_H
 
 #include "Adafruit_ILI9341.h"
+#include <Adafruit_FT6206.h>
 
 // For the Adafruit Shield, these are the default
 // chip select pin
@@ -18,6 +19,9 @@ public:
     /// @brief library used for drawing on the screen
     /// Use hardware SPI (on Uno, #13, #12, #11) and the above for CS/DC
     Adafruit_ILI9341 canvas = Adafruit_ILI9341(TFT_CS, TFT_DC);
+
+    /// @brief library used for reading touch input
+    Adafruit_FT6206 ts = Adafruit_FT6206();
 
     /// @brief use constants prefixed with "ILI9341_", ex "ILI9341_BLACK"
     uint16_t background_colour;
