@@ -145,10 +145,7 @@ void GameScreen::on_asteroid_destroyed()
 
     // start a new wave when no asteroids are left
     if (this->asteroid_container->get_size() <= 0)
-    {
-        this->waves->next();
-        this->switching_wave = true;
-    }
+        this->next_wave();
 }
 
 void GameScreen::process_player_2()
@@ -177,7 +174,7 @@ void GameScreen::process_player_2()
         this->score->add_score(this->asteroid_container->objects.size() * 50);
         this->asteroid_container->undraw_objects();
         this->asteroid_container->objects.clear();
-        this->waves->next();
+        this->next_wave();
         return;
     }
 
@@ -213,6 +210,13 @@ void GameScreen::send_data()
 
     // set back to default (false)
     this->shot_bullet = false;
+}
+
+void GameScreen::next_wave()
+{
+    this->waves->next();
+    this->switching_wave = true;
+    this->player2->undraw(this->display);
 }
 
 void GameScreen::check_player_asteroid_collision()

@@ -84,6 +84,9 @@ private:
 
     void spawn_bullet(Bullet *bullet);
 
+    /// @brief start a new wave
+    void next_wave();
+
     /// @brief if the player just shot a bullet
     /// used to sync with other player.
     bool shot_bullet = false;
