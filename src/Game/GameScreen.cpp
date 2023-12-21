@@ -67,30 +67,12 @@ void GameScreen::update(const double &delta)
     this->bullet_container->update_objects(delta);
     this->asteroid_container->update_objects(delta);
 
-    // handle IR
-
-    // convert direction to uint16_t:
-    // - add PI to make it always positive
-    // - multiply by 100 so decimals can be safely truncated
-    // - shift right to save 1 bit at the cost of accuracy
-    // - reverse these steps on receive
-
     // SPAWNING_ASTEROIDS is the final phase of the Wave switch
     // which is when we stop communicating the wave switch.
     if (this->waves->is_spawning_asteroids())
         this->wave_ended = false;
 
-    uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
-    uint32_t game_data = IREndec::encode_game(
-        (uint16_t)this->player->get_x_position(),
-        (uint8_t)this->player->get_y_position(),
-        send_dir,
-        this->wave_ended,
-        false, // player death is communicated in the high score screen. so here the player is always considered alive
-        this->shot_bullet);
-    this->infrared->send_data(game_data);
-    // set back to default (false)
-    this->shot_bullet = false;
+    this->send_data();
 
     if (this->player->health <= this->player->GAME_OVER_HEALTH)
     {
@@ -209,6 +191,21 @@ void GameScreen::process_player_2()
     }
 
     this->player2->draw(this->display);
+}
+
+void GameScreen::send_data()
+{
+    uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
+    uint32_t game_data = IREndec::encode_game(
+        (uint16_t)this->player->get_x_position(),
+        (uint8_t)this->player->get_y_position(),
+        send_dir,
+        this->wave_ended,
+        false, // player death is communicated in the high score screen. so here the player is always considered alive
+        this->shot_bullet);
+    this->infrared->send_data(game_data);
+    // set back to default (false)
+    this->shot_bullet = false;
 }
 
 void GameScreen::check_player_asteroid_collision()

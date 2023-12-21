@@ -80,6 +80,8 @@ private:
     /// @brief update the other player using received infrared data
     void process_player_2();
 
+    void send_data();
+
     void spawn_bullet(Bullet *bullet);
 
     /// @brief if the player just shot a bullet

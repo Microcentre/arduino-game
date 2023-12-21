@@ -32,8 +32,12 @@ GameData IREndec::decode_game(uint32_t data)
     gamedata.player_x_position = (data & POSITION_X_MASK) >> POSITION_X_SHIFT_OFFSET;
     gamedata.player_y_position = (data & POSITION_Y_MASK) >> POSITION_Y_SHIFT_OFFSET;
 
+    // convert direction to uint16_t:
+    // - add PI to make it always positive
+    // - multiply by 100 so decimals can be safely truncated
+    // - shift right to save 1 bit at the cost of accuracy
+    // - reverse these steps on receive
     uint16_t facing_direction = (data & FACING_DIRECTION_MASK) >> FACING_DIRECTION_SHIFT_OFFSET;
-    // convert sent direction back to double
     gamedata.player_facing_direction = ((double)(facing_direction << 1) / 100) - M_PI;
 
     gamedata.wave_ended = (data & WAVE_END_MASK) >> WAVE_END_SHIFT_OFFSET;
