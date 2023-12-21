@@ -34,9 +34,13 @@ public:
     /// @brief the selection box moves between the two player icons. When the joystick is pressed, the game starts.
     void on_joystick_changed() override;
 
+    /// @brief Handles touch input for the player select screen.
+    void on_screen_touched();
+
 private:
     /// @brief Whether the left player is selected.
     uint8_t left_selected = true;
+    uint8_t pressed_last_frame = false;
 
     /// @brief the centre x position of the text
     const uint8_t SCREEN_CENTRE_X_POS = Display::WIDTH_PIXELS / 2;
