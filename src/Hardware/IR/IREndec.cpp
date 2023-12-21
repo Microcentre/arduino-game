@@ -29,6 +29,14 @@ GameData IREndec::decode_game(uint32_t data)
 {
     GameData gamedata;
 
+    gamedata.wave_ended = (data == WAVE_END_DATA);
+    gamedata.player_died = (data == PLAYER_DEATH_DATA);
+
+    // because wave_ended and player_died use the entire byte
+    // the rest of the data wont have to be set
+    if (gamedata.wave_ended || gamedata.player_died)
+        return;
+
     gamedata.player_x_position = (data & POSITION_X_MASK) >> POSITION_X_SHIFT_OFFSET;
     gamedata.player_y_position = (data & POSITION_Y_MASK) >> POSITION_Y_SHIFT_OFFSET;
 
@@ -40,8 +48,6 @@ GameData IREndec::decode_game(uint32_t data)
     uint16_t facing_direction = (data & FACING_DIRECTION_MASK) >> FACING_DIRECTION_SHIFT_OFFSET;
     gamedata.player_facing_direction = ((double)(facing_direction << 1) / 100) - M_PI;
 
-    gamedata.wave_ended = (data & WAVE_END_MASK) >> WAVE_END_SHIFT_OFFSET;
-    gamedata.player_died = (data == PLAYER_DEATH_DATA);
     gamedata.player_shot_bullet = (data & SHOT_BULLET_MASK) >> SHOT_BULLET_SHIFT_OFFSET;
     return gamedata;
 }
@@ -49,4 +55,9 @@ GameData IREndec::decode_game(uint32_t data)
 uint32_t IREndec::encode_game_ended()
 {
     return PLAYER_DEATH_DATA;
+}
+
+uint32_t IREndec::encode_wave_ended()
+{
+    return WAVE_END_DATA;
 }

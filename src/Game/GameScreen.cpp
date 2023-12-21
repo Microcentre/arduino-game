@@ -79,7 +79,7 @@ void GameScreen::update(const double &delta)
         this->ready_for_screen_switch = true;
     }
 
-    if (player2->active)
+    if (this->player2->active && !this->wave_ended)
     {
         this->process_player_2();
     }
@@ -167,16 +167,6 @@ void GameScreen::process_player_2()
         return;
     }
 
-    this->player2->set_x_position(game_data.player_x_position);
-    this->player2->set_y_position(game_data.player_y_position);
-    this->player2->facing_direction = game_data.player_facing_direction;
-
-    if (game_data.player_shot_bullet)
-    {
-        Bullet *bullet = new Bullet(this->player2->get_x_position(), this->player2->get_y_position(), this->player2->facing_direction, this->player2->player_colour);
-        this->bullet_container->add_object(bullet);
-    }
-
     // if wave_ended was given, but we still have asteroids on our side
     // there's a sync issue!
     // fix by removing all asteroids and forcing next wave start.
@@ -188,6 +178,17 @@ void GameScreen::process_player_2()
         this->asteroid_container->undraw_objects();
         this->asteroid_container->objects.clear();
         this->waves->next();
+        return;
+    }
+
+    this->player2->set_x_position(game_data.player_x_position);
+    this->player2->set_y_position(game_data.player_y_position);
+    this->player2->facing_direction = game_data.player_facing_direction;
+
+    if (game_data.player_shot_bullet)
+    {
+        Bullet *bullet = new Bullet(this->player2->get_x_position(), this->player2->get_y_position(), this->player2->facing_direction, this->player2->player_colour);
+        this->bullet_container->add_object(bullet);
     }
 
     this->player2->draw(this->display);
@@ -195,6 +196,11 @@ void GameScreen::process_player_2()
 
 void GameScreen::send_data()
 {
+    if (this->wave_ended)
+    {
+        this->infrared->send_data(IREndec::encode_wave_ended());
+        return;
+    }
     uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
     uint32_t game_data = IREndec::encode_game(
         (uint16_t)this->player->get_x_position(),
@@ -204,6 +210,7 @@ void GameScreen::send_data()
         false, // player death is communicated in the high score screen. so here the player is always considered alive
         this->shot_bullet);
     this->infrared->send_data(game_data);
+
     // set back to default (false)
     this->shot_bullet = false;
 }
