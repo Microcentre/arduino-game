@@ -21,7 +21,15 @@ void PlayerSelectScreen::update(const double &delta)
 {
     if (display->ts.touched())
     {
-        on_screen_touched();
+        if (!pressed_last_frame)
+        {
+            on_screen_touched();
+            pressed_last_frame = true;
+        }
+    }
+    else
+    {
+        pressed_last_frame = false;
     }
     Screen::update(delta);
     drawHud(delta);

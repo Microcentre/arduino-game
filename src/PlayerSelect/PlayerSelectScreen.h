@@ -40,6 +40,7 @@ public:
 private:
     /// @brief Whether the left player is selected.
     uint8_t left_selected = true;
+    uint8_t pressed_last_frame = false;
 
     /// @brief the centre x position of the text
     const uint8_t SCREEN_CENTRE_X_POS = Display::WIDTH_PIXELS / 2;
