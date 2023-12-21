@@ -42,21 +42,21 @@ public:
     /// @param display display to draw on
     void draw(Display *display) override;
 
-    /// @brief call undraw() using previous_drawing_position variables
+    /// @brief call undraw() using previous_drawing variables
     void undraw(Display *display) override;
 
-    /// @brief clear drawing at given position
+    /// @brief clear drawing at given position.
+    /// uses the player's previous_drawn_facing_direction for direction
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
 
-    /// @brief clear drawing at given position, overloaded with actual facing direction
-    /// used to clear actual position instead of previous in case of player reset
+    /// @brief clear drawing at given position & rotation
     /// @param display display to draw on
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
-    void undraw(Display *display, const uint16_t x_position, const uint16_t y_position, double actual_facing_direction);
+    void undraw(Display *display, const uint16_t x_position, const uint16_t y_position, double facing_direction);
 
     /// @brief -1 health, resets player to centre of screen and handles all hurtobservers
     void hurt(Display *display);
