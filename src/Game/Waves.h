@@ -4,6 +4,7 @@
 #include "../Objects/ObjectsContainer.h"
 #include "../Hardware/Display.h"
 #include "Asteroid.h"
+#include "WaveHandshake.h"
 
 /// @brief handles waves of asteroids
 /// There is a `draw_phase` property which is on NONE by default.
@@ -11,7 +12,7 @@
 /// Then it goes into the ASTEROID_WARNING phase, saying "WARNING INCOMING ASTEROIDS"
 /// Then the next WAVE_COMING phase announces the next wave "WAVE X"
 /// Finally the SPAWN_ASTEROIDS phase spawns the asteroids.
-class Waves
+class Waves : public WaveHandshake
 {
 public:
     /// @brief current wave

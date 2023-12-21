@@ -11,7 +11,7 @@ public:
     double player_facing_direction;
     bool player_shot_bullet;
     bool player_died;
-    bool wave_ended;
+    bool wave_status;
 };
 
 #endif

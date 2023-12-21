@@ -78,17 +78,15 @@ private:
     void on_asteroid_destroyed();
 
     /// @brief update the other player using received infrared data
-    void process_player_2();
+    void process_player_2(bool &other_player_wave_status);
 
     void spawn_bullet(Bullet *bullet);
+
+    void send_data();
 
     /// @brief if the player just shot a bullet
     /// used to sync with other player.
     bool shot_bullet = false;
-
-    /// @brief if the wave just ended.
-    /// used to send to sync with other player.
-    bool wave_ended = false;
 };
 
 #endif

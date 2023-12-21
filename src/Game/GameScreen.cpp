@@ -60,55 +60,35 @@ void GameScreen::update(const double &delta)
     check_bullet_asteroid_collision();
     check_player_asteroid_collision();
 
+    this->waves->update(display, delta, this->asteroid_container);
+
     // update
     Screen::update(delta);
+
+    bool other_player_wave_status;
+    if (player2->active)
+        this->process_player_2(other_player_wave_status);
+
+    Serial.println(other_player_wave_status);
+
     this->player->update(delta);
     this->score->update(delta);
     this->bullet_container->update_objects(delta);
     this->asteroid_container->update_objects(delta);
 
-    // handle IR
+    this->waves->update_handshake(other_player_wave_status);
 
-    // convert direction to uint16_t:
-    // - add PI to make it always positive
-    // - multiply by 100 so decimals can be safely truncated
-    // - shift right to save 1 bit at the cost of accuracy
-    // - reverse these steps on receive
+    this->send_data();
 
-    // SPAWNING_ASTEROIDS is the final phase of the Wave switch
-    // which is when we stop communicating the wave switch.
-    if (this->waves->is_spawning_asteroids())
-        this->wave_ended = false;
-
-    uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
-    uint32_t game_data = IREndec::encode_game(
-        (uint16_t)this->player->get_x_position(),
-        (uint8_t)this->player->get_y_position(),
-        send_dir,
-        this->wave_ended,
-        false, // player death is communicated in the high score screen. so here the player is always considered alive
-        this->shot_bullet);
-    this->infrared->send_data(game_data);
-    // set back to default (false)
-    this->shot_bullet = false;
-
+    // go to highscore screen once dead
     if (this->player->health <= this->player->GAME_OVER_HEALTH)
-    {
         this->ready_for_screen_switch = true;
-    }
-
-    if (player2->active)
-    {
-        this->process_player_2();
-    }
 
     // draw
     this->player->draw(this->display);
     this->score->draw(this->display);
     this->asteroid_container->draw_objects();
     this->bullet_container->draw_objects();
-
-    this->waves->update(display, delta, this->asteroid_container);
 
     // checks if the wave is about to start spawning asteroids
     // if so, makes the player invincible
@@ -165,11 +145,10 @@ void GameScreen::on_asteroid_destroyed()
     if (this->asteroid_container->get_size() <= 0)
     {
         this->waves->next();
-        this->wave_ended = true;
     }
 }
 
-void GameScreen::process_player_2()
+void GameScreen::process_player_2(bool &other_player_wave_status)
 {
     uint32_t p2_data = this->infrared->get_received_data();
     if (p2_data == 0)
@@ -195,20 +174,34 @@ void GameScreen::process_player_2()
         this->bullet_container->add_object(bullet);
     }
 
-    // if wave_ended was given, but we still have asteroids on our side
-    // there's a sync issue!
-    // fix by removing all asteroids and forcing next wave start.
-    if (
-        game_data.wave_ended && !this->waves->is_drawing() // already busy switching wave
-        && !this->asteroid_container->objects.empty())     // asteroids remaining = sync issue
+    other_player_wave_status = game_data.wave_status;
+
+    // clear all asteroids (only the case when sync issues)
+    if (game_data.wave_status)
     {
+        Serial.println("DESYNC! REMOVE ALL ASTEROIDS");
         this->score->add_score(this->asteroid_container->objects.size() * 50);
         this->asteroid_container->undraw_objects();
         this->asteroid_container->objects.clear();
-        this->waves->next();
     }
 
     this->player2->draw(this->display);
+}
+
+void GameScreen::send_data()
+{
+    uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
+    uint32_t game_data = IREndec::encode_game(
+        (uint16_t)this->player->get_x_position(),
+        (uint8_t)this->player->get_y_position(),
+        send_dir,
+        this->waves->get_handshake_bit_to_send(),
+        false, // player death is communicated in the high score screen. so here the player is always considered alive
+        this->shot_bullet);
+    this->infrared->send_data(game_data);
+
+    // set back to default (false)
+    this->shot_bullet = false;
 }
 
 void GameScreen::check_player_asteroid_collision()

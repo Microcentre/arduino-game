@@ -183,6 +183,7 @@ ISR(TIMER2_COMPA_vect)
 void setup()
 {
     Wire.begin();
+    Serial.begin(9600);
     p_infrared = new IR(); // created as pointer so the ISRs can access it
     sei();
 }

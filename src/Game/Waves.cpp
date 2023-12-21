@@ -14,6 +14,7 @@ void Waves::start_new()
 void Waves::next()
 {
     this->draw_phase = Waves::DrawPhase::WAVE_COMPLETED;
+    this->handshake_phase = HandshakePhase::GENERATING_NEW;
 }
 
 bool Waves::is_drawing()

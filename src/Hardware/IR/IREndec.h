@@ -10,10 +10,10 @@ class IREndec
 {
 public:
     /// @brief Encodes a frame of the game logic (excluding asteroid spawning during wave-switch)
-    /// @param wave_ended wave has ended because all asteroids are destroyed
+    /// @param wave_status wave has ended because all asteroids are destroyed
     /// @param player_died game has ended because 0 lives are left
     /// @return encoded 32 bit message containing all given data
-    static uint32_t encode_game(uint16_t player_x_position, uint8_t player_y_position, uint16_t player_direction, bool wave_ended, bool player_died, bool player_shot_bullet);
+    static uint32_t encode_game(uint16_t player_x_position, uint8_t player_y_position, uint16_t player_direction, bool wave_status, bool player_died, bool player_shot_bullet);
     static uint32_t encode_game_ended();
     static GameData decode_game(uint32_t data);
     // uint32_t encode_asteroid();
@@ -22,7 +22,7 @@ private:
     static const uint8_t X_POSITION_BIT_SIZE = 9;
     static const uint8_t Y_POSITION_BIT_SIZE = 8;
     static const uint8_t FACING_DIRECTION_BIT_SIZE = 9;
-    static const uint8_t WAVE_END_BIT_SIZE = 1;
+    static const uint8_t WAVE_STATUS_BIT_SIZE = 1;
     static const uint8_t PLAYER_DEATH_BIT_SIZE = 1;
     static const uint8_t SHOT_BULLET_BIT_SIZE = 1;
 
@@ -30,7 +30,7 @@ private:
     static const uint8_t SHOT_BULLET_SHIFT_OFFSET = 0;
     static const uint8_t PLAYER_DEATH_SHIFT_OFFSET = SHOT_BULLET_BIT_SIZE;
     static const uint8_t WAVE_END_SHIFT_OFFSET = PLAYER_DEATH_BIT_SIZE + PLAYER_DEATH_SHIFT_OFFSET;
-    static const uint8_t FACING_DIRECTION_SHIFT_OFFSET = WAVE_END_BIT_SIZE + WAVE_END_SHIFT_OFFSET;
+    static const uint8_t FACING_DIRECTION_SHIFT_OFFSET = WAVE_STATUS_BIT_SIZE + WAVE_END_SHIFT_OFFSET;
     static const uint8_t POSITION_Y_SHIFT_OFFSET = FACING_DIRECTION_BIT_SIZE + FACING_DIRECTION_SHIFT_OFFSET;
     static const uint8_t POSITION_X_SHIFT_OFFSET = Y_POSITION_BIT_SIZE + POSITION_Y_SHIFT_OFFSET;
 
