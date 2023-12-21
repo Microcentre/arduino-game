@@ -90,7 +90,7 @@ private:
 
     /// @brief if the wave just ended.
     /// used to send to sync with other player.
-    bool wave_ended = false;
+    bool switching_wave = false;
 };
 
 #endif

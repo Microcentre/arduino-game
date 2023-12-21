@@ -1,8 +1,8 @@
 #include "IREndec.h"
 
-/// @param wave_ended wave has ended because all asteroids are destroyed
+/// @param switching_wave wave has ended because all asteroids are destroyed
 /// @param player_died game has ended because 0 lives are left
-uint32_t IREndec::encode_game(uint16_t player_x_position, uint8_t player_y_position, uint16_t player_direction, bool wave_ended, bool player_died, bool player_shot_bullet)
+uint32_t IREndec::encode_game(uint16_t player_x_position, uint8_t player_y_position, uint16_t player_direction, bool switching_wave, bool player_died, bool player_shot_bullet)
 {
     uint32_t data = 0;
     data |= player_x_position;
@@ -14,7 +14,7 @@ uint32_t IREndec::encode_game(uint16_t player_x_position, uint8_t player_y_posit
     data |= player_direction;
 
     data <<= WAVE_END_BIT_SIZE;
-    data |= wave_ended;
+    data |= switching_wave;
 
     data <<= PLAYER_DEATH_BIT_SIZE;
     data |= player_died;
@@ -29,12 +29,12 @@ GameData IREndec::decode_game(uint32_t data)
 {
     GameData gamedata;
 
-    gamedata.wave_ended = (data == WAVE_END_DATA);
+    gamedata.switching_wave = (data == WAVE_END_DATA);
     gamedata.player_died = (data == PLAYER_DEATH_DATA);
 
-    // because wave_ended and player_died use the entire byte
+    // because switching_wave and player_died use the entire byte
     // the rest of the data wont have to be set
-    if (gamedata.wave_ended || gamedata.player_died)
+    if (gamedata.switching_wave || gamedata.player_died)
         return;
 
     gamedata.player_x_position = (data & POSITION_X_MASK) >> POSITION_X_SHIFT_OFFSET;
@@ -57,7 +57,7 @@ uint32_t IREndec::encode_game_ended()
     return PLAYER_DEATH_DATA;
 }
 
-uint32_t IREndec::encode_wave_ended()
+uint32_t IREndec::encode_switching_wave()
 {
     return WAVE_END_DATA;
 }

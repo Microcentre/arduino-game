@@ -10,12 +10,12 @@ class IREndec
 {
 public:
     /// @brief Encodes a frame of the game logic (excluding asteroid spawning during wave-switch)
-    /// @param wave_ended wave has ended because all asteroids are destroyed
+    /// @param switching_wave wave has ended because all asteroids are destroyed
     /// @param player_died game has ended because 0 lives are left
     /// @return encoded 32 bit message containing all given data
-    static uint32_t encode_game(uint16_t player_x_position, uint8_t player_y_position, uint16_t player_direction, bool wave_ended, bool player_died, bool player_shot_bullet);
+    static uint32_t encode_game(uint16_t player_x_position, uint8_t player_y_position, uint16_t player_direction, bool switching_wave, bool player_died, bool player_shot_bullet);
     static uint32_t encode_game_ended();
-    static uint32_t encode_wave_ended();
+    static uint32_t encode_switching_wave();
     static GameData decode_game(uint32_t data);
     // uint32_t encode_asteroid();
     // uint32_t encode_ship_select();

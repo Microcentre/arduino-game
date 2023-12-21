@@ -70,7 +70,7 @@ void GameScreen::update(const double &delta)
     // SPAWNING_ASTEROIDS is the final phase of the Wave switch
     // which is when we stop communicating the wave switch.
     if (this->waves->is_spawning_asteroids())
-        this->wave_ended = false;
+        this->switching_wave = false;
 
     this->send_data();
 
@@ -79,7 +79,7 @@ void GameScreen::update(const double &delta)
         this->ready_for_screen_switch = true;
     }
 
-    if (this->player2->active && !this->wave_ended)
+    if (this->player2->active && !this->switching_wave)
     {
         this->process_player_2();
     }
@@ -147,7 +147,7 @@ void GameScreen::on_asteroid_destroyed()
     if (this->asteroid_container->get_size() <= 0)
     {
         this->waves->next();
-        this->wave_ended = true;
+        this->switching_wave = true;
     }
 }
 
@@ -167,12 +167,12 @@ void GameScreen::process_player_2()
         return;
     }
 
-    // if wave_ended was given, but we still have asteroids on our side
+    // if switching_wave was given, but we still have asteroids on our side
     // there's a sync issue!
     // fix by removing all asteroids and forcing next wave start.
     if (
-        game_data.wave_ended && !this->waves->is_drawing() // already busy switching wave
-        && !this->asteroid_container->objects.empty())     // asteroids remaining = sync issue
+        game_data.switching_wave && !this->waves->is_drawing() // already busy switching wave
+        && !this->asteroid_container->objects.empty())         // asteroids remaining = sync issue
     {
         this->score->add_score(this->asteroid_container->objects.size() * 50);
         this->asteroid_container->undraw_objects();
@@ -196,9 +196,9 @@ void GameScreen::process_player_2()
 
 void GameScreen::send_data()
 {
-    if (this->wave_ended)
+    if (this->switching_wave)
     {
-        this->infrared->send_data(IREndec::encode_wave_ended());
+        this->infrared->send_data(IREndec::encode_switching_wave());
         return;
     }
     uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
@@ -206,7 +206,7 @@ void GameScreen::send_data()
         (uint16_t)this->player->get_x_position(),
         (uint8_t)this->player->get_y_position(),
         send_dir,
-        this->wave_ended,
+        this->switching_wave,
         false, // player death is communicated in the high score screen. so here the player is always considered alive
         this->shot_bullet);
     this->infrared->send_data(game_data);
