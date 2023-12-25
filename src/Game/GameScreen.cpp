@@ -65,29 +65,22 @@ void GameScreen::update(const double &delta)
     this->player->update(delta);
     this->score->update(delta);
     this->bullet_container->update_objects(delta);
-    this->asteroid_container->update_objects(delta);
-
-    // SPAWNING_ASTEROIDS is the final phase of the Wave switch
-    // which is when we stop communicating the wave switch.
-    if (this->waves->is_spawning_asteroids())
-        this->switching_wave = false;
+    if (this->both_players_ready)
+        this->asteroid_container->update_objects(delta);
 
     this->send_data();
 
     if (this->player->health <= this->player->GAME_OVER_HEALTH)
-    {
         this->ready_for_screen_switch = true;
-    }
 
-    if (this->player2->active && !this->switching_wave)
-    {
+    if (this->player2->active)
         this->process_player_2();
-    }
 
     // draw
     this->player->draw(this->display);
     this->score->draw(this->display);
-    this->asteroid_container->draw_objects();
+    if (this->both_players_ready)
+        this->asteroid_container->draw_objects();
     this->bullet_container->draw_objects();
 
     this->waves->update(display, delta, this->asteroid_container);
@@ -150,13 +143,13 @@ void GameScreen::on_asteroid_destroyed()
 
 void GameScreen::process_player_2()
 {
+    // read infrared data as GameData model class
     uint32_t p2_data = this->infrared->get_received_data();
     if (p2_data == 0)
         return;
-
     GameData game_data = IREndec::decode_game(p2_data);
 
-    // if other player died, undraw once
+    // on player2 death: stop syncing by setting him as inactive
     if (game_data.player_died)
     {
         this->player2->undraw(this->display);
@@ -164,12 +157,12 @@ void GameScreen::process_player_2()
         return;
     }
 
-    // if switching_wave was given, but we still have asteroids on our side
-    // there's a sync issue!
+    // if other player started switching wave but we haven't, there's a sync issue!
     // fix by removing all asteroids and forcing next wave start.
     if (
-        game_data.switching_wave && !this->waves->is_drawing() // already busy switching wave
-        && !this->asteroid_container->objects.empty())         // asteroids remaining = sync issue
+        game_data.switching_wave && !this->waves->is_switching_waves() // if other playing is switching wave, but we are not yet?
+        && !this->asteroid_container->objects.empty()                  // we still have asteroids left?
+        && !game_data.ready_to_play)                                   // sometimes player2 will send one too many WAVE_ENDED messages. this ensures those dont get caught and cause desync
     {
         this->score->add_score(this->asteroid_container->objects.size() * 50);
         this->asteroid_container->undraw_objects();
@@ -178,32 +171,51 @@ void GameScreen::process_player_2()
         return;
     }
 
-    this->player2->set_x_position(game_data.player_x_position);
-    this->player2->set_y_position(game_data.player_y_position);
-    this->player2->facing_direction = game_data.player_facing_direction;
+    // tell waves class when player2 is ready
+    if (game_data.switching_wave && game_data.ready_to_play)
+        this->waves->player2_ready();
 
-    if (game_data.player_shot_bullet)
+    // update variable when both players are ready
+    // used to make sure asteroids don't start showing & moving until both players are ready
+    this->both_players_ready = (game_data.ready_to_play && this->waves->is_ready_to_play());
+
+    // only update player2 when both are ready to play
+    if (this->both_players_ready)
     {
-        Bullet *bullet = new Bullet(this->player2->get_x_position(), this->player2->get_y_position(), this->player2->facing_direction, this->player2->player_colour);
-        this->bullet_container->add_object(bullet);
-    }
+        // sync player positional info
+        this->player2->set_x_position(game_data.player_x_position);
+        this->player2->set_y_position(game_data.player_y_position);
+        this->player2->facing_direction = game_data.player_facing_direction;
 
-    this->player2->draw(this->display);
+        // sync shooting bullets
+        if (game_data.player_shot_bullet)
+        {
+            Bullet *bullet = new Bullet(this->player2->get_x_position(), this->player2->get_y_position(), this->player2->facing_direction, this->player2->player_colour);
+            this->bullet_container->add_object(bullet);
+        }
+
+        this->player2->draw(this->display);
+    }
 }
 
 void GameScreen::send_data()
 {
-    if (this->switching_wave)
+    // send SWITCHING_WAVE_DATA. switching wave has their own data encoding to be sent
+    if (this->waves->is_switching_waves())
     {
-        this->infrared->send_data(IREndec::encode_switching_wave());
+        bool ready_to_play = this->waves->is_ready_to_play();
+        uint32_t switching_wave_data = IREndec::encode_switching_wave(ready_to_play);
+        this->infrared->send_data(switching_wave_data);
         return;
     }
+
+    // send regular gameplay data
     uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
     uint32_t game_data = IREndec::encode_game(
         (uint16_t)this->player->get_x_position(),
         (uint8_t)this->player->get_y_position(),
         send_dir,
-        this->switching_wave,
+        0,     // if switching wave (if code can reach here we know it's 0)
         false, // player death is communicated in the high score screen. so here the player is always considered alive
         this->shot_bullet);
     this->infrared->send_data(game_data);
@@ -215,8 +227,8 @@ void GameScreen::send_data()
 void GameScreen::next_wave()
 {
     this->waves->next();
-    this->switching_wave = true;
     this->player2->undraw(this->display);
+    this->both_players_ready = false;
 }
 
 void GameScreen::check_player_asteroid_collision()

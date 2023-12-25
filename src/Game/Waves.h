@@ -30,10 +30,16 @@ public:
     void next();
 
     /// @return if this class is still busy drawing the text
-    bool is_drawing();
+    bool is_switching_waves();
 
     /// @return if in the phase of drawing asteroids
     bool is_spawning_asteroids();
+
+    bool is_ready_to_play();
+
+    /// @brief mark player2 as ready to play
+    /// if current player is ready too, continues
+    void player2_ready();
 
 private:
     enum DrawPhase
@@ -42,7 +48,8 @@ private:
         WAVE_COMPLETED,
         ASTEROID_WARNING,
         WAVE_COMING,
-        SPAWN_ASTEROIDS
+        SPAWN_ASTEROIDS,
+        WAITING_FOR_PLAYER,
     };
 
     /// @brief time (in delta seconds) to show text before dissapearing
@@ -68,6 +75,9 @@ private:
 
     /// @brief how long the text will remain showing, in (delta) seconds
     double text_time_left = 0;
+
+    /// @brief if drawing text or not
+    bool drawing_text = false;
 
     uint8_t max_asteroids;
 

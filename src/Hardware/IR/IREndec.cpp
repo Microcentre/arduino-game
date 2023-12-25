@@ -29,7 +29,8 @@ GameData IREndec::decode_game(uint32_t data)
 {
     GameData gamedata;
 
-    gamedata.switching_wave = (data == WAVE_END_DATA);
+    gamedata.switching_wave = is_switching_wave(data);
+    gamedata.ready_to_play = (gamedata.switching_wave) ? IREndec::is_finished_switching_wave(data) : true;
     gamedata.player_died = (data == PLAYER_DEATH_DATA);
 
     // because switching_wave and player_died use the entire byte
@@ -57,7 +58,18 @@ uint32_t IREndec::encode_game_ended()
     return PLAYER_DEATH_DATA;
 }
 
-uint32_t IREndec::encode_switching_wave()
+uint32_t IREndec::encode_switching_wave(bool ready_to_play)
 {
-    return WAVE_END_DATA;
+    return WAVE_END_DATA | ready_to_play;
+}
+
+bool IREndec::is_switching_wave(uint32_t data)
+{
+    // & (~1) forces bit 1 to be 0, allowing us to directly compare it to WAVE_END_DATA
+    return WAVE_END_DATA == (data & (~1));
+}
+
+bool IREndec::is_finished_switching_wave(uint32_t data)
+{
+    return (data & 1) == 1;
 }

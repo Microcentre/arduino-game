@@ -71,6 +71,10 @@ private:
     /// @brief max array size for asteroids and bullet containers
     static constexpr uint8_t MAX_AMOUNT_OF_OBJECTS = 15;
 
+    /// @brief if both players are ready to play
+    /// is only false when one of the players is busy switching wave
+    bool both_players_ready = false;
+
     Buzzer buzzer = Buzzer();
     Waves *waves;
 
