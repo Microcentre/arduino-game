@@ -19,6 +19,18 @@ PlayerSelectScreen::~PlayerSelectScreen()
 
 void PlayerSelectScreen::update(const double &delta)
 {
+    if (display->touchscreen.touched())
+    {
+        if (!pressed_last_frame)
+        {
+            on_screen_touched();
+            pressed_last_frame = true;
+        }
+    }
+    else
+    {
+        pressed_last_frame = false;
+    }
     Screen::update(delta);
     drawHud(delta);
 }
@@ -69,5 +81,45 @@ void PlayerSelectScreen::on_joystick_changed()
         buzzer.medium_beep();
         // select this player
         this->ready_for_screen_switch = true;
+    }
+}
+
+void PlayerSelectScreen::on_screen_touched()
+{
+    // check if the player has touched the left or right side of the screen
+    TS_Point touch_point = display->touchscreen.getPoint();
+
+    // x and y are swapped to match the screen orientation
+    uint16_t touch_point_x = Display::WIDTH_PIXELS - touch_point.y; // invert x to account for rotation
+    uint16_t touch_point_y = touch_point.x;
+
+    if (touch_point_y > SELECT_BOX_Y && touch_point_y < SELECT_BOX_Y + SELECT_BOX_SIZE)
+    {
+        if (touch_point_x > SELECT_BOX_X_LEFT && touch_point_x < SELECT_BOX_X_LEFT + SELECT_BOX_SIZE)
+        {
+            if (left_selected)
+            {
+                buzzer.medium_beep();
+                ready_for_screen_switch = true;
+            }
+            else
+            {
+                buzzer.short_beep();
+                left_selected = true;
+            }
+        }
+        else if (touch_point_x > SELECT_BOX_X_RIGHT && touch_point_x < SELECT_BOX_X_RIGHT + SELECT_BOX_SIZE)
+        {
+            if (!left_selected)
+            {
+                buzzer.medium_beep();
+                ready_for_screen_switch = true;
+            }
+            else
+            {
+                buzzer.short_beep();
+                left_selected = false;
+            }
+        }
     }
 }
