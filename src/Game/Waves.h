@@ -29,11 +29,25 @@ public:
     /// @brief go to next wave, with announcements
     void next();
 
-    /// @return if this class is still busy drawing the text
-    bool is_drawing();
+    /// @brief mark other player as ready to continue
+    void player2_ready(Display *display);
+
+    /// @return if wave phase is in-game (false) or busy switching wave (true)
+    bool is_switching_wave();
+
+    /// @return if finished switching wave but waiting for other player to continue
+    /// (in WAITING_FOR_PLAYER phase)
+    bool is_waiting_for_player();
+
+    /// @return if finished switching wave but ready to play
+    bool is_ready_to_continue();
 
     /// @return if in the phase of drawing asteroids
     bool is_spawning_asteroids();
+
+    /// @brief true for one frame
+    /// @return if a new wave just started
+    bool just_started_new_wave();
 
 private:
     enum DrawPhase
@@ -43,7 +57,8 @@ private:
         ASTEROID_WARNING,
         WAVE_COMING,
         SPAWN_ASTEROIDS,
-        WAITING_FOR_PLAYER
+        WAITING_FOR_PLAYER,
+        CONFIRM_CONTINUE
     };
 
     /// @brief time (in delta seconds) to show text before dissapearing
@@ -67,13 +82,30 @@ private:
     /// @brief minimal asteroid speed
     const uint8_t MIN_ASTEROID_SPEED = 35;
 
+    /// @brief how many times to send the CONTINUE message before continueing
+    /// this phase ensures the other player receives the WAITING_FOR_PLAYER continue
+    const uint8_t CONFIRM_CONTINUE_AMOUNT = 50;
+    uint8_t confirm_continue_counter = 0;
+
     /// @brief how long the text will remain showing, in (delta) seconds
     double text_time_left = 0;
 
+    /// @brief if the current phase includes drawing text
+    /// if this is true, text_time_left is decreased
+    /// and the next wave is automatically set when its finished
+    bool drawing_text = false;
+
+    /// @brief if a wave just started (true for 1 frame)
+    bool just_started = false;
+
+    /// @brief max amount of asteroids that may be spawned
     uint8_t max_asteroids;
 
     /// @brief what to draw right now
     Waves::DrawPhase draw_phase = Waves::DrawPhase::NONE;
+
+    /// @brief go to the next wave phase and undraw previous phase
+    void next_phase(Display *display);
 
     /// @brief Spawn asteroids depending on the current wave
     /// @param asteroid_container
@@ -90,9 +122,6 @@ private:
     /// @brief draws the text "WAVE x"
     /// @param undraw if the warning should be drawn(false) or undrawn(true)
     void draw_wave_coming_phase(Display *display, bool undraw = false);
-
-    /// @brief go to the next draw phase and undraw previous phase
-    void next_draw_phase(Display *display);
 };
 
 #endif

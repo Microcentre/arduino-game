@@ -9,16 +9,34 @@ void Waves::start_new()
 {
     this->wave = 1;
     this->draw_phase = Waves::DrawPhase::ASTEROID_WARNING;
+    this->drawing_text = true;
 }
 
 void Waves::next()
 {
     this->draw_phase = Waves::DrawPhase::WAVE_COMPLETED;
+    this->drawing_text = true;
 }
 
-bool Waves::is_drawing()
+void Waves::player2_ready(Display *display)
+{
+    if (this->is_waiting_for_player())
+        this->next_phase(display);
+}
+
+bool Waves::is_switching_wave()
 {
     return this->draw_phase != Waves::DrawPhase::NONE;
+}
+
+bool Waves::is_waiting_for_player()
+{
+    return this->draw_phase == Waves::DrawPhase::WAITING_FOR_PLAYER;
+}
+
+bool Waves::is_ready_to_continue()
+{
+    return is_waiting_for_player() || this->draw_phase == DrawPhase::CONFIRM_CONTINUE;
 }
 
 bool Waves::is_spawning_asteroids()
@@ -26,18 +44,31 @@ bool Waves::is_spawning_asteroids()
     return this->draw_phase == Waves::DrawPhase::SPAWN_ASTEROIDS;
 }
 
+bool Waves::just_started_new_wave()
+{
+    return just_started;
+}
+
 void Waves::update(Display *display, const double &delta_s, ObjectsContainer *asteroids_container)
 {
-    // if not drawing, do nothing
+    // if not switching wave, do nothing
     if (this->draw_phase == DrawPhase::NONE)
+    {
+        if (this->just_started)
+            this->just_started = false;
         return;
+    }
 
-    // go to next phase when ready
-    this->text_time_left -= delta_s;
-    if (this->text_time_left <= 0)
-        this->next_draw_phase(display);
+    // for phases that draw text
+    // automatically go to next phase after draw timer is finished
+    if (this->drawing_text)
+    {
+        this->text_time_left -= delta_s;
+        if (this->text_time_left <= 0)
+            this->next_phase(display);
+    }
 
-    // draw the correct phase
+    // perform action depending on wave phase
     switch (this->draw_phase)
     {
     case Waves::DrawPhase::WAVE_COMPLETED:
@@ -51,7 +82,15 @@ void Waves::update(Display *display, const double &delta_s, ObjectsContainer *as
         break;
     case Waves::DrawPhase::SPAWN_ASTEROIDS:
         this->spawn_asteroids(asteroids_container);
-        this->text_time_left = 0; // go to next (NONE) phase right away
+        this->next_phase(display);
+        break;
+    case Waves::DrawPhase::CONFIRM_CONTINUE:
+        // stay in this phase for a certain amount of frames
+        this->confirm_continue_counter++;
+        if (this->confirm_continue_counter >= this->CONFIRM_CONTINUE_AMOUNT)
+            this->next_phase(display);
+        break;
+    default:
         break;
     }
 }
@@ -134,28 +173,43 @@ void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
     }
 }
 
-void Waves::next_draw_phase(Display *display)
+void Waves::next_phase(Display *display)
 {
+    this->text_time_left = Waves::TEXT_TIME;
+
     switch (this->draw_phase)
     {
     case Waves::DrawPhase::WAVE_COMPLETED:
         this->draw_completed_phase(display, true); // undraw previous phase
         ++this->wave;                              // mark next wave
         this->draw_phase = Waves::DrawPhase::ASTEROID_WARNING;
+        this->drawing_text = true;
         break;
     case Waves::DrawPhase::ASTEROID_WARNING:
         this->draw_asteroid_warning_phase(display, true); // undraw previous phase
         this->draw_phase = Waves::DrawPhase::WAVE_COMING;
+        this->drawing_text = true;
         break;
     case Waves::DrawPhase::WAVE_COMING:
         this->draw_wave_coming_phase(display, true); // undraw previous phase
         this->draw_phase = Waves::DrawPhase::SPAWN_ASTEROIDS;
+        this->drawing_text = false;
         break;
-    default:
+    case DrawPhase::SPAWN_ASTEROIDS:
+        this->draw_phase = DrawPhase::WAITING_FOR_PLAYER;
+        this->drawing_text = false;
+        break;
+    case DrawPhase::WAITING_FOR_PLAYER:
+        this->draw_phase = Waves::DrawPhase::CONFIRM_CONTINUE;
+        this->drawing_text = false;
+        this->confirm_continue_counter = 0;
+        break;
+    case DrawPhase::CONFIRM_CONTINUE:
         this->draw_phase = Waves::DrawPhase::NONE;
+        this->drawing_text = false;
+        this->just_started = true;
+        break;
     }
-
-    this->text_time_left = Waves::TEXT_TIME;
 }
 
 void Waves::draw_completed_phase(Display *display, bool undraw)
@@ -179,7 +233,7 @@ void Waves::draw_completed_phase(Display *display, bool undraw)
     display->draw_centred_text(text, screen_centre_x_pos, screen_centre_y_pos);
 }
 
-void Waves::draw_asteroid_warning_phase(Display *display, bool undraw = false)
+void Waves::draw_asteroid_warning_phase(Display *display, bool undraw)
 {
     // set text properties
     display->canvas.setTextSize(2);

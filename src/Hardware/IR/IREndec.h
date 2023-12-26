@@ -61,8 +61,9 @@ private:
     /// @return if the given data is a wave_switching message or not
     static bool is_switching_wave(uint32_t data);
 
-    /// the MSB is used to specify if the machine is still busy switching wave (0),
-    /// or if it's ready to continue (1)
+    /// the MSB is used to specify if the machine is:
+    /// - 0: still busy switching wave
+    /// - 1: ready to continue
     /// @param data switching wave data, according to WAVE_END_DATA
     /// @return if finished switching wave and ready to continue playing
     static bool is_finished_switching_wave(uint32_t data);

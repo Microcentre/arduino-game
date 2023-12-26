@@ -12,7 +12,7 @@ public:
     bool player_shot_bullet;
     bool player_died;
     bool switching_wave;
-    // bool ready_to_play;
+    bool finished_switching_wave;
 };
 
 #endif

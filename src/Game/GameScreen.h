@@ -90,10 +90,6 @@ private:
     /// @brief if the player just shot a bullet
     /// used to sync with other player.
     bool shot_bullet = false;
-
-    /// @brief if the wave just ended.
-    /// used to send to sync with other player.
-    bool switching_wave = false;
 };
 
 #endif
