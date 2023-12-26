@@ -81,10 +81,12 @@ void Waves::update(Display *display, const double &delta_s, ObjectsContainer *as
         draw_wave_coming_phase(display);
         break;
     case Waves::DrawPhase::SPAWN_ASTEROIDS:
+        draw_wave_coming_phase(display);
         this->spawn_asteroids(asteroids_container);
         this->next_phase(display);
         break;
     case Waves::DrawPhase::CONFIRM_CONTINUE:
+        draw_wave_coming_phase(display);
         // stay in this phase for a certain amount of frames
         this->confirm_continue_counter++;
         if (this->confirm_continue_counter >= this->CONFIRM_CONTINUE_AMOUNT)
@@ -191,7 +193,6 @@ void Waves::next_phase(Display *display)
         this->drawing_text = true;
         break;
     case Waves::DrawPhase::WAVE_COMING:
-        this->draw_wave_coming_phase(display, true); // undraw previous phase
         this->draw_phase = Waves::DrawPhase::SPAWN_ASTEROIDS;
         this->drawing_text = false;
         break;
@@ -205,9 +206,11 @@ void Waves::next_phase(Display *display)
         this->confirm_continue_counter = 0;
         break;
     case DrawPhase::CONFIRM_CONTINUE:
+        this->draw_wave_coming_phase(display, true); // undraw text
         this->draw_phase = Waves::DrawPhase::NONE;
         this->drawing_text = false;
         this->just_started = true;
+
         break;
     }
 }
