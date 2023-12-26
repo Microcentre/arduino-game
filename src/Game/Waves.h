@@ -42,7 +42,8 @@ private:
         WAVE_COMPLETED,
         ASTEROID_WARNING,
         WAVE_COMING,
-        SPAWN_ASTEROIDS
+        SPAWN_ASTEROIDS,
+        WAITING_FOR_PLAYER
     };
 
     /// @brief time (in delta seconds) to show text before dissapearing
