@@ -66,7 +66,6 @@ void GameScreen::update(const double &delta)
     // update
     Screen::update(delta);
     this->player->update(delta);
-    this->score->update(delta);
     this->bullet_container->update_objects(delta);
     if (!this->waves->is_switching_wave())
         this->asteroid_container->update_objects(delta);

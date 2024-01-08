@@ -2,12 +2,9 @@
 
 uint16_t Score::score = 0;
 
-uint16_t Score::previous_score = 0;
-
 Score::Score(Display *display, double x_position, double y_position) : Object(x_position, y_position)
 {
     score = 0;
-    previous_score = 0;
     display->canvas.setCursor(x_position, y_position);
     display->canvas.setTextSize(2);
 }
@@ -22,9 +19,10 @@ void Score::draw(Display *display)
 
 void Score::undraw(Display *display, const uint16_t x_position, const uint16_t y_position)
 {
-    display->canvas.setCursor(x_position, y_position);
-    display->canvas.setTextColor(display->background_colour);
-    display->canvas.print(previous_score);
+    // calculate score text width (height is constant)
+    uint16_t width;
+    display->canvas.getTextBounds(String(score), x_position, y_position, nullptr, nullptr, &width, nullptr);
+    display->canvas.fillRect(x_position, y_position, width, SCORE_TEXT_HEIGHT, display->background_colour);
 }
 
 void Score::update(const double &delta)
@@ -34,6 +32,5 @@ void Score::update(const double &delta)
 
 void Score::add_score(uint8_t amount)
 {
-    previous_score = score;
     score += amount;
 }
