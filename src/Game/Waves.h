@@ -102,7 +102,7 @@ private:
     uint8_t max_asteroids;
 
     /// @brief what to draw right now
-    Waves::DrawPhase draw_phase = Waves::DrawPhase::NONE;
+    Waves::DrawPhase draw_phase = DrawPhase::NONE;
 
     /// @brief go to the next wave phase and undraw previous phase
     void next_phase(Display *display);
