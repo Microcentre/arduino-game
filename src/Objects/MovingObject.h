@@ -1,7 +1,6 @@
 #ifndef MOVINGOBJECT_H
 #define MOVINGOBJECT_H
 
-#include "stdint.h"
 #include "Object.h"
 
 class MovingObject : public Object

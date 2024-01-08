@@ -9,8 +9,6 @@ public:
     void init_timer_2();
 
     void init_adc();
-
-private:
 };
 
 #endif

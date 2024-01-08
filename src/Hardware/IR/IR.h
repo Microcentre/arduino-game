@@ -1,6 +1,5 @@
 #ifndef IR_H
 #define IR_H
-#include <avr/io.h>
 
 const uint16_t CARRIER_FREQUENCY = 38000;
 

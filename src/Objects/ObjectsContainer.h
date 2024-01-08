@@ -8,7 +8,7 @@
 class ObjectsContainer
 {
 public:
-    /// @brief Objects are drawn and updated every frame
+    /// @brief list of Objects that are drawn and updated every frame
     Vector<Object *> objects;
 
     ObjectsContainer(Display *display, Vector<Object *> objects_array);
@@ -34,6 +34,7 @@ public:
     uint8_t get_size();
 
 private:
+    /// @brief used to draw and undraw objects
     Display *display;
 
     /// @return index of object, or -1 if not found

@@ -1,4 +1,6 @@
 #include "Buzzer.h"
+#include <avr/io.h>
+#include <util/delay.h>
 
 Buzzer::Buzzer()
 {

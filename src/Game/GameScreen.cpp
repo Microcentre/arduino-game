@@ -1,5 +1,8 @@
+#include <Vector.h>
 #include "GameScreen.h"
 #include "Asteroid.h"
+#include "Bullet.h"
+#include "Hardware/IR/IREndec.h"
 
 GameScreen::GameScreen(Display *display, Joystick *joystick, IR *infrared, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick, infrared)
 {

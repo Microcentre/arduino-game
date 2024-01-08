@@ -3,6 +3,8 @@
 
 #include "Player.h"
 
+/// @brief makes the player invincible when he's damaged.
+/// Observer thats called when the player is hurt (HurtObserver instance)
 class InvincibilityFrames : public Player::HurtObserver
 {
 public:

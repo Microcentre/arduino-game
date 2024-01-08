@@ -3,7 +3,6 @@
 
 #include "../Objects/ObjectsContainer.h"
 #include "../Hardware/Display.h"
-#include "Asteroid.h"
 
 /// @brief handles waves of asteroids
 /// There is a `draw_phase` property which is on NONE by default.
@@ -50,7 +49,7 @@ public:
     bool just_started_new_wave();
 
 private:
-    enum DrawPhase
+    enum WavePhase
     {
         NONE,
         WAVE_COMPLETED,
@@ -102,14 +101,10 @@ private:
     uint8_t max_asteroids;
 
     /// @brief what to draw right now
-    Waves::DrawPhase draw_phase = Waves::DrawPhase::NONE;
+    Waves::WavePhase draw_phase = WavePhase::NONE;
 
     /// @brief go to the next wave phase and undraw previous phase
     void next_phase(Display *display);
-
-    /// @brief Spawn asteroids depending on the current wave
-    /// @param asteroid_container
-    void spawn_asteroids(ObjectsContainer *asteroid_container);
 
     /// @brief draws the text "WAVE x COMPLETED"
     /// @param undraw if the warning should be drawn(false) or undrawn(true)
@@ -122,6 +117,10 @@ private:
     /// @brief draws the text "WAVE x"
     /// @param undraw if the warning should be drawn(false) or undrawn(true)
     void draw_wave_coming_phase(Display *display, bool undraw = false);
+
+    /// @brief Spawn asteroids depending on the current wave
+    /// @param asteroid_container
+    void spawn_asteroids(ObjectsContainer *asteroid_container);
 };
 
 #endif

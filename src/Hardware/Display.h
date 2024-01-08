@@ -1,7 +1,7 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-#include "Adafruit_ILI9341.h"
+#include <Adafruit_ILI9341.h>
 #include <Adafruit_FT6206.h>
 
 // For the Adafruit Shield, these are the default
@@ -13,7 +13,9 @@
 class Display
 {
 public:
+    /// @brief height of screen in pixels
     static const uint16_t HEIGHT_PIXELS = 240;
+    /// @brief width of screen in pixels
     static const uint16_t WIDTH_PIXELS = 320;
 
     /// @brief library used for drawing on the screen
