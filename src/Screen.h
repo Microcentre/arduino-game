@@ -3,7 +3,7 @@
 
 #include "Hardware/Display.h"
 #include "Hardware/Joystick.h"
-#include "Hardware/IR.h"
+#include "Hardware/IR/IR.h"
 
 class Screen
 {

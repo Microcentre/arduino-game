@@ -2,7 +2,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#include "Hardware/IR.h"
+#include "Hardware/IR/IR.h"
 #include "Hardware/Joystick.h"
 #include "Hardware/Display.h"
 #include "Game/GameScreen.h"
