@@ -13,7 +13,9 @@
 class Display
 {
 public:
+    /// @brief height of screen in pixels
     static const uint16_t HEIGHT_PIXELS = 240;
+    /// @brief width of screen in pixels
     static const uint16_t WIDTH_PIXELS = 320;
 
     /// @brief library used for drawing on the screen

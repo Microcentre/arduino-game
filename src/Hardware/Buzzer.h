@@ -9,9 +9,9 @@ class Buzzer
 public:
     /// @brief initializes timer 2 for buzzer
     Buzzer();
-    /// @brief generates a meduim beep using buzzer
+    /// @brief play a meduim beep using buzzer
     void medium_beep();
-    /// @brief generates a short beep using buzzer
+    /// @brief play a short beep using buzzer
     void short_beep();
 };
 

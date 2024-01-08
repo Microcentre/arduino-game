@@ -6,6 +6,12 @@
 class Joystick
 {
 public:
+    /// @brief if the C button was pressed the previous frame
+    uint8_t c_pressed_last_frame;
+
+    /// @brief if the Z button was pressed the previous frame
+    uint8_t z_pressed_last_frame;
+
     Joystick();
 
     /// @brief Update joystick data with new states.
@@ -30,10 +36,6 @@ public:
 
     /// @return if Z button is pressed for the first time this frame
     bool is_z_first_pressed();
-
-    uint8_t c_pressed_last_frame;
-
-    uint8_t z_pressed_last_frame;
 };
 
 #endif

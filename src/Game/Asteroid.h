@@ -6,6 +6,12 @@
 class Asteroid : public MovingObject
 {
 public:
+    /// @brief How much score the player gets for destroying an asteroid
+    static const uint8_t SCORE_ASTEROID = 50;
+
+    /// @brief radius of each asteroid circle
+    static const uint8_t ASTEROID_SIZE = 18;
+
     /// @brief initializes an asteroid
     /// @param x_position start position as x-coordinate
     /// @param y_position start position as y coordinate
@@ -26,10 +32,6 @@ public:
     /// @param x_position X-position of drawing to clear
     /// @param y_position Y-position of the drawing to clear
     void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) override;
-
-    static const uint8_t SCORE_ASTEROID = 50;
-
-    static const uint8_t ASTEROID_SIZE = 18;
 };
 
 #endif
