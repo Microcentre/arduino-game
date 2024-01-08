@@ -5,8 +5,15 @@ PlayerSelectScreen::PlayerSelectScreen(Display *display, Joystick *joystick, IR 
     // create player icons and selection icon
     this->p1 = new Player(PLAYER_LEFT_X, PLAYER_Y, 0);
     this->p1->draw(display, this->p1->get_x_position(), this->p1->get_y_position(), this->p1->facing_direction, ILI9341_CYAN);
+    display->canvas.setTextSize(2);
+    display->canvas.setTextColor(ILI9341_CYAN);
+    display->draw_centred_text("Zephyr", PLAYER_LEFT_X, PLAYER_NAME_Y_POS);
+
+
     this->p2 = new Player(PLAYER_RIGHT_X, PLAYER_Y, 0);
     this->p2->draw(display, this->p2->get_x_position(), this->p2->get_y_position(), this->p2->facing_direction, ILI9341_ORANGE);
+    display->canvas.setTextColor(ILI9341_ORANGE);
+    display->draw_centred_text("Anubis", PLAYER_RIGHT_X, PLAYER_NAME_Y_POS);
 }
 
 PlayerSelectScreen::~PlayerSelectScreen()
