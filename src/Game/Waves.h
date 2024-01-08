@@ -61,7 +61,7 @@ private:
     };
 
     /// @brief time (in delta seconds) to show text before dissapearing
-    const double TEXT_TIME = 2;
+    const double TEXT_TIME = 1;
 
     // multiply PI by 10, divide by four
     const uint8_t M_10_PI_DIV_4 = (M_PI * 10) / 4;
