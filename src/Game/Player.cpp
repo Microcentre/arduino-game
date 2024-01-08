@@ -156,7 +156,7 @@ void Player::hurt(Display *display)
     }
 
     // call all observers
-    for (int i = 0; i < hurt_observers_size; ++i)
+    for (uint8_t i = 0; i < hurt_observers_size; ++i)
     {
         hurt_observers[i]->update(this);
     }
