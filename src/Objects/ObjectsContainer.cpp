@@ -74,6 +74,17 @@ void ObjectsContainer::undraw_objects()
         (*i)->undraw(this->display);
 }
 
+uint8_t ObjectsContainer::undeleted_count()
+{
+    uint8_t count = 0;
+    for (auto i = this->objects.begin(); i != this->objects.end(); ++i)
+    {
+        if (!(*i)->marked_for_deletion)
+            ++count;
+    }
+    return count;
+}
+
 uint8_t ObjectsContainer::get_size()
 {
     return this->objects.size();

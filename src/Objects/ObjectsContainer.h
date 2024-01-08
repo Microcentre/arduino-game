@@ -34,6 +34,9 @@ public:
     /// @brief call undraw() on all objects
     void undraw_objects();
 
+    /// @return count of objects that are not marked_for_deletion
+    uint8_t undeleted_count();
+
     /// @return the amount of objects the ObjectContainer is holding
     uint8_t get_size();
 

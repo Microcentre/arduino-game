@@ -173,7 +173,7 @@ void GameScreen::process_player_2()
         game_data.switching_wave && !this->waves->is_switching_wave() // already busy switching wave
         && !this->asteroid_container->objects.empty())                // asteroids remaining = sync issue
     {
-        this->score->add_score(this->asteroid_container->objects.size() * 50);
+        this->score->add_score(this->asteroid_container->undeleted_count() * Asteroid::SCORE_ASTEROID);
         this->asteroid_container->undraw_objects();
         this->asteroid_container->delete_objects();
         this->next_wave();
