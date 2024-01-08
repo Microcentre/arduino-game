@@ -1,7 +1,7 @@
 #ifndef SCORELIST_H
 #define SCORELIST_H
 
-#include "stdint.h"
+#include <stdint.h>
 
 /// @brief LinkedList of Nodes, with each Node represented a score
 class ScoreList

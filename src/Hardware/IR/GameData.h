@@ -1,7 +1,7 @@
 #ifndef GAMEDATA_H
 #define GAMEDATA_H
 
-#include "stdint.h"
+#include <stdint.h>
 
 class GameData
 {

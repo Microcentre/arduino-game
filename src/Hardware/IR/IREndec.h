@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-#include "stdint.h"
+#include <stdint.h>
 #include "GameData.h"
 
 class IREndec
