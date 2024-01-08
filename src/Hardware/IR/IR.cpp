@@ -1,6 +1,7 @@
 #include <avr/interrupt.h>
 
 #include "IR.h"
+#include <avr/io.h>
 
 IR::IR()
 {

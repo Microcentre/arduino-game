@@ -1,7 +1,6 @@
 #ifndef SCORE_H
 #define SCORE_H
 
-#include "stdint.h"
 #include "../Objects/Object.h"
 
 class Score : public Object

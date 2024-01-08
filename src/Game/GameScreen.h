@@ -1,20 +1,16 @@
 #ifndef GAMESCREEN_H
 #define GAMESCREEN_H
 
-#include <Vector.h>
 #include "../Hardware/Joystick.h"
 #include "../Hardware/Display.h"
 #include "Player.h"
-#include "../Objects/Object.h"
 #include "Screen.h"
 #include "../Objects/ObjectsContainer.h"
 #include "../Highscore/Score.h"
 #include "Waves.h"
-#include "Bullet.h"
 #include "../Hardware/Buzzer.h"
 #include "../Hardware/ShowHealthOnSSD.h"
 #include "InvincibilityFrames.h"
-#include "Hardware/IR/IREndec.h"
 
 class GameScreen : public Screen
 {

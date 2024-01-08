@@ -1,7 +1,7 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-#include "Adafruit_ILI9341.h"
+#include <Adafruit_ILI9341.h>
 #include <Adafruit_FT6206.h>
 
 // For the Adafruit Shield, these are the default

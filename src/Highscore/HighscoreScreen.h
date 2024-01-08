@@ -2,7 +2,6 @@
 #define HIGHSCORESCREEN_H
 
 #include "Screen.h"
-#include "Score.h"
 #include "ScoreList.h"
 #include "../Hardware/Buzzer.h"
 

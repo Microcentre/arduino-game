@@ -1,4 +1,5 @@
 #include "Waves.h"
+#include "Asteroid.h"
 
 Waves::Waves(uint8_t max_asteroids)
 {

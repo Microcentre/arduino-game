@@ -3,7 +3,6 @@
 
 #include "../Objects/ObjectsContainer.h"
 #include "../Hardware/Display.h"
-#include "Asteroid.h"
 
 /// @brief handles waves of asteroids
 /// There is a `draw_phase` property which is on NONE by default.

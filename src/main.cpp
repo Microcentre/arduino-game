@@ -5,8 +5,6 @@
 #include "Hardware/IR/IR.h"
 #include "Hardware/Joystick.h"
 #include "Hardware/Display.h"
-#include "Game/GameScreen.h"
-#include "PlayerSelect/PlayerSelectScreen.h"
 #include "ScreenHandler.h"
 #include "Hardware/Brightness.h"
 

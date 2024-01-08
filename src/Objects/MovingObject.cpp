@@ -1,4 +1,3 @@
-#include <math.h>
 #include "MovingObject.h"
 
 MovingObject::MovingObject(double x_position, double y_position, double speed) : Object(x_position, y_position)
