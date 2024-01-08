@@ -78,6 +78,8 @@ private:
     /// @brief The y position of the player icons.
     static const uint8_t PLAYER_Y = SELECT_BOX_Y + (SELECT_BOX_SIZE / 2);
 
+    const uint16_t PLAYER_NAME_Y_POS = PLAYER_Y + 20;
+
     /// @brief buzzer property
     Buzzer buzzer = Buzzer();
 };
