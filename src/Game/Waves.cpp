@@ -133,7 +133,8 @@ void Waves::next_phase(Display *display)
         this->draw_phase = WavePhase::NONE;
         this->drawing_text = false;
         this->just_started = true;
-
+        break;
+    default:
         break;
     }
 }

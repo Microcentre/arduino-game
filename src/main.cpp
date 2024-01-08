@@ -195,7 +195,7 @@ int main()
     Display display = Display();
     Joystick joystick = Joystick();
     ScreenHandler game = ScreenHandler(&display, &joystick, p_infrared);
-    Brightness brightness = Brightness();
+    Brightness();
 
     // game loop
     while (1)
