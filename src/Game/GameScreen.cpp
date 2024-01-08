@@ -84,6 +84,8 @@ void GameScreen::update(const double &delta)
     this->send_data();
     if (this->player2->active)
         this->process_player_2();
+    else
+        this->waves->player2_ready(display);
 
     this->waves->update(display, delta, this->asteroid_container);
 
