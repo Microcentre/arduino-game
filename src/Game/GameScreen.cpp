@@ -173,7 +173,7 @@ void GameScreen::process_player_2()
     {
         this->score->add_score(this->asteroid_container->objects.size() * 50);
         this->asteroid_container->undraw_objects();
-        this->asteroid_container->objects.clear();
+        this->asteroid_container->delete_objects();
         this->next_wave();
         return;
     }

@@ -20,6 +20,10 @@ public:
     /// @param object object to delete from memory and from the list of objects
     void delete_object(Object *object);
 
+    /// @brief delete all objects from the list and memory
+    /// calls delete_object on each object
+    void delete_objects();
+
     /// @brief call update() on all objects. is called every frame.
     /// @param delta seconds since last frame
     void update_objects(const double &delta);

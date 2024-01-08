@@ -12,12 +12,7 @@ ObjectsContainer::ObjectsContainer(Display *display, Vector<Object *> objects_ar
 
 ObjectsContainer::~ObjectsContainer()
 {
-    for (auto i = this->objects.begin(); i != this->objects.end(); ++i)
-    {
-        delete (*i);
-        (*i) = nullptr;
-    }
-    this->objects.clear();
+    this->delete_objects();
 }
 
 void ObjectsContainer::add_object(Object *object)
@@ -36,6 +31,16 @@ void ObjectsContainer::delete_object(Object *object)
     this->objects.remove(index);
     delete object;
     object = nullptr;
+}
+
+void ObjectsContainer::delete_objects()
+{
+    for (auto i = this->objects.begin(); i != this->objects.end(); ++i)
+    {
+        delete (*i);
+        (*i) = nullptr;
+    }
+    this->objects.clear();
 }
 
 void ObjectsContainer::update_objects(const double &delta)
