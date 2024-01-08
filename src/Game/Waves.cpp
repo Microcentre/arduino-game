@@ -8,13 +8,13 @@ Waves::Waves(uint8_t max_asteroids)
 void Waves::start_new()
 {
     this->wave = 1;
-    this->draw_phase = DrawPhase::ASTEROID_WARNING;
+    this->draw_phase = WavePhase::ASTEROID_WARNING;
     this->drawing_text = true;
 }
 
 void Waves::next()
 {
-    this->draw_phase = DrawPhase::WAVE_COMPLETED;
+    this->draw_phase = WavePhase::WAVE_COMPLETED;
     this->drawing_text = true;
 }
 
@@ -26,22 +26,22 @@ void Waves::player2_ready(Display *display)
 
 bool Waves::is_switching_wave()
 {
-    return this->draw_phase != DrawPhase::NONE;
+    return this->draw_phase != WavePhase::NONE;
 }
 
 bool Waves::is_waiting_for_player()
 {
-    return this->draw_phase == DrawPhase::WAITING_FOR_PLAYER;
+    return this->draw_phase == WavePhase::WAITING_FOR_PLAYER;
 }
 
 bool Waves::is_ready_to_continue()
 {
-    return is_waiting_for_player() || this->draw_phase == DrawPhase::CONFIRM_CONTINUE;
+    return is_waiting_for_player() || this->draw_phase == WavePhase::CONFIRM_CONTINUE;
 }
 
 bool Waves::is_spawning_asteroids()
 {
-    return this->draw_phase == DrawPhase::SPAWN_ASTEROIDS;
+    return this->draw_phase == WavePhase::SPAWN_ASTEROIDS;
 }
 
 bool Waves::just_started_new_wave()
@@ -52,7 +52,7 @@ bool Waves::just_started_new_wave()
 void Waves::update(Display *display, const double &delta_s, ObjectsContainer *asteroids_container)
 {
     // if not switching wave, do nothing
-    if (this->draw_phase == DrawPhase::NONE)
+    if (this->draw_phase == WavePhase::NONE)
     {
         if (this->just_started)
             this->just_started = false;
@@ -71,21 +71,21 @@ void Waves::update(Display *display, const double &delta_s, ObjectsContainer *as
     // perform action depending on wave phase
     switch (this->draw_phase)
     {
-    case DrawPhase::WAVE_COMPLETED:
+    case WavePhase::WAVE_COMPLETED:
         draw_completed_phase(display);
         break;
-    case DrawPhase::ASTEROID_WARNING:
+    case WavePhase::ASTEROID_WARNING:
         draw_asteroid_warning_phase(display);
         break;
-    case DrawPhase::WAVE_COMING:
+    case WavePhase::WAVE_COMING:
         draw_wave_coming_phase(display);
         break;
-    case DrawPhase::SPAWN_ASTEROIDS:
+    case WavePhase::SPAWN_ASTEROIDS:
         draw_wave_coming_phase(display);
         this->spawn_asteroids(asteroids_container);
         this->next_phase(display);
         break;
-    case DrawPhase::CONFIRM_CONTINUE:
+    case WavePhase::CONFIRM_CONTINUE:
         draw_wave_coming_phase(display);
         // stay in this phase for a certain amount of frames
         this->confirm_continue_counter++;
@@ -181,33 +181,33 @@ void Waves::next_phase(Display *display)
 
     switch (this->draw_phase)
     {
-    case DrawPhase::WAVE_COMPLETED:
+    case WavePhase::WAVE_COMPLETED:
         this->draw_completed_phase(display, true); // undraw previous phase
         ++this->wave;                              // mark next wave
-        this->draw_phase = DrawPhase::ASTEROID_WARNING;
+        this->draw_phase = WavePhase::ASTEROID_WARNING;
         this->drawing_text = true;
         break;
-    case DrawPhase::ASTEROID_WARNING:
+    case WavePhase::ASTEROID_WARNING:
         this->draw_asteroid_warning_phase(display, true); // undraw previous phase
-        this->draw_phase = DrawPhase::WAVE_COMING;
+        this->draw_phase = WavePhase::WAVE_COMING;
         this->drawing_text = true;
         break;
-    case DrawPhase::WAVE_COMING:
-        this->draw_phase = DrawPhase::SPAWN_ASTEROIDS;
+    case WavePhase::WAVE_COMING:
+        this->draw_phase = WavePhase::SPAWN_ASTEROIDS;
         this->drawing_text = false;
         break;
-    case DrawPhase::SPAWN_ASTEROIDS:
-        this->draw_phase = DrawPhase::WAITING_FOR_PLAYER;
+    case WavePhase::SPAWN_ASTEROIDS:
+        this->draw_phase = WavePhase::WAITING_FOR_PLAYER;
         this->drawing_text = false;
         break;
-    case DrawPhase::WAITING_FOR_PLAYER:
-        this->draw_phase = DrawPhase::CONFIRM_CONTINUE;
+    case WavePhase::WAITING_FOR_PLAYER:
+        this->draw_phase = WavePhase::CONFIRM_CONTINUE;
         this->drawing_text = false;
         this->confirm_continue_counter = 0;
         break;
-    case DrawPhase::CONFIRM_CONTINUE:
+    case WavePhase::CONFIRM_CONTINUE:
         this->draw_wave_coming_phase(display, true); // undraw text
-        this->draw_phase = DrawPhase::NONE;
+        this->draw_phase = WavePhase::NONE;
         this->drawing_text = false;
         this->just_started = true;
 

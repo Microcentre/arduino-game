@@ -50,7 +50,7 @@ public:
     bool just_started_new_wave();
 
 private:
-    enum DrawPhase
+    enum WavePhase
     {
         NONE,
         WAVE_COMPLETED,
@@ -102,7 +102,7 @@ private:
     uint8_t max_asteroids;
 
     /// @brief what to draw right now
-    Waves::DrawPhase draw_phase = DrawPhase::NONE;
+    Waves::WavePhase draw_phase = WavePhase::NONE;
 
     /// @brief go to the next wave phase and undraw previous phase
     void next_phase(Display *display);
