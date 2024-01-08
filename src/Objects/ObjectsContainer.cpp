@@ -12,12 +12,7 @@ ObjectsContainer::ObjectsContainer(Display *display, Vector<Object *> objects_ar
 
 ObjectsContainer::~ObjectsContainer()
 {
-    for (auto i = this->objects.begin(); i != this->objects.end(); ++i)
-    {
-        delete (*i);
-        (*i) = nullptr;
-    }
-    this->objects.clear();
+    this->delete_objects();
 }
 
 void ObjectsContainer::add_object(Object *object)
@@ -36,6 +31,16 @@ void ObjectsContainer::delete_object(Object *object)
     this->objects.remove(index);
     delete object;
     object = nullptr;
+}
+
+void ObjectsContainer::delete_objects()
+{
+    for (auto i = this->objects.begin(); i != this->objects.end(); ++i)
+    {
+        delete (*i);
+        (*i) = nullptr;
+    }
+    this->objects.clear();
 }
 
 void ObjectsContainer::update_objects(const double &delta)
@@ -57,10 +62,27 @@ void ObjectsContainer::update_objects(const double &delta)
     }
 }
 
-void ObjectsContainer::draw_objects(const double &delta)
+void ObjectsContainer::draw_objects()
 {
     for (auto i = objects.begin(); i != objects.end(); ++i)
         (*i)->draw(this->display);
+}
+
+void ObjectsContainer::undraw_objects()
+{
+    for (auto i = objects.begin(); i != objects.end(); ++i)
+        (*i)->undraw(this->display);
+}
+
+uint8_t ObjectsContainer::undeleted_count()
+{
+    uint8_t count = 0;
+    for (auto i = this->objects.begin(); i != this->objects.end(); ++i)
+    {
+        if (!(*i)->marked_for_deletion)
+            ++count;
+    }
+    return count;
 }
 
 uint8_t ObjectsContainer::get_size()

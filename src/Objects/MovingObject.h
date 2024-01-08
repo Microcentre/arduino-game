@@ -1,7 +1,6 @@
 #ifndef MOVINGOBJECT_H
 #define MOVINGOBJECT_H
 
-#include "stdint.h"
 #include "Object.h"
 
 class MovingObject : public Object
@@ -23,6 +22,13 @@ public:
     /// @param display display to draw on
     void draw(Display *display) override;
 
+    /// @brief All objects inheriting MovingObject must implement an undraw()
+    /// repeated from Object to avoid errors.
+    virtual void undraw(Display *display, const uint16_t x_position, const uint16_t y_position) = 0;
+
+    /// @brief call undraw() using previous_drawing_position variables
+    void undraw(Display *display) override;
+
     /// @brief moves object. When inheriting call MovingObject::update() last
     /// @param delta_s time since last frame in seconds
     void update(const double &delta) override;
@@ -33,7 +39,7 @@ public:
     /// @brief set y_position and update previous_y_position
     void set_y_position(const double position) override;
 
-private:
+protected:
     // drawing a moving object requires undrawing the old drawing.
     // draw() calls undraw() with the below variables before drawing the object
     uint16_t previous_draw_position_x;

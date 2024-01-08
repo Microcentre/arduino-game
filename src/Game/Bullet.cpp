@@ -11,7 +11,8 @@ Bullet::Bullet(int16_t x_position, int16_t y_position, double direction, uint16_
 
 Bullet::~Bullet()
 {
-    Bullet::bullet_amount--; // allow next bullet to be created
+    if (this->shot_by_player1)
+        Bullet::bullet_amount--; // allow next bullet to be created
 }
 
 void Bullet::update(const double &delta)

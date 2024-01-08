@@ -40,18 +40,23 @@ public:
 private:
     /// @brief Whether the left player is selected.
     uint8_t left_selected = true;
+
+    /// @brief if the screen is touched last frame
     uint8_t pressed_last_frame = false;
 
     /// @brief the centre x position of the text
     const uint8_t SCREEN_CENTRE_X_POS = Display::WIDTH_PIXELS / 2;
 
+    /// @brief 16-bit 5-6-5 Colour of the "ROIDS" text
     const uint16_t TITLE_COLOUR = ILI9341_WHITE;
 
-    /// @brief The y position of the text.
+    /// @brief The y position of the "ROIDS" text.
     static const uint8_t TITLE_Y = 30;
 
+    /// @brief 16-bit 5-6-5 Colour of "SELECT SHIP" text
     const uint16_t TEXT_COLOUR = ILI9341_GREEN;
 
+    /// @brief y position of "SELECT SHIP" text
     const uint8_t SELECT_PLAYER_TEXT_Y = 80;
 
     /// @brief The size of the selection box.
@@ -78,7 +83,7 @@ private:
     /// @brief The y position of the player icons.
     static const uint8_t PLAYER_Y = SELECT_BOX_Y + (SELECT_BOX_SIZE / 2);
 
-    /// @brief buzzer property
+    /// @brief buzzer property, used to make a sound when selection is made
     Buzzer buzzer = Buzzer();
 };
 

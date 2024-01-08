@@ -1,4 +1,5 @@
 #include "HighscoreScreen.h"
+#include "Hardware/IR/IREndec.h"
 
 HighscoreScreen::HighscoreScreen(Display *display, Joystick *joystick, IR *infrared, ScoreList *scores) : Screen(display, joystick, infrared)
 {
@@ -14,6 +15,7 @@ void HighscoreScreen::update(const double &delta)
 {
     Screen::update(delta);
     drawHud(this->scores);
+    communicate_game_ended();
 }
 
 void HighscoreScreen::drawHud(ScoreList *scores)
@@ -57,4 +59,10 @@ void HighscoreScreen::on_joystick_changed()
     {
         joystick->z_pressed_last_frame = false;
     }
+}
+
+void HighscoreScreen::communicate_game_ended()
+{
+    uint32_t data = IREndec::encode_game_ended();
+    this->infrared->send_data(data);
 }

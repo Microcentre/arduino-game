@@ -1,5 +1,4 @@
 #include "Display.h"
-#include "Adafruit_ILI9341.h"
 
 Display::Display()
 {

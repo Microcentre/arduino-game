@@ -1,17 +1,17 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "stdint.h"
+#include <stdint.h>
 #include "../Hardware/Display.h"
 
 class Object
 {
 public:
-    Object(double x_position, double y_position);
-    virtual ~Object() {}
-
     /// @brief if the object should be deleted or not
     bool marked_for_deletion = false;
+
+    Object(double x_position, double y_position);
+    virtual ~Object() {}
 
     virtual void set_x_position(const double position);
     double get_x_position();
@@ -35,10 +35,12 @@ public:
 
     /// @brief Undraw at current position
     /// @param display display to draw on
-    void undraw(Display *display);
+    virtual void undraw(Display *display);
 
 private:
+    /// @brief x-position of pixel on screen the object is located (rounded down when drawn)
     double x_position;
+    /// @brief y-position of pixel on screen the object is located (rounded down when drawn)
     double y_position;
 };
 

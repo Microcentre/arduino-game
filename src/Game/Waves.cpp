@@ -1,4 +1,5 @@
 #include "Waves.h"
+#include "Asteroid.h"
 
 Waves::Waves(uint8_t max_asteroids)
 {
@@ -8,52 +9,204 @@ Waves::Waves(uint8_t max_asteroids)
 void Waves::start_new()
 {
     this->wave = 1;
-    this->draw_phase = Waves::DrawPhase::ASTEROID_WARNING;
+    this->draw_phase = WavePhase::ASTEROID_WARNING;
+    this->drawing_text = true;
 }
 
 void Waves::next()
 {
-    this->draw_phase = Waves::DrawPhase::WAVE_COMPLETED;
+    this->draw_phase = WavePhase::WAVE_COMPLETED;
+    this->drawing_text = true;
 }
 
-bool Waves::is_drawing()
+void Waves::player2_ready(Display *display)
 {
-    return this->draw_phase != Waves::DrawPhase::NONE;
+    if (this->is_waiting_for_player())
+        this->next_phase(display);
+}
+
+bool Waves::is_switching_wave()
+{
+    return this->draw_phase != WavePhase::NONE;
+}
+
+bool Waves::is_waiting_for_player()
+{
+    return this->draw_phase == WavePhase::WAITING_FOR_PLAYER;
+}
+
+bool Waves::is_ready_to_continue()
+{
+    return is_waiting_for_player() || this->draw_phase == WavePhase::CONFIRM_CONTINUE;
 }
 
 bool Waves::is_spawning_asteroids()
 {
-    return this->draw_phase == Waves::DrawPhase::SPAWN_ASTEROIDS;
+    return this->draw_phase == WavePhase::SPAWN_ASTEROIDS;
+}
+
+bool Waves::just_started_new_wave()
+{
+    return just_started;
 }
 
 void Waves::update(Display *display, const double &delta_s, ObjectsContainer *asteroids_container)
 {
-    // if not drawing, do nothing
-    if (this->draw_phase == DrawPhase::NONE)
+    // if not switching wave, do nothing
+    if (this->draw_phase == WavePhase::NONE)
+    {
+        if (this->just_started)
+            this->just_started = false;
         return;
+    }
 
-    // go to next phase when ready
-    this->text_time_left -= delta_s;
-    if (this->text_time_left <= 0)
-        this->next_draw_phase(display);
+    // for phases that draw text
+    // automatically go to next phase after draw timer is finished
+    if (this->drawing_text)
+    {
+        this->text_time_left -= delta_s;
+        if (this->text_time_left <= 0)
+            this->next_phase(display);
+    }
 
-    // draw the correct phase
+    // perform action depending on wave phase
     switch (this->draw_phase)
     {
-    case Waves::DrawPhase::WAVE_COMPLETED:
+    case WavePhase::WAVE_COMPLETED:
         draw_completed_phase(display);
         break;
-    case Waves::DrawPhase::ASTEROID_WARNING:
+    case WavePhase::ASTEROID_WARNING:
         draw_asteroid_warning_phase(display);
         break;
-    case Waves::DrawPhase::WAVE_COMING:
+    case WavePhase::WAVE_COMING:
         draw_wave_coming_phase(display);
         break;
-    case Waves::DrawPhase::SPAWN_ASTEROIDS:
+    case WavePhase::SPAWN_ASTEROIDS:
+        draw_wave_coming_phase(display);
         this->spawn_asteroids(asteroids_container);
-        this->text_time_left = 0; // go to next (NONE) phase right away
+        this->next_phase(display);
+        break;
+    case WavePhase::CONFIRM_CONTINUE:
+        draw_wave_coming_phase(display);
+        // stay in this phase for a certain amount of frames
+        this->confirm_continue_counter++;
+        if (this->confirm_continue_counter >= this->CONFIRM_CONTINUE_AMOUNT)
+            this->next_phase(display);
+        break;
+    default:
         break;
     }
+}
+
+void Waves::next_phase(Display *display)
+{
+    this->text_time_left = Waves::TEXT_TIME;
+
+    switch (this->draw_phase)
+    {
+    case WavePhase::WAVE_COMPLETED:
+        this->draw_completed_phase(display, true); // undraw previous phase
+        ++this->wave;                              // mark next wave
+        this->draw_phase = WavePhase::ASTEROID_WARNING;
+        this->drawing_text = true;
+        break;
+    case WavePhase::ASTEROID_WARNING:
+        this->draw_asteroid_warning_phase(display, true); // undraw previous phase
+        this->draw_phase = WavePhase::WAVE_COMING;
+        this->drawing_text = true;
+        break;
+    case WavePhase::WAVE_COMING:
+        this->draw_phase = WavePhase::SPAWN_ASTEROIDS;
+        this->drawing_text = false;
+        break;
+    case WavePhase::SPAWN_ASTEROIDS:
+        this->draw_phase = WavePhase::WAITING_FOR_PLAYER;
+        this->drawing_text = false;
+        break;
+    case WavePhase::WAITING_FOR_PLAYER:
+        this->draw_phase = WavePhase::CONFIRM_CONTINUE;
+        this->drawing_text = false;
+        this->confirm_continue_counter = 0;
+        break;
+    case WavePhase::CONFIRM_CONTINUE:
+        this->draw_wave_coming_phase(display, true); // undraw text
+        this->draw_phase = WavePhase::NONE;
+        this->drawing_text = false;
+        this->just_started = true;
+        break;
+    default:
+        break;
+    }
+}
+
+void Waves::draw_completed_phase(Display *display, bool undraw)
+{
+    // set text properties
+    display->canvas.setTextSize(2);
+    display->canvas.setTextWrap(false);
+
+    // is not visible when undraw=true.
+    // text also blinks depending on the current frame (depending on text_time_left)
+    bool is_blinking = (uint16_t)(this->text_time_left * 10) % 4;
+    if (undraw || is_blinking)
+        display->canvas.setTextColor(display->background_colour);
+    else
+        display->canvas.setTextColor(ILI9341_WHITE);
+
+    auto screen_centre_x_pos = Display::WIDTH_PIXELS / 2;
+    auto screen_centre_y_pos = Display::HEIGHT_PIXELS / 2;
+
+    auto text = "WAVE " + (String)this->wave + " COMPLETED";
+    display->draw_centred_text(text, screen_centre_x_pos, screen_centre_y_pos);
+}
+
+void Waves::draw_asteroid_warning_phase(Display *display, bool undraw)
+{
+    // set text properties
+    display->canvas.setTextSize(2);
+    display->canvas.setTextWrap(false);
+
+    auto screen_centre_x_pos = Display::WIDTH_PIXELS / 2;
+    auto screen_centre_y_pos = Display::HEIGHT_PIXELS / 2;
+
+    // set colour for "WARNING" text.
+    // The text blinks by toggling between it's own colour and the display's background colour,
+    // depending on the current frame (dending on this->text_time_left).
+    // it also is set to the display's background colour when undrawing the text
+    bool is_blinking = (uint16_t)(this->text_time_left * 10) % 2;
+    if (undraw || is_blinking)
+        display->canvas.setTextColor(display->background_colour);
+    else
+        display->canvas.setTextColor(ILI9341_RED);
+
+    display->draw_centred_text("WARNING", screen_centre_x_pos, screen_centre_y_pos - 25);
+
+    // to undraw the text
+    // we just set the colour to the display's background colour
+    if (!undraw)
+        display->canvas.setTextColor(ILI9341_WHITE);
+    else
+        display->canvas.setTextColor(display->background_colour);
+    display->draw_centred_text("INCOMING ASTEROIDS", screen_centre_x_pos, screen_centre_y_pos);
+}
+
+void Waves::draw_wave_coming_phase(Display *display, bool undraw)
+{
+    // set text properties
+    display->canvas.setTextSize(2);
+    display->canvas.setTextWrap(false);
+
+    if (!undraw)
+        display->canvas.setTextColor(ILI9341_WHITE);
+    else
+        display->canvas.setTextColor(display->background_colour);
+
+    auto screen_centre_x_pos = Display::WIDTH_PIXELS / 2;
+    auto screen_centre_y_pos = Display::HEIGHT_PIXELS / 2;
+
+    // draw in cetre of screen
+    auto text = "WAVE " + (String)this->wave;
+    display->draw_centred_text(text, screen_centre_x_pos, screen_centre_y_pos);
 }
 
 void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
@@ -132,98 +285,4 @@ void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
         // spawn asteroid and add to container
         asteroid_container->add_object(new Asteroid(random_x_position, random_y_position, random_speed, random_direction));
     }
-}
-
-void Waves::next_draw_phase(Display *display)
-{
-    switch (this->draw_phase)
-    {
-    case Waves::DrawPhase::WAVE_COMPLETED:
-        this->draw_completed_phase(display, true); // undraw previous phase
-        ++this->wave;                              // mark next wave
-        this->draw_phase = Waves::DrawPhase::ASTEROID_WARNING;
-        break;
-    case Waves::DrawPhase::ASTEROID_WARNING:
-        this->draw_asteroid_warning_phase(display, true); // undraw previous phase
-        this->draw_phase = Waves::DrawPhase::WAVE_COMING;
-        break;
-    case Waves::DrawPhase::WAVE_COMING:
-        this->draw_wave_coming_phase(display, true); // undraw previous phase
-        this->draw_phase = Waves::DrawPhase::SPAWN_ASTEROIDS;
-        break;
-    default:
-        this->draw_phase = Waves::DrawPhase::NONE;
-    }
-
-    this->text_time_left = Waves::TEXT_TIME;
-}
-
-void Waves::draw_completed_phase(Display *display, bool undraw)
-{
-    // set text properties
-    display->canvas.setTextSize(2);
-    display->canvas.setTextWrap(false);
-
-    // is not visible when undraw=true.
-    // text also blinks depending on the current frame (depending on text_time_left)
-    bool is_blinking = (uint16_t)(this->text_time_left * 10) % 4;
-    if (undraw || is_blinking)
-        display->canvas.setTextColor(display->background_colour);
-    else
-        display->canvas.setTextColor(ILI9341_WHITE);
-
-    auto screen_centre_x_pos = Display::WIDTH_PIXELS / 2;
-    auto screen_centre_y_pos = Display::HEIGHT_PIXELS / 2;
-
-    auto text = "WAVE " + (String)this->wave + " COMPLETED";
-    display->draw_centred_text(text, screen_centre_x_pos, screen_centre_y_pos);
-}
-
-void Waves::draw_asteroid_warning_phase(Display *display, bool undraw = false)
-{
-    // set text properties
-    display->canvas.setTextSize(2);
-    display->canvas.setTextWrap(false);
-
-    auto screen_centre_x_pos = Display::WIDTH_PIXELS / 2;
-    auto screen_centre_y_pos = Display::HEIGHT_PIXELS / 2;
-
-    // set colour for "WARNING" text.
-    // The text blinks by toggling between it's own colour and the display's background colour,
-    // depending on the current frame (dending on this->text_time_left).
-    // it also is set to the display's background colour when undrawing the text
-    bool is_blinking = (uint16_t)(this->text_time_left * 10) % 2;
-    if (undraw || is_blinking)
-        display->canvas.setTextColor(display->background_colour);
-    else
-        display->canvas.setTextColor(ILI9341_RED);
-
-    display->draw_centred_text("WARNING", screen_centre_x_pos, screen_centre_y_pos - 25);
-
-    // to undraw the text
-    // we just set the colour to the display's background colour
-    if (!undraw)
-        display->canvas.setTextColor(ILI9341_WHITE);
-    else
-        display->canvas.setTextColor(display->background_colour);
-    display->draw_centred_text("INCOMING ASTEROIDS", screen_centre_x_pos, screen_centre_y_pos);
-}
-
-void Waves::draw_wave_coming_phase(Display *display, bool undraw)
-{
-    // set text properties
-    display->canvas.setTextSize(2);
-    display->canvas.setTextWrap(false);
-
-    if (!undraw)
-        display->canvas.setTextColor(ILI9341_WHITE);
-    else
-        display->canvas.setTextColor(display->background_colour);
-
-    auto screen_centre_x_pos = Display::WIDTH_PIXELS / 2;
-    auto screen_centre_y_pos = Display::HEIGHT_PIXELS / 2;
-
-    // draw in cetre of screen
-    auto text = "WAVE " + (String)this->wave;
-    display->draw_centred_text(text, screen_centre_x_pos, screen_centre_y_pos);
 }

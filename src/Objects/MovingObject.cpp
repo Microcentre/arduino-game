@@ -1,4 +1,3 @@
-#include <math.h>
 #include "MovingObject.h"
 
 MovingObject::MovingObject(double x_position, double y_position, double speed) : Object(x_position, y_position)
@@ -42,6 +41,11 @@ void MovingObject::draw(Display *display)
     this->undraw(display, this->previous_draw_position_x, this->previous_draw_position_y);
     this->previous_draw_position_x = this->get_x_position();
     this->previous_draw_position_y = this->get_y_position();
+}
+
+void MovingObject::undraw(Display *display)
+{
+    this->undraw(display, this->previous_draw_position_x, this->previous_draw_position_y);
 }
 
 void MovingObject::set_x_position(const double position)

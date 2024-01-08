@@ -1,6 +1,8 @@
+#include <Vector.h>
 #include "GameScreen.h"
-#include "Bullet.h"
 #include "Asteroid.h"
+#include "Bullet.h"
+#include "Hardware/IR/IREndec.h"
 
 GameScreen::GameScreen(Display *display, Joystick *joystick, IR *infrared, uint16_t p1_colour, uint16_t p2_colour) : Screen(display, joystick, infrared)
 {
@@ -58,55 +60,45 @@ GameScreen::~GameScreen()
 void GameScreen::update(const double &delta)
 {
     // check for collision
-    check_bullet_asteroid_collision();
-    check_player_asteroid_collision();
+    if (!this->waves->is_switching_wave())
+    {
+        check_bullet_asteroid_collision();
+        check_player_asteroid_collision();
+    }
 
     // update
     Screen::update(delta);
     this->player->update(delta);
-    this->score->update(delta);
     this->bullet_container->update_objects(delta);
-    this->asteroid_container->update_objects(delta);
+    if (!this->waves->is_switching_wave())
+        this->asteroid_container->update_objects(delta);
 
-    // handle IR
-
-    // convert direction to uint16_t:
-    // - add PI to make it always positive
-    // - multiply by 100 so decimals can be safely truncated
-    // - shift right to save 1 bit at the cost of accuracy
-    // - reverse these steps on receive
-
-    uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
-    this->infrared->send_player_data((uint16_t)this->player->get_x_position(), (uint8_t)this->player->get_y_position(), send_dir, 0);
-
+    // switch screen if died
     if (this->player->health <= this->player->GAME_OVER_HEALTH)
     {
         this->ready_for_screen_switch = true;
+        return;
     }
 
-    // process and draw player 2
-    // but not during wave transitions
-    if (!this->waves->is_drawing())
-    {
+    // communicate with other player
+    this->send_data();
+    if (this->player2->active)
         this->process_player_2();
-        this->player2->draw(this->display);
-    }
     else
-    {
-        this->player2->undraw(this->display, this->player2->get_x_position(), this->player2->get_y_position());
-    }
-    // draw everything else
-    this->player->draw(this->display);
-    this->score->draw(this->display);
-    this->asteroid_container->draw_objects(delta);
-    this->bullet_container->draw_objects(delta);
+        this->waves->player2_ready(display);
 
     this->waves->update(display, delta, this->asteroid_container);
 
-    // checks if the wave is about to start spawning asteroids
-    // if so, makes the player invincible
-    if (this->waves->is_spawning_asteroids())
+    // start invincibility on new wave
+    if (this->waves->just_started_new_wave())
         this->invincibility->update(this->player);
+
+    // draw
+    this->player->draw(this->display);
+    this->score->draw(this->display);
+    if (!this->waves->is_switching_wave())
+        this->asteroid_container->draw_objects();
+    this->bullet_container->draw_objects();
 }
 
 void GameScreen::check_bullet_asteroid_collision()
@@ -156,21 +148,91 @@ void GameScreen::on_asteroid_destroyed()
 
     // start a new wave when no asteroids are left
     if (this->asteroid_container->get_size() <= 0)
-        this->waves->next();
+        this->next_wave();
 }
 
 void GameScreen::process_player_2()
 {
     uint32_t p2_data = this->infrared->get_received_data();
+    if (p2_data == 0)
+        return;
 
-    uint16_t pos_x = (p2_data & (DATA_POS_X_MASK)) >> 20;
-    uint16_t pos_y = (p2_data & (DATA_POS_Y_MASK)) >> 12;
-    uint16_t dir = (p2_data & (DATA_DIR_MASK)) >> 3;
-    // convert sent direction back to double
-    double facing_dir = ((double)(dir << 1) / 100) - M_PI;
-    this->player2->set_x_position(pos_x);
-    this->player2->set_y_position(pos_y);
-    this->player2->facing_direction = facing_dir;
+    GameData game_data = IREndec::decode_game(p2_data);
+
+    // if waiting for player2, and he's ready, continue to game
+    if (game_data.finished_switching_wave)
+    {
+        this->waves->player2_ready(this->display);
+        return;
+    }
+
+    // if switching_wave was given, but we still have asteroids on our side
+    // there's a sync issue!
+    // fix by removing all asteroids and forcing next wave start.
+    if (
+        game_data.switching_wave && !this->waves->is_switching_wave() // already busy switching wave
+        && !this->asteroid_container->objects.empty())                // asteroids remaining = sync issue
+    {
+        this->score->add_score(this->asteroid_container->undeleted_count() * Asteroid::SCORE_ASTEROID);
+        this->asteroid_container->undraw_objects();
+        this->asteroid_container->delete_objects();
+        this->next_wave();
+        return;
+    }
+
+    // if other player died, undraw once
+    if (game_data.player_died)
+    {
+        this->player2->undraw(this->display);
+        this->player2->active = false;
+        return;
+    }
+
+    // handle player2 only when not switching wave
+    if (!this->waves->is_switching_wave())
+    {
+        this->player2->set_x_position(game_data.player_x_position);
+        this->player2->set_y_position(game_data.player_y_position);
+        this->player2->facing_direction = game_data.player_facing_direction;
+
+        if (game_data.player_shot_bullet)
+        {
+            Bullet *bullet = new Bullet(this->player2->get_x_position(), this->player2->get_y_position(), this->player2->facing_direction, this->player2->player_colour);
+            this->bullet_container->add_object(bullet);
+        }
+
+        this->player2->draw(this->display);
+    }
+}
+
+void GameScreen::send_data()
+{
+    // switching wave has it's own unique message byte to be sent
+    if (this->waves->is_switching_wave())
+    {
+        uint32_t data = IREndec::encode_switching_wave(this->waves->is_ready_to_continue());
+        this->infrared->send_data(data);
+        return;
+    }
+
+    uint16_t send_dir = (uint16_t)((this->player->facing_direction + M_PI) * 100) >> 1;
+    uint32_t game_data = IREndec::encode_game(
+        (uint16_t)this->player->get_x_position(),
+        (uint8_t)this->player->get_y_position(),
+        send_dir,
+        0,     // should always be 0 when playing
+        false, // player death is communicated in the high score screen. so here the player is always considered alive
+        this->shot_bullet);
+    this->infrared->send_data(game_data);
+
+    // set back to default (false)
+    this->shot_bullet = false;
+}
+
+void GameScreen::next_wave()
+{
+    this->waves->next();
+    this->player2->undraw(this->display);
 }
 
 void GameScreen::check_player_asteroid_collision()
@@ -178,6 +240,7 @@ void GameScreen::check_player_asteroid_collision()
     // calculate and store centered player x and y
     int16_t rear_player_x = this->player->get_x_position();
     int16_t front_player_x = this->player->get_front_x_position();
+
     int32_t centered_player_x;
     if (rear_player_x > front_player_x)
     {
@@ -208,10 +271,8 @@ void GameScreen::check_player_asteroid_collision()
 
         // call player.hurt() if collided
 
-        if (player_asteroid_colliding(centered_player_x, centered_player_y, asteroid_x, asteroid_y) && !this->player->is_invincible)
-        {
+        if (!this->player->is_invincible && player_asteroid_colliding(centered_player_x, centered_player_y, asteroid_x, asteroid_y))
             this->player->hurt(this->display);
-        }
     }
 }
 
@@ -227,11 +288,15 @@ void GameScreen::on_joystick_changed()
     // C = shoot
     if (joystick->is_c_pressed())
     {
-        if (!(joystick->c_pressed_last_frame) && Bullet::bullet_amount < Bullet::MAX_BULLETS)
+        if (!joystick->c_pressed_last_frame && Bullet::bullet_amount < Bullet::MAX_BULLETS)
         {
             buzzer.short_beep();
-            this->bullet_container->add_object(new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction, player->player_colour));
             Bullet::bullet_amount++;
+            this->shot_bullet = true;
+
+            Bullet *bullet = new Bullet(player->get_x_position(), player->get_y_position(), player->facing_direction, player->player_colour);
+            bullet->shot_by_player1 = true;
+            this->bullet_container->add_object(bullet);
         }
         joystick->c_pressed_last_frame = true;
     }

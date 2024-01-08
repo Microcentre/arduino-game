@@ -1,11 +1,9 @@
 #ifndef GAMESCREEN_H
 #define GAMESCREEN_H
 
-#include <Vector.h>
 #include "../Hardware/Joystick.h"
 #include "../Hardware/Display.h"
 #include "Player.h"
-#include "../Objects/Object.h"
 #include "Screen.h"
 #include "../Objects/ObjectsContainer.h"
 #include "../Highscore/Score.h"
@@ -17,14 +15,26 @@
 class GameScreen : public Screen
 {
 public:
+    /// @brief player1 is controlled by the current player
     Player *player;
+
+    /// @brief player2 is the other player, who's actions are synced over infrared
     Player *player2;
 
+    /// @brief contains all asteroids currently in the game
     ObjectsContainer *asteroid_container;
+
+    /// @brief contains all bullets either players have shot
     ObjectsContainer *bullet_container;
+
+    /// @brief stores and draws the current score.
     Score *score;
 
+    /// @brief used to draw the score onto the seven-segment-display
     ShowHealthOnSSD *show_health;
+
+    /// @brief makes the player invincible when he's damaged.
+    /// Observer thats called when the player is hurt (HurtObserver instance)
     InvincibilityFrames *invincibility;
 
     GameScreen(Display *display, Joystick *joystick, IR *infrared, uint16_t p1_colour, uint16_t p2_colour);
@@ -69,7 +79,15 @@ private:
     /// @brief max array size for asteroids and bullet containers
     static constexpr uint8_t MAX_AMOUNT_OF_OBJECTS = 15;
 
+    /// @brief used to make a sound when current player shoots
+    Buzzer buzzer = Buzzer();
+
+    /// @brief handles the switching of waves
     Waves *waves;
+
+    /// @brief if the player just shot a bullet
+    /// used to sync with other player.
+    bool shot_bullet = false;
 
     /// @brief called when an asteroid is destroyed. starts a new wave
     void on_asteroid_destroyed();
@@ -77,7 +95,11 @@ private:
     /// @brief update the other player using received infrared data
     void process_player_2();
 
-    Buzzer buzzer = Buzzer();
+    /// @brief communicate death to other player
+    void send_data();
+
+    /// @brief start a new wave
+    void next_wave();
 };
 
 #endif

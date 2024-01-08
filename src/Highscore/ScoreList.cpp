@@ -74,7 +74,7 @@ void ScoreList::deleteLastNode()
     // Delete the last node
     delete temp->next;
     temp->next = nullptr;
-    
+
     this->size--;
 }
 
@@ -88,7 +88,7 @@ uint16_t ScoreList::get(uint8_t index)
 
     // Traverse the list until the desired index
     Node *temp = this->head;
-    for (int i = 0; i < index; i++)
+    for (uint8_t i = 0; i < index; i++)
     {
         temp = temp->next;
     }
