@@ -107,10 +107,6 @@ private:
     /// @brief go to the next wave phase and undraw previous phase
     void next_phase(Display *display);
 
-    /// @brief Spawn asteroids depending on the current wave
-    /// @param asteroid_container
-    void spawn_asteroids(ObjectsContainer *asteroid_container);
-
     /// @brief draws the text "WAVE x COMPLETED"
     /// @param undraw if the warning should be drawn(false) or undrawn(true)
     void draw_completed_phase(Display *display, bool undraw = false);
@@ -122,6 +118,10 @@ private:
     /// @brief draws the text "WAVE x"
     /// @param undraw if the warning should be drawn(false) or undrawn(true)
     void draw_wave_coming_phase(Display *display, bool undraw = false);
+
+    /// @brief Spawn asteroids depending on the current wave
+    /// @param asteroid_container
+    void spawn_asteroids(ObjectsContainer *asteroid_container);
 };
 
 #endif
