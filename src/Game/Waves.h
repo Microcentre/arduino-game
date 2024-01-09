@@ -41,9 +41,6 @@ public:
     /// @return if finished switching wave but ready to play
     bool is_ready_to_continue();
 
-    /// @return if in the phase of drawing asteroids
-    bool is_spawning_asteroids();
-
     /// @brief true for one frame
     /// @return if a new wave just started
     bool just_started_new_wave();

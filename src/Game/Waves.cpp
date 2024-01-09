@@ -40,11 +40,6 @@ bool Waves::is_ready_to_continue()
     return is_waiting_for_player() || this->draw_phase == WavePhase::CONFIRM_CONTINUE;
 }
 
-bool Waves::is_spawning_asteroids()
-{
-    return this->draw_phase == WavePhase::SPAWN_ASTEROIDS;
-}
-
 bool Waves::just_started_new_wave()
 {
     return just_started;
