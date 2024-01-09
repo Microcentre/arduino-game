@@ -79,9 +79,9 @@ private:
     const double SEVEN_FOURTH_OF_PI = 5.495;
 
     /// @brief minimal asteroid speed
-    const uint8_t MIN_ASTEROID_SPEED = 35;
+    const uint8_t MIN_ASTEROID_SPEED = 50;
 
-    const uint16_t MAX_ASTEROID_SPEED = 250;
+    const uint8_t MAX_ASTEROID_SPEED = 250;
 
     /// @brief how many times to send the CONTINUE message before continueing
     /// this phase ensures the other player receives the WAITING_FOR_PLAYER continue

@@ -42,7 +42,7 @@ private:
     static const uint8_t DECAY_FRAMES = 10;
 
     /// @brief how many frames to wait until the player can shoot again
-    static const uint8_t SHOOT_DELAY = 8;
+    static const uint8_t SHOOT_DELAY = 10;
 
     /// @brief how many pixels per second the bullet moves
     const double SPEED = 1024;
