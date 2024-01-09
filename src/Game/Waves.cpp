@@ -32,7 +32,7 @@ bool Waves::is_switching_wave()
 
 bool Waves::is_waiting_for_player()
 {
-    this->draw_phase == WavePhase::WAITING_FOR_PLAYER;
+    return this->draw_phase == WavePhase::WAITING_FOR_PLAYER;
 }
 
 bool Waves::is_ready_to_continue()
