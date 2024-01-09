@@ -25,9 +25,9 @@ uint32_t IREndec::encode_game(uint16_t player_x_position, uint8_t player_y_posit
     return data;
 }
 
-GameData IREndec::decode_game(uint32_t data)
+ReceivedGameData IREndec::decode_game(uint32_t data)
 {
-    GameData gamedata;
+    ReceivedGameData gamedata;
 
     if (data == 0)
     {

@@ -3,10 +3,12 @@
 
 #include <stdint.h>
 
-class GameData
+class ReceivedGameData
 {
 public:
+    /// @brief don't process player2 data if this isn't set
     bool valid_data;
+
     uint16_t player_x_position;
     uint8_t player_y_position;
     double player_facing_direction;

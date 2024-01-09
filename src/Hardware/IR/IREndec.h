@@ -4,14 +4,14 @@
 #include <math.h>
 
 #include <stdint.h>
-#include "GameData.h"
+#include "ReceivedGameData.h"
 
 class IREndec
 {
 public:
     /// @param data 32 bit data as received from the other play
-    /// @return given data decoded into the GameData class
-    static GameData decode_game(uint32_t data);
+    /// @return given data decoded into the ReceivedGameData class
+    static ReceivedGameData decode_game(uint32_t data);
 
     /// @brief Encodes a frame of the game logic (excluding asteroid spawning during wave-switch)
     /// @param switching_wave wave has ended because all asteroids are destroyed
