@@ -25,9 +25,16 @@ uint32_t IREndec::encode_game(uint16_t player_x_position, uint8_t player_y_posit
     return data;
 }
 
-GameData IREndec::decode_game(uint32_t data)
+ReceivedGameData IREndec::decode_game(uint32_t data)
 {
-    GameData gamedata;
+    ReceivedGameData gamedata;
+
+    if (data == 0)
+    {
+        gamedata.valid_data = 0;
+        return gamedata;
+    }
+    gamedata.valid_data = 1;
 
     gamedata.player_died = (data == PLAYER_DEATH_DATA);
     gamedata.switching_wave = is_switching_wave(data);
