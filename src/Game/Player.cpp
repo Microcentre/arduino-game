@@ -148,11 +148,15 @@ void Player::hurt(Display *display)
     undraw(display, this->get_x_position(), this->get_y_position(), this->facing_direction);
 
     // reset player
-    if (health > this->GAME_OVER_HEALTH)
+    if (health > 0)
     {
         set_x_position(Display::WIDTH_PIXELS / 2);
         set_y_position(Display::HEIGHT_PIXELS / 2);
         speed = 0;
+    }
+    else
+    {
+        active = false;
     }
 
     // call all observers

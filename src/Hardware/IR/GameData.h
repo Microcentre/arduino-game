@@ -6,6 +6,7 @@
 class GameData
 {
 public:
+    bool valid_data;
     uint16_t player_x_position;
     uint8_t player_y_position;
     double player_facing_direction;

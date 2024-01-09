@@ -11,6 +11,7 @@
 #include "../Hardware/Buzzer.h"
 #include "../Hardware/ShowHealthOnSSD.h"
 #include "InvincibilityFrames.h"
+#include "../Hardware/IR/GameData.h"
 
 class GameScreen : public Screen
 {
@@ -93,13 +94,16 @@ private:
     void on_asteroid_destroyed();
 
     /// @brief update the other player using received infrared data
-    void process_player_2();
+    void process_player_2(GameData);
 
     /// @brief communicate death to other player
     void send_data();
 
     /// @brief start a new wave
     void next_wave();
+
+    /// @brief send data indicating player death
+    void communicate_game_ended();
 };
 
 #endif

@@ -68,22 +68,43 @@ void GameScreen::update(const double &delta)
 
     // update
     Screen::update(delta);
-    this->player->update(delta);
+
+    uint32_t p2_data = this->infrared->get_received_data();
+    GameData game_data = IREndec::decode_game(p2_data);
+
+    // switch screen if died
+    if (!this->player->active)
+    {
+        if (game_data.valid_data && game_data.player_died)
+        {
+            this->ready_for_screen_switch = true;
+            return;
+        }
+    }
+    else
+    {
+        this->player->update(delta);
+        this->player->draw(this->display);
+    }
+
     this->bullet_container->update_objects(delta);
     if (!this->waves->is_switching_wave())
         this->asteroid_container->update_objects(delta);
 
-    // switch screen if died
-    if (this->player->health <= this->player->GAME_OVER_HEALTH)
-    {
-        this->ready_for_screen_switch = true;
-        return;
-    }
-
     // communicate with other player
-    this->send_data();
+    if (!this->player->active)
+    {
+        this->communicate_game_ended();
+    }
+    else
+    {
+        this->send_data();
+    }
     if (this->player2->active)
-        this->process_player_2();
+    {
+        if (game_data.valid_data)
+            this->process_player_2(game_data);
+    }
     else
         this->waves->player2_ready(display);
 
@@ -94,7 +115,6 @@ void GameScreen::update(const double &delta)
         this->invincibility->update(this->player);
 
     // draw
-    this->player->draw(this->display);
     this->score->draw(this->display);
     if (!this->waves->is_switching_wave())
         this->asteroid_container->draw_objects();
@@ -151,13 +171,8 @@ void GameScreen::on_asteroid_destroyed()
         this->next_wave();
 }
 
-void GameScreen::process_player_2()
+void GameScreen::process_player_2(GameData game_data)
 {
-    uint32_t p2_data = this->infrared->get_received_data();
-    if (p2_data == 0)
-        return;
-
-    GameData game_data = IREndec::decode_game(p2_data);
 
     // if waiting for player2, and he's ready, continue to game
     if (game_data.finished_switching_wave)
@@ -278,6 +293,9 @@ void GameScreen::check_player_asteroid_collision()
 
 void GameScreen::on_joystick_changed()
 {
+    if (!this->player->active)
+        return;
+
     this->player->rotate(this->joystick->get_x_axis());
     // Z = accelerate
     if (this->joystick->is_z_pressed())
@@ -318,4 +336,10 @@ bool GameScreen::player_asteroid_colliding(int32_t x_player, int32_t y_player, u
     int32_t x_distance = x_player - x_asteroid;
     int32_t y_distance = y_player - y_asteroid;
     return (sq(x_distance) + sq(y_distance)) < (sq(Asteroid::ASTEROID_SIZE) + sq(Player::PLAYER_SIZE));
+}
+
+void GameScreen::communicate_game_ended()
+{
+    uint32_t data = IREndec::encode_game_ended();
+    this->infrared->send_data(data);
 }

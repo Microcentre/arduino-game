@@ -185,9 +185,6 @@ void setup()
     sei();
 }
 
-double total_delta;
-bool spawned = false;
-
 int main()
 {
     setup();

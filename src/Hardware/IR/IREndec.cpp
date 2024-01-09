@@ -29,6 +29,13 @@ GameData IREndec::decode_game(uint32_t data)
 {
     GameData gamedata;
 
+    if (data == 0)
+    {
+        gamedata.valid_data = 0;
+        return gamedata;
+    }
+    gamedata.valid_data = 1;
+
     gamedata.player_died = (data == PLAYER_DEATH_DATA);
     gamedata.switching_wave = is_switching_wave(data);
     gamedata.finished_switching_wave = (gamedata.switching_wave)
