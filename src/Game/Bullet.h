@@ -10,7 +10,7 @@ public:
     static uint8_t bullet_amount;
 
     /// @brief the max amount of bullets each player can shoot
-    static const uint8_t MAX_BULLETS = 3;
+    static const uint8_t MAX_BULLETS = 1;
 
     /// @brief if this bullet is shot by the current player (true) or the other player (false)
     /// if true, bullet_amount
@@ -39,7 +39,7 @@ public:
 
 private:
     /// @brief How many frames it takes before the bullet despawns
-    static const uint8_t DECAY_FRAMES = 15;
+    static const uint8_t DECAY_FRAMES = 10;
 
     /// @brief how many frames to wait until the player can shoot again
     static const uint8_t SHOOT_DELAY = 10;

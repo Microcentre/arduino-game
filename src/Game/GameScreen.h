@@ -77,7 +77,7 @@ public:
 
 private:
     /// @brief max array size for asteroids and bullet containers
-    static constexpr uint8_t MAX_AMOUNT_OF_OBJECTS = 15;
+    static constexpr uint8_t MAX_AMOUNT_OF_OBJECTS = 10;
 
     /// @brief used to make a sound when current player shoots
     Buzzer buzzer = Buzzer();
