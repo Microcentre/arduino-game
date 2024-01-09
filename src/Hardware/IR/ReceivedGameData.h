@@ -1,9 +1,9 @@
-#ifndef GAMEDATA_H
-#define GAMEDATA_H
+#ifndef RECEIVED_GAMEDATA_H
+#define RECEIVED_GAMEDATA_H
 
 #include <stdint.h>
 
-class GameData
+class ReceivedGameData
 {
 public:
     uint16_t player_x_position;

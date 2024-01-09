@@ -11,10 +11,13 @@
 #include "../Hardware/Buzzer.h"
 #include "../Hardware/ShowHealthOnSSD.h"
 #include "InvincibilityFrames.h"
+#include "../Hardware/IR/ReceivedGameData.h"
 
 class GameScreen : public Screen
 {
 public:
+    /// @brief data received from the other 2
+    ReceivedGameData received_game_data;
     /// @brief player1 is controlled by the current player
     Player *player;
 

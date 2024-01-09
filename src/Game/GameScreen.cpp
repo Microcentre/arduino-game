@@ -74,7 +74,7 @@ void GameScreen::update(const double &delta)
         this->asteroid_container->update_objects(delta);
 
     // switch screen if died
-    if (this->player->health <= this->player->GAME_OVER_HEALTH)
+    if (this->player->health <= this->player->GAME_OVER_HEALTH && this->received_game_data.player_died)
     {
         this->ready_for_screen_switch = true;
         return;
@@ -157,10 +157,10 @@ void GameScreen::process_player_2()
     if (p2_data == 0)
         return;
 
-    GameData game_data = IREndec::decode_game(p2_data);
+    received_game_data = IREndec::decode_game(p2_data);
 
     // if waiting for player2, and he's ready, continue to game
-    if (game_data.finished_switching_wave)
+    if (received_game_data.finished_switching_wave)
     {
         this->waves->player2_ready(this->display);
         return;
@@ -170,8 +170,8 @@ void GameScreen::process_player_2()
     // there's a sync issue!
     // fix by removing all asteroids and forcing next wave start.
     if (
-        game_data.switching_wave && !this->waves->is_switching_wave() // already busy switching wave
-        && !this->asteroid_container->objects.empty())                // asteroids remaining = sync issue
+        received_game_data.switching_wave && !this->waves->is_switching_wave() // already busy switching wave
+        && !this->asteroid_container->objects.empty())                         // asteroids remaining = sync issue
     {
         this->score->add_score(this->asteroid_container->undeleted_count() * Asteroid::SCORE_ASTEROID);
         this->asteroid_container->undraw_objects();
@@ -181,7 +181,7 @@ void GameScreen::process_player_2()
     }
 
     // if other player died, undraw once
-    if (game_data.player_died)
+    if (received_game_data.player_died)
     {
         this->player2->undraw(this->display);
         this->player2->active = false;
@@ -191,11 +191,11 @@ void GameScreen::process_player_2()
     // handle player2 only when not switching wave
     if (!this->waves->is_switching_wave())
     {
-        this->player2->set_x_position(game_data.player_x_position);
-        this->player2->set_y_position(game_data.player_y_position);
-        this->player2->facing_direction = game_data.player_facing_direction;
+        this->player2->set_x_position(received_game_data.player_x_position);
+        this->player2->set_y_position(received_game_data.player_y_position);
+        this->player2->facing_direction = received_game_data.player_facing_direction;
 
-        if (game_data.player_shot_bullet)
+        if (received_game_data.player_shot_bullet)
         {
             Bullet *bullet = new Bullet(this->player2->get_x_position(), this->player2->get_y_position(), this->player2->facing_direction, this->player2->player_colour);
             this->bullet_container->add_object(bullet);
