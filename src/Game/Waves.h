@@ -61,7 +61,7 @@ private:
     };
 
     /// @brief time (in delta seconds) to show text before dissapearing
-    const double TEXT_TIME = 1;
+    const double TEXT_TIME = 0.8;
 
     // multiply PI by 10, divide by four
     const uint8_t M_10_PI_DIV_4 = (M_PI * 10) / 4;
@@ -80,6 +80,8 @@ private:
 
     /// @brief minimal asteroid speed
     const uint8_t MIN_ASTEROID_SPEED = 35;
+
+    const uint16_t MAX_ASTEROID_SPEED = 250;
 
     /// @brief how many times to send the CONTINUE message before continueing
     /// this phase ensures the other player receives the WAITING_FOR_PLAYER continue

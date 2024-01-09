@@ -32,7 +32,7 @@ bool Waves::is_switching_wave()
 
 bool Waves::is_waiting_for_player()
 {
-    return this->draw_phase == WavePhase::WAITING_FOR_PLAYER;
+    this->draw_phase == WavePhase::WAITING_FOR_PLAYER;
 }
 
 bool Waves::is_ready_to_continue()
@@ -146,9 +146,7 @@ void Waves::draw_completed_phase(Display *display, bool undraw)
     display->canvas.setTextWrap(false);
 
     // is not visible when undraw=true.
-    // text also blinks depending on the current frame (depending on text_time_left)
-    bool is_blinking = (uint16_t)(this->text_time_left * 10) % 4;
-    if (undraw || is_blinking)
+    if (undraw)
         display->canvas.setTextColor(display->background_colour);
     else
         display->canvas.setTextColor(ILI9341_WHITE);
@@ -218,7 +216,7 @@ void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
         amount_of_asteroids = this->max_asteroids;
 
     // every 2 waves, the max speed increases by 50
-    uint16_t max_asteroid_speed = ((this->wave / 2) + 1) * 50;
+    uint16_t calculated_max_asteroid_speed = ((this->wave / 2) + 1) * 50;
 
     uint16_t random_x_position;
     uint8_t random_y_position;
@@ -280,7 +278,11 @@ void Waves::spawn_asteroids(ObjectsContainer *asteroid_container)
         }
 
         // random speed with min and max
-        random_speed = MIN_ASTEROID_SPEED + rand() % (max_asteroid_speed - MIN_ASTEROID_SPEED + 1);
+        if (calculated_max_asteroid_speed > MAX_ASTEROID_SPEED)
+        {
+            calculated_max_asteroid_speed = MAX_ASTEROID_SPEED;
+        }
+        random_speed = MIN_ASTEROID_SPEED + rand() % (calculated_max_asteroid_speed - MIN_ASTEROID_SPEED + 1);
 
         // spawn asteroid and add to container
         asteroid_container->add_object(new Asteroid(random_x_position, random_y_position, random_speed, random_direction));
