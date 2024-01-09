@@ -15,9 +15,6 @@ public:
 
     ~ScreenHandler();
 
-    /// @brief Switches the screen between the player select screen and the game screen.
-    void switch_screen();
-
     /// @brief Updates the current screen.
     /// @param delta represents the time since the last frame.
     void update(const double &delta);
@@ -47,6 +44,9 @@ private:
 
     /// @brief used to store scores. when game ends the new score is added to the ScoreList.
     ScoreList *scores;
+
+    /// @brief Switches the screen between the player select screen and the game screen.
+    void switch_screen();
 };
 
 #endif
