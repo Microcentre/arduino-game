@@ -22,6 +22,7 @@ const uint8_t COUNTER_MAX = 255; // maximum value of the counter
 IR *p_infrared;
 long total_timer_value;
 
+/// @brief Disable the IR LED after a certain duration
 ISR(TIMER1_COMPB_vect)
 {
     if (p_infrared->get_flags() & IR::Flags::SENDING_MESSAGE)
@@ -52,6 +53,8 @@ ISR(TIMER1_COMPB_vect)
     }
 }
 
+/// @brief Re-enable the IR LED after a duration
+/// specified by the currently sent signal
 ISR(TIMER1_COMPA_vect)
 {
     if (p_infrared->get_flags() & IR::Flags::SENDING_MESSAGE)
@@ -80,6 +83,7 @@ ISR(TIMER1_COMPA_vect)
     total_timer_value += OCR1A;
 }
 
+/// @brief Read the received data
 ISR(INT0_vect)
 {
     static uint16_t timer_diff;
@@ -149,16 +153,15 @@ ISR(INT0_vect)
     }
 }
 
+/// @brief Write the ADC value to OCR2A for brightness control
 ISR(ADC_vect)
 {
-    // ADC conversion complete
-    // read the value and set the brightness
     OCR2A = ADCH;
 }
 
+/// @brief Update the display brightness
 ISR(TIMER2_COMPA_vect)
 {
-    // this interrupt is used to update the display brightness
 
     brightness_interrupt_counter++;
     // so long as the counter is less than the compare value, turn on the LED. The higher the compare value, the longer the LED is on for
